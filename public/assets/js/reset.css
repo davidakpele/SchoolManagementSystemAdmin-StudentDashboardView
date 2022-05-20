@@ -1,0 +1,78 @@
+@charset "utf-8";
+/* CSS Document */
+
+.fa
+{
+	color:#6C7F92;
+}
+
+.tray-items .dropdown-menu::after, .tray-items .dropdown-menu::before {
+    bottom: 100%;
+    right: 12px;
+    border: medium solid transparent;
+    content: " ";
+    height: 0px;
+    width: 0px;
+    position: absolute;
+    pointer-events: none;
+	border-color: rgba(194, 225, 245, 0);
+    border-bottom-color: rgba(80, 80, 80, .1);
+	border-width: 10px;
+	margin-left: -10px;
+}
+
+.tray-items .dropdown-menu
+{
+	left: -120px;
+}
+
+/*---- profile drop down -----*/
+
+.tray-items .dropdown-menu.profile {
+    max-width: 180px;
+    height: auto;
+    padding: 0px;
+}
+.tray-items .dropdown-menu.profile li {
+    line-height: 40px;
+    display: block;
+    height: 40px;
+    margin: 0px;
+}
+.tray-items .dropdown-menu.profile li i {
+    margin-right: 10px;
+    line-height: 36px;
+    height: 36px;
+    width: auto;
+    text-align: center;
+}
+.tray-items .dropdown-menu.profile li a {
+    display: block;
+    border-bottom: 1px solid #f4f5f7;
+
+}
+.tray-items .dropdown-menu.profile li.last a, .page-topbar li .dropdown-menu.profile li a:hover {
+    background: #f4f5f7;
+}
+
+/*@media (max-width: 450px) {
+.profile .toggle span{display: none;}
+.page-topbar .quick-area .info-menu li.profile img{right:0px;}
+.page-topbar .quick-area .info-menu li.profile .dropdown-menu{right:auto;left:-122px;}
+.page-topbar .profile .dropdown-menu:after, .page-topbar .profile .dropdown-menu:before{right:22px;left:auto;}
+.page-topbar .quick-area .info-menu li.sidebar-toggle-wrap{display: none;}
+.page-topbar .quick-area .chat-toggle-wrapper{display: none;}
+.page-topbar .quick-area .info-menu li .dropdown-menu{width:290px;}
+}
+
+@media (max-width: 680px) {
+.profile .toggle span{display: none;}
+.page-topbar .quick-area .info-menu li.profile img{right:0px;}
+.page-topbar .quick-area .pull-left ul.info-menu{padding-right: 0px;}
+.page-topbar .quick-area .pull-right ul.info-menu{padding-left: 0px;}
+}
+
+
+@media (max-width: 245px) {
+.page-topbar .quick-area .pull-left{display: none;}
+}*/
