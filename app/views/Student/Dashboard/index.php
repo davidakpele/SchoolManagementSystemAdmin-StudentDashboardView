@@ -151,6 +151,7 @@
             </ul>
           </div> 
         </div>
+        <!-- Course Div -->
         
     </div>
   </div>
