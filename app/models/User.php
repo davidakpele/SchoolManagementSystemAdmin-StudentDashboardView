@@ -314,11 +314,11 @@ Class User {
 		$this->DB->query('INSERT INTO lecturals(Professor__id, Surname, Middle__name, Othername,
 		 Accesscode, Password, Email, featured, Telephone_No, Date_of_Birth, Place__of__birth,
 		  Gender, Relationship_sts, Civil_status, Citizenship, NIN, 
-		  Height, Weight, Blood_Type, Religion, Address, Qualification, Profile__Picture, Active__time) 
+		  Height, Weight, Blood_Type, Religion, Address, Qualification, Profile__Picture) 
 		VALUES (:Professor__id, :Surname, :Middle__name, :Othername, :Accesscode, :Password,  
 		:Email, :featured, :Telephone_No, :Date_of_Birth, :Place__of__birth, :Gender, :Relationship_sts, 
 		:Civil_status, :Citizenship, :NIN, :Height, :Weight, :Blood_Type, :Religion, :Address, 
-		:Qualification,  :Profile__Picture, :Active__time)');
+		:Qualification,  :Profile__Picture)');
 		$this->DB->bind(':Professor__id', $data['Professor__id']);
 		$this->DB->bind(':Surname', $data['Surname']);
 		$this->DB->bind(':Middle__name', $data['Middle__name']);
@@ -342,7 +342,6 @@ Class User {
 		$this->DB->bind(':Address', $data['Address']);
 		$this->DB->bind(':Qualification', $data['Qualification']);
 		$this->DB->bind(':Profile__Picture', $data['Profile__Picture']);
-		$this->DB->bind(':Active__time', $data['Active__time']);
 		if($this->DB->execute()){
 			return true;
 		}else {
@@ -667,11 +666,11 @@ Class User {
 	// Find existing professor by email
 	// ======================================================================
 
-	public function findProfessorByEmail($Email){
+	public function findProfessorByEmail($isCheckEmail){
 		// UsING prepared statement
-		$this->DB->query('SELECT * FROM lecturals WHERE Email = :Email');
+		$this->DB->query('SELECT * FROM lecturals WHERE Email = :isCheckEmail');
 		//The email param will be binded with the email variable
-		$this->DB->bind(':Email', $Email);
+		$this->DB->bind(':isCheckEmail', $isCheckEmail);
 		//Check if email is already registered
 		if($this->DB->rowCount() > 0){
 			return true;
@@ -1162,7 +1161,8 @@ Class User {
 	// =====================================================================
 	
 	public function deleteUserProfessor($id){
-		$this->DB->query('DELETE FROM lecturals WHERE Professor__id = :id');
+		$i = implode(',', $id);
+		$this->DB->query("DELETE FROM lecturals WHERE Professor__id IN (".$i.")");
 		$this->DB->bind(':id', $id);
 		if($this->DB->execute()){
 			return true;
@@ -1170,7 +1170,85 @@ Class User {
 			return false;
 		}
 	}
-    
+// Dismissed Professor From Management Role
+	public function SQLDismissedManagementRole($id){
+		$this->DB->query("DELETE FROM management__role WHERE ID = :id ");
+		$this->DB->bind(':id', $id);
+		if($this->DB->execute()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	// Admin Send Professor Email
+	public function SQLSendProfEmail($data){
+		$this->DB->query("INSERT INTO EmailBox(EmailID, SenderID, RecipientID, SenderName, SenderMail, RecipientEmail, RecipientName, Subject, message, parent, Time)
+						VALUES(:EmailID, :SenderID, :targetid, :SenderName, :SenderMail, :Email, :RecipientName, :Subject, :message, :parent, NOW())");
+		$this->DB->bind(':EmailID', $data['EmailID']);
+		$this->DB->bind(':SenderID', $data['SenderID']);
+		$this->DB->bind(':targetid', $data['targetid']);
+		$this->DB->bind(':SenderName', $data['SenderName']);
+		$this->DB->bind(':SenderMail', $data['SenderMail']);
+		$this->DB->bind(':Email', $data['Email']);
+		$this->DB->bind(':RecipientName', $data['RecipientName']);
+		$this->DB->bind(':Subject', $data['Subject']);
+		$this->DB->bind(':message', $data['message']);
+		$this->DB->bind(':parent', $data['parent']);
+		if($this->DB->execute()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	// Fetching admin data from the database from email composer
+	public function SQLProfessorEmailData($ProfessorID){
+		$this->DB->query("SELECT * FROM lecturals WHERE Professor__id = :ProfessorID");
+		$this->DB->bind(':ProfessorID', $ProfessorID);
+		$stmt = $this->DB->single();
+		if ($stmt) {
+			return $stmt;
+		}else {
+			return false;
+		}
+	}
+
+	// Fetching professor data from the database from email composer 
+	public function SqlFetchProfessEmails($mim){
+		$this->DB->query("SELECT * FROM `emailbox` WHERE RecipientID = :mim AND parent = 1");
+		 $this->DB->bind(':mim', $mim);
+		 $row = $this->DB->resultSet();
+		if($row > 0){
+			return $row;
+		}else {
+			return false;
+		}   
+	}
+
+	// Fetch a specific email 
+
+	public function isFetchEmails($id, $mim){
+		$this->DB->query("SELECT * FROM `emailbox` WHERE EmailID = :id AND RecipientID = :mim AND parent = 1");
+		$this->DB->bind(':id', $id);
+		$this->DB->bind(':mim', $mim);
+		$row = $this->DB->single();
+		if($row == true){
+			return $row;
+		}else {
+			return false;
+		}   
+	}
+	// Fetch Admin All Email 
+	public function SqlFetchAdminEmails(){
+		$this->DB->query("SELECT Admin__id, EmailID, SenderID, SenderName, SenderMail, RecipientEmail, RecipientName, Subject, message, Time, parent
+		 FROM `super__administrator`, `emailbox` WHERE Admin__id = SenderID AND parent = 0");
+		 $row = $this->DB->resultSet();
+		if($row > 0){
+			return $row;
+		}else {
+			return false;
+		}   
+	}
 	// ==================================================================
 	// Delete STUDENT FROM THE SCHOOL SYSTEM BY THE ADMIN
 	// ==================================================================
@@ -1211,12 +1289,32 @@ Class User {
 		return $run;
 	}
 
-	public function isDeleteStudentModel($cheks){
-		$i = implode(',', $cheks);
-		var_dump($i);
-		
-		$this->DB->query("DELETE FROM Student__account WHERE student__Id IN (".$i.") ");
-		$this->DB->bind(':cheks', $cheks);
+	public function FindCourseId($Courseid){
+		$this->DB->query("SELECT * FROM student__account WHERE Department__Type = :Courseid AND Onlinestatus ='1'");
+		$this->DB->bind(':Courseid', $Courseid);
+		$stmt= $this->DB->resultSet();
+		if($stmt > 0){
+			while($run = $this->DB->resultSet($stmt)){
+				return $run;
+			}
+		}else {
+			return false;
+		}
+	}
+
+	public function updateStudentLoginTime($id, $Active_login){
+		$this->DB->query("UPDATE `student__account` SET active = :Active_login, Onlinestatus = '1' WHERE student__Id = :id");
+		$this->DB->bind(':id', $id);
+		$this->DB->bind(':Active_login', $Active_login);
+		if($this->DB->execute()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	public function updateStudentLogOutTime($id){
+		$this->DB->query("UPDATE `student__account` SET Onlinestatus = '0' WHERE student__Id = :id");
+		$this->DB->bind(':id', $id);
 		if($this->DB->execute()){
 			return true;
 		}else{
@@ -1234,6 +1332,18 @@ Class User {
 		}
 	}
 
+	public function isDeleteStudentModel($cheks){
+		$i = implode(',', $cheks);
+		$this->DB->query("DELETE FROM Student__account WHERE student__Id IN (".$i.") ");
+		$this->DB->bind(':cheks', $cheks);
+		if($this->DB->execute()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	
 	public function Changeverifyoldpassword($oldpassword, $id){
 		$this->DB->query('SELECT * FROM `student__account` WHERE student__Id = :id');
 		$this->DB->bind(':id', $id);

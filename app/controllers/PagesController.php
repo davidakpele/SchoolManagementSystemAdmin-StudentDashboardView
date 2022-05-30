@@ -401,7 +401,7 @@ class PagesController extends Controller {
         $PostUsername=$phpObject->{'Username'};
         $PostPassword=$phpObject->{'Password'};
         $newJsonString = json_encode($phpObject);
-        $StudentUsername = strip_tags(trim(filter_var((int)$PostUsername, FILTER_SANITIZE_STRING)));
+        $StudentUsername = strip_tags(trim(filter_var((string)$PostUsername, FILTER_SANITIZE_STRING)));
         $StudentPassword = strip_tags(trim(filter_var($PostPassword, FILTER_SANITIZE_STRING)));
         @$loggedInstudent = $this->userModel->studentLogin($StudentUsername, $StudentPassword);
         if($loggedInstudent){
@@ -959,6 +959,7 @@ public function ProcessNewStudentOnline(){
     public function Dashboard(){
         if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}
         $id= $_SESSION['student__Id'];
+        // set variable for course id
         $ft = $this->userModel->Viewstd($id);
        if ($ft) {
             foreach ($ft as $keyvalue) {
@@ -971,17 +972,21 @@ public function ProcessNewStudentOnline(){
                 $tel= $keyvalue['telephone'];
                 $img= $keyvalue['image'];
                 $settings= $keyvalue['settings'];
+                $Courseid = $keyvalue['Department__Type'];
             }
        }
-       
+       $FIndCosId = $this->userModel->FindCourseId($Courseid); 
         @$data = 
                 [
                     'page_title' => 'Dashboard',
-                    'photo'=>$img
+                    'photo'=>$img,
+                    'online'=>$FIndCosId,
                 ];
+            
         @$this->view('Student/Dashboard/index', @$data);
     }
     public function ExamModal(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}
         if(isset($_GET['id']) && $_GET['id'] > 0){
             $Courseid=$_SESSION['Department'];
             $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
@@ -1150,9 +1155,6 @@ public function ProcessNewStudentOnline(){
         }
     }
 
-    public function inbox(){
-        @$this->view('Management/LecturalDashboard/inbox', @$data);
-    }
     /**
      * The Part of the Code down is Made to control Student Dashboard Area.  Profile, Settings, Feeds, Post etc
      * List of Controllers Inside
@@ -1160,20 +1162,7 @@ public function ProcessNewStudentOnline(){
      * @return void
      */ 
     
-    public function UserProfile(){
-        //Generate a random string.
-        $token = openssl_random_pseudo_bytes(500);
-        //Convert the binary data into hexadecimal representation.
-        $token1 = bin2hex($token);
-        //Print it out for example purposes.
-        $data = 
-        [
-            'page_title'=>'Student Personal Dashboard Portal',
-            'token'=>$token1
-        ];
-        $this->view('Student/UserProfile', $data);
-    }
-         
+  
     public function Settings(){
             $data = 
             [
@@ -1351,19 +1340,23 @@ public function ProcessNewStudentOnline(){
        if (isLoggedInLectural() && isLoggedDashboardController()) {
             $departmentid = $_SESSION['DashboardID']; 
             $Fetchstuddents= $this->namespacemodel->fetchstudent($departmentid);
-                if($Fetchstuddents < 1){
-                    $NullData = '<div class="alert alert-danger tex-center" role="alert">Sorry..! No Student Has Register For This Course.. The table is empty.!</div>';
+            $mim =  $_SESSION['ProfessorID'];
+            $emailstmt = $this->userModel->SqlFetchProfessEmails($mim);
+            if($Fetchstuddents < 1){
+                $NullData = '<div class="alert alert-danger tex-center" role="alert">Sorry..! No Student Has Register For This Course.. The table is empty.!</div>';
+            }
+            if(isset($_POST['delete'])){
+                $checkbox = $_POST['checkbox'];
+                for($i=0;$i<count($_POST['checkbox']);$i++){
+                $del_id = $checkbox[$i];
+                print_r($del_id);
                 }
-                if(isset($_POST['delete'])){
-                    $checkbox = $_POST['checkbox'];
-                    for($i=0;$i<count($_POST['checkbox']);$i++){
-                    $del_id = $checkbox[$i];
-                    print_r($del_id);
-                    }
-                }
+            }
         }elseif(isLoggedInLectural() && iscsrf()) {
            $departmentid = $_SESSION['base']; 
+           $mim =  $_SESSION['ProfessorID'];
             $Fetchstuddents= $this->namespacemodel->fetchstudent($departmentid);
+            $emailstmt = $this->userModel->SqlFetchProfessEmails($mim);
                 if($Fetchstuddents < 1){
                     $NullData = '<div class="alert alert-danger tex-center" role="alert">Sorry..! No Student Has Register For This Course.. The table is empty.!</div>';
                 }
@@ -1372,26 +1365,54 @@ public function ProcessNewStudentOnline(){
                     for($i=0;$i<count($_POST['checkbox']);$i++){
                     $del_id = $checkbox[$i];
                     print_r($del_id);
-                    }
+                    } 
                 }
         }else {
             header('location:' . ROOT . 'Management/LecturalDashboard/index');
         }
         $data = 
-            [
+            [   
                 'page_title'=>'Professor  :: Students Dashboard',
                 'fetchstudent'=>$Fetchstuddents,
                 'NullData'=>((isset($NullData))?$NullData: ''),
+                'emailstmt'=>$emailstmt,
             ];
             $this->view('Management/LecturalDashboard/HStudents', $data);
         
     }
-    public function HZoom(){
-        $this->view('Management/LecturalDashboard/HZoom');
-    }
 
     public function HParents(){
         $this->view('Management/LecturalDashboard/HParents');
+    }
+   
+    public function Inbox(){
+        if (isset($_GET['tab'])) {
+            $id = $_GET['tab'];
+            $mim =  $_SESSION['ProfessorID'];
+            $emailstmt = $this->userModel->isFetchEmails($id, $mim);
+            if ($emailstmt) {
+                if ($emailstmt){
+                    $emailid =  $emailstmt->EmailID;
+                    $sendername = $emailstmt->SenderName;
+                    $senderemail=  $emailstmt->SenderMail;
+                    $emailsubject=  $emailstmt->Subject;
+                    $emailbody =  $emailstmt->message;
+                    $emailtimesent= $emailstmt->Time;
+                }
+            }else {
+                header('location:' . ROOT . 'Management/HStudents/');
+            }
+        }
+        $data =
+        [
+            'page_title'=>$emailsubject,
+            'email'=>$emailid,
+            'sendername'=>$sendername,
+            'senderemail'=>$senderemail,
+            'emailbody'=>$emailbody,
+            'emailtimesent'=>$emailtimesent,
+        ];
+        $this->view('Management/LecturalDashboard/Inbox', $data);
     }
    
     public function StudentProfile(){
@@ -1568,6 +1589,11 @@ public function ProcessNewStudentOnline(){
         ob_end_clean();
         echo json_encode($response);
     }
+    
+    public function EventBox(){
+
+        $this->view('Student/EventBox');
+    }
     // =======================================================
     // THIS IS SESSION AREA. CREATING SESSIONS
     // =======================================================
@@ -1590,6 +1616,10 @@ public function ProcessNewStudentOnline(){
                 $_SESSION['adminEmail'] = @$data->Email;
                 $_SESSION['adminSurname']= @$data->Surname;
                 $_SESSION['adminothername']= @$data->Othername;
+                // Taking current system Time
+                $_SESSION['start'] = time();
+                 // Destroying session after 1 minute
+                $_SESSION['expire'] = $_SESSION['start'] + (30 * 60) ;  
                 // Use a ternary operation to set the URL 
                 $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
                 if(isset($url)){ 
@@ -1612,24 +1642,28 @@ public function ProcessNewStudentOnline(){
     // =========================================================
 
     public function createstudentSession($data){
-        $_SESSION['Reference'] = @$data->Roll__No;
-        $_SESSION['student__Id'] = @$data->student__Id;
-        $_SESSION['Department'] = @$data->Department__Type;
-        @$s = @$data->Surname;
-        @$o = @$data->othername;
-        @$globalname= @$s .' '.@$o;
-        $location = "Student/Dashboard/Home";
-        $_SESSION['globalname'] =@$globalname;
-        if(isset( $_SESSION['globalname'])){
-            echo '<script type="text/javascript">';
-                echo 'window.location.replace("'. ROOT . $location .'")';
-            echo '</script>';
-            // The reason we're using noscript because some people some times turn off their javascript on web browsers 
-            echo '<nosript>';
-            echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $location . '" />';
-            echo '</nosript>';
+        @$Active_login = date("Y-m-d H:i:s");
+        $id = $data->student__Id;
+        $updatesqlTime = $this->userModel->updateStudentLoginTime($id, $Active_login);
+        if ($updatesqlTime) {
+            $_SESSION['Reference'] = @$data->Roll__No;
+            $_SESSION['student__Id'] = @$data->student__Id;
+            $_SESSION['Department'] = @$data->Department__Type;
+            @$s = @$data->Surname;
+            @$o = @$data->othername;
+            @$globalname= @$s .' '.@$o;
+            $location = "Student/Dashboard/Home";
+            $_SESSION['globalname'] =@$globalname;
+            if(isset( $_SESSION['globalname'])){
+                echo '<script type="text/javascript">';
+                    echo 'window.location.replace("'. ROOT . $location .'")';
+                echo '</script>';
+                // The reason we're using noscript because some people some times turn off their javascript on web browsers 
+                echo '<nosript>';
+                echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $location . '" />';
+                echo '</nosript>';
+            }
         }
-         
     }
 
     // =========================================================
@@ -1855,13 +1889,50 @@ public function ProcessNewStudentOnline(){
 
 	public function LogoutStudent(){
       if (session_status() == PHP_SESSION_ACTIVE) {
-            unset($_SESSION['Reference']);
-            unset($_SESSION['student__Id']);
-            unset($_SESSION['globalname']);
-            unset($_SESSION['Department']);
-            
-        header('location:' . ROOT . 'Student/Login/');
+           $id = $_SESSION['student__Id'];
+            $updatesqlTime = $this->userModel->updateStudentLogOutTime($id);
+            if ($updatesqlTime) {
+                unset($_SESSION['Reference']);
+                unset($_SESSION['student__Id']);
+                unset($_SESSION['globalname']);
+                unset($_SESSION['Department']);
+                header('location:' . ROOT . 'Student/Login/');
+            }
         } 
+    }
+
+    public function HZoom(){
+        @$zoom_meeting = new zoom();
+        @$dataAPi = array();
+        @$dataAPi['topic'] = 'David is inviting you to zoom meeting';
+        @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
+        @$dataAPi['duration'] =60;
+        @$dataAPi['type'] =2;
+        @$dataAPi['password'] = '';
+                try{
+                    @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+                    $data=
+                        [
+                            'page_title'=>'Zoom Conference Call',
+                            'Meetingid'=>((isset($response->id))?$response->id: ''),
+                            'uuid'=>((null !== (@$response->uuid))?@$response->uuid:''),
+                            'host_id'=>((null !== (@$response->host_id))?@$response->host_id:''),
+                            'start_url'=>((null !== (@$response->start_url))?@$response->start_url:''),
+                            'join_url'=>((null !== (@$response->join_url))?@$response->join_url:''),
+                            'password'=>((null !== (@$response->password))?@$response->password:''),
+                            'encrypted_password'=>((null !== (@$response->encrypted_password))?@$response->encrypted_password:''),
+                            'created_at'=>((null !== (@$response->created_at))?@$response->created_at:''),
+                            'timezone'=>((null !== (@$response->timezone))?@$response->timezone:''),
+                            'duration'=>((null !== (@$response->duration))?@$response->duration:''),
+                            'start_time'=>@((null !== ($response->start_time))?$response->start_time:''),
+                            'status'=>((null !== (@$response->status))?@$response->status:''),
+                        ];
+                }catch(Exception $ex){
+                    echo @$ex;
+                }
+                 
+
+         $this->view('Application/HZoom', $data);
     }
 }
 

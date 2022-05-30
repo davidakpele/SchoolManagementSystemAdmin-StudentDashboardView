@@ -15,6 +15,19 @@
     }
     function isLoggedInAdmin() {
         if (isset($_SESSION['Admin__id']) && isset($_SESSION['username']) && isset($_SESSION['admin_level'])) {
+            // $now = time();
+            // if($now > $_SESSION['expire']) {
+            //     unset($_SESSION['Admin__id']);
+            //     unset($_SESSION['admin_level']);
+            //     unset($_SESSION['username']);
+            //     unset($_SESSION['adminEmail']);
+            //     unset($_SESSION['adminSurname']);
+            //     unset($_SESSION['adminothername']);
+            //     echo "<script>
+            //             alert('Session expire');
+            //         </script>";
+                
+            // }
             return true;
         } else {
             return false;
@@ -81,6 +94,7 @@ if(isset($_SESSION['error_flash'])){
  function pretty_date($date){
     return date("M d, Y, h:i A", strtotime($date));
 }
+
 function pretty_html_special_characters($text){
     $text = htmlspecialchars($text);
     $text = preg_replace("/=/", "=\"\"", $text);

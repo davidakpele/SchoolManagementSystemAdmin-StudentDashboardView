@@ -107,7 +107,7 @@
                     <div class="b-b b-theme nav-active-theme mb-3">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item"><a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-home" aria-hidden="true"></i>Default</a></li>
-                            <li class="nav-item"><a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-plus" aria-hidden="true"></i>Add More Courses</a></li>
+                            <!-- <li class="nav-item"><a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fa fa-plus" aria-hidden="true"></i>Add More Courses</a></li> -->
                             <li class="nav-item"><a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false"><i class="fa fa-window-close" aria-hidden="true"></i>Dismissed from Department</a></li>
                         </ul>
                     </div>
@@ -173,53 +173,9 @@
                               </form>
                             </div>
                         <!-- Add tab -->
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                          <p id="Newshow_message" style="padding:10px"></p>
-                          <p id="Newerror" style="padding:10px"></p>
-                             <form class="form-group" method="POST" action="javascript:void(0)" id="NewtoggleAppointmeVal">
-                                <div class="col-md-12">
-                                  <input type="text" name="newnin" id="newnin" value="<?=$data['n'];?>" class="form-control" style="display:none"/>
-                                  <input type="text" name="NewUser_id" id="NewUser_id" value="<?=$data['id'];?>" class="form-control" style="display:none"/>
-                                </div>
-                                <div class="row">
-                                  <div class="col-lg-12 col-md-12 col-sm-12">
-                                    <label for="Faculty" style="color:#73879C;">Faculty:</label>
-                                    <select name="NewApplication__Type" id="NewApplication__Type" class="form-control" >
-                                        <option selected="selected" disabled="">--select--</option>
-                                        <option value="" selected="selected" style="display:none">--select--</option>
-                                        <?php foreach ($data['DisplayCateogries'] as $stmt): ?>
-                                        <option id="<?=$stmt['Category__ID']?>" value="<?=$stmt['Category__ID']?>"> <?=$stmt['Category__name']?> </option>
-                                      <?php endforeach;?>
-                                    </select>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12">	
-                                  <label for="Department Type" style="color:#73879C;">Department:</label>
-                                  <select style="width:100%" name="NewDepartment__Type" id="NewDepartment__Type" class="form-control">
-                                      <option value="" selected="" ></option>
-                                  </select>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-sm-12">	
-                                  <label for="Designation Type" style="color:#73879C;">Designation:</label>
-                                  <select name="NewDesignation" id="NewDesignation" class="form-control"  >
-                                    <option selected="selected" disabled="">--select--</option>
-                                    <option value="" selected="selected" style="display:none">--select--</option>
-                                    <option value="Full Time" >Full Time</option>
-                                    <option value="Part Time">Part Time</option>
-                                    <option value="Contract">Contract</option>
-                                    <option value="Remotely">Remotely</option>
-                                  </select>
-                                </div>
-                              </div>
-                                <!-- Modal footer -->
-                                <div class="clearfix"></div>
-                                  <div class="modal-footer flex" style="display:flex">
-                                    <button type="button" class="btn btn-default btn-sm" onclick="closeModal();"><i class="fa fa-remove"></i>Close</button>
-                                    <button type="submit" class="btn btn-primary btn-sm"  name="SubmitAppoint">Save Appointment</button>
-                              </div>
-                            </form>
-                        </div>
                         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                          <button type="submit" class="btn btn-danger btn-sm w-100"  name="designateProfessor">Dismissed From Management Role</button>
+                          <button type="button" class="btn btn-default btn-sm" onclick="closeModal();"><i class="fa fa-remove"></i>Close</button>
+                          <button type="submit" class="btn btn-danger btn-sm w-3" value="<?=$data['id'];?>" id="DismissedDesignation" name="designateProfessor">Dismissed From Management Role</button>
                         </div>
                     </div>
                 </div>
@@ -407,13 +363,7 @@
     
   <?php endif;?> 
 }
-closeModal = () =>{
-	jQuery('#___AppointmentProfessorModal').modal('hide');
-	setTimeout(() => {
-		jQuery('#___AppointmentProfessorModal').remove();
-		jQuery('.modal-backdrop').remove();
-	}, 300);
-}
+
 </script>
 <?php echo ob_get_clean(); ?>
 
@@ -544,7 +494,6 @@ $(document).ready(($)=> {
       let nin= $("input#Newnin").val().trim();
       const max = {'ID': ProfID, 'Nin':nin, 'FacultyID': Faculty, 'DepartmentID': Department, 'DesignationID': Designation };
       let stringyifyData = JSON.stringify(max);
-      console.log(max);
         $.ajax({
           type         : 'POST',// define the type of HTTP verb we want to use (POST for our form)
 					dataType     : 'JSON',
@@ -593,7 +542,6 @@ $(document).ready(($)=> {
             text: "Something went wrong!",
             timer: 1500,
           });
-        console.log(error);
       });
     });
     return false;
@@ -606,9 +554,73 @@ $(document).ready(function () {
 	});
   
   $(document).ready(function () {
+     $('#DismissedDesignation').click((e)=> {
+       let id = $("#DismissedDesignation").val();
+       const data = {'ID': id};
+       
+       let stringyifyData = JSON.stringify(data);
+         $.ajax({
+          type         : 'POST',// define the type of HTTP verb we want to use (POST for our form)
+					dataType     : 'JSON',
+					contentType  : "application/json; charset=utf-8",
+					data         : stringyifyData,// our data object
+					url          : "<?=ROOT .'Admin/DisMissedManagementRole'?>", // the url where we want to POST
+					processData  : false,
+					encode       : true,
+					crossOrigin  : true,
+					async        : true,
+					crossDomain  : true,
+					headers		 : {
+								'Access-Control-Allow-Methods': '*',
+								"Access-Control-Allow-Credentials": true,
+								"Access-Control-Allow-Headers" : "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+								"Access-Control-Allow-Origin": "*",
+								"Control-Allow-Origin": "*",
+								"cache-control": "no-cache",
+								'Content-Type': 'application/json'
+							},
+        }).then((response) => {
+           $("#Newshow_message").fadeIn().html(response.message, response.status);
+          if(response.status == 200){
+            $("#togglebody").fadeOut();
+            $("#___AppointmentProfessorModal").hide();
+            $(".modal-content").fadeOut();
+            // Display successfull message with sweetalert 
+            Swal.fire({
+              position: "bottom-end",
+              icon: "success",
+              title: "<h3>Successfully Dismissed From Management Role!</h3>",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            jQuery('#___AppointmentProfessorModal').modal('hide');
+            setTimeout(() => {
+              jQuery('#___AppointmentProfessorModal').remove();
+              jQuery('.modal-backdrop').remove();
+            }, 200);
+          }
+        }).fail((xhr, error) => {
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            timer: 1500,
+          });
+      });
+	  });
+  });
+
+  $(document).ready(function () {
     $("#NewDepartment__Type").empty();
 		$("#NewDepartment__Type").select2({
 			multiple: true,
 		});
 	});
+ closeModal = () =>{
+	jQuery('#___AppointmentProfessorModal').modal('hide');
+	setTimeout(() => {
+		jQuery('#___AppointmentProfessorModal').remove();
+		jQuery('.modal-backdrop').remove();
+	}, 300);
+}
 </script>

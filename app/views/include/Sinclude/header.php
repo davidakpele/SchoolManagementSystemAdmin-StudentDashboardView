@@ -42,7 +42,6 @@
     .loading {display: flex;text-align:center.;justify-content: center;align-items:center;transition: 0.5s;position:absolute;top:0;width:100%;height:100%;}
     .loading::after {content: "";width: 57.6px;height: 57.6px;border: 8px solid #bbdbfc;border-top-color: #0c6cf2;border-radius: 50%;animation: loading 1s linear infinite;}
     @keyframes loading {to {transform: rotate(1turn);}}
-    #error{text-align:justify;}
     .img-thumbnail{border-radius: 50%;}
     .img-thumbnail:hover{box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5); }
     #successmessagediv{background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
@@ -58,7 +57,21 @@
     .card-body{position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;-webkit-background-clip: border-box;background-clip: border-box;border: 1px solid #d7dfe3;    font-family: Arial,Verdana,Helvetica,sans-serif;font-size: .9375rem;font-weight: 400;line-height: 1.6;}
     .user{display:flex;}
     .user .userpicture{border-radius: 50%;}
-    .course__Section>h5{font-weight:600}
+    .course__Section>h5{font-weight:600;}
+    .courses__display__section{display:block; margin:10px;}
+    .breaker{max-width:310px; max-height:180px;margin-bottom:150px; clear:both}
+    .breaker .f1-img >img{border:3px solid #fff; }
+    .img__bottom{border:1px solid #fff; color:gray; font-size:14px;margin:0;}
+    .active__online__std{width: 15px;height: 15px;background: #4CAF50;position: absolute;border: 3px solid #ffffff;border-radius: 50%;}
+    .s-time{color:green;}
+    .button_element{margin-bottom:50px;display: table;width: 100%;padding: 1px;background:#fff;}
+    .button_element .summary-icons{display: table-row;padding: 5px;justify-content: space-between;}
+    .button_element .summary-icons .btn {display: table-cell;text-align: center;padding: 0.8333333333rem 0;border: none;border-radius: 0;border-right: 1px solid #d7dfe3;background: transparent;}
+    .button_element .summary-icons .btn.link-participants .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f500";}
+    .button_element .summary-icons .btn.link-grades .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f518";}
+    .button_element .summary-icons .btn.link-badges .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f2c1";}
+    .button_element .summary-icons .btn.link-course .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f0a9";}
+    .button_element .summary-icons .btn .icon {display: block;font-size: 1.55rem;color: #e02928;width: inherit;height: inherit;margin: 0;padding: 0;-webkit-transition: .4s;-o-transition: .4s;transition: .4s;}
   </style>
 
 </head>
@@ -110,91 +123,6 @@
     <div class="menu-right">
       <div class="navbar user-panel-top">
         <div class="user-dropdown-details d-flex">
-          <div class="profile_details_left">
-            <ul class="nofitications-dropdown">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
-                    class="fa fa-bell-o"></i><span class="badge blue">3</span></a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <div class="notification_header">
-                      <h3>You have 3 new notifications</h3>
-                    </div>
-                  </li>
-                  <li><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar1.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>Johnson purchased template</p>
-                        <span>Just Now</span>
-                      </div>
-                    </a></li>
-                  <li class="odd"><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar2.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>New customer registered </p>
-                        <span>1 hour ago</span>
-                      </div>
-                    </a></li>
-                  <li><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar3.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>Lorem ipsum dolor sit amet </p>
-                        <span>2 hours ago</span>
-                      </div>
-                    </a></li>
-                  <li>
-                    <div class="notification_bottom">
-                      <a href="#all" class="bg-primary">See all notifications</a>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
-                    class="fa fa-comment-o"></i><span class="badge blue">4</span></a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <div class="notification_header">
-                      <h3>You have 4 new messages</h3>
-                    </div>
-                  </li>
-                  <li><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar1.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>Johnson purchased template</p>
-                        <span>Just Now</span>
-                      </div>
-                    </a></li>
-                  <li class="odd"><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar2.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>New customer registered </p>
-                        <span>1 hour ago</span>
-                      </div>
-                    </a></li>
-                  <li><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar3.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>Lorem ipsum dolor sit amet </p>
-                        <span>2 hours ago</span>
-                      </div>
-                    </a></li>
-                  <li><a href="#" class="grid">
-                      <div class="user_img"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/avatar1.jpg" alt=""></div>
-                      <div class="notification_desc">
-                        <p>Johnson purchased template</p>
-                        <span>Just Now</span>
-                      </div>
-                    </a></li>
-                  <li>
-                    <div class="notification_bottom">
-                      <a href="#all" class="bg-primary">See all messages</a>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
           <div class="profile_details">
             <ul>
               <li class="dropdown profile_details_drop">

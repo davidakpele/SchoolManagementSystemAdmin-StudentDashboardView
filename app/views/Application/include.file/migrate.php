@@ -11,10 +11,11 @@ $this->DB->query('SELECT * FROM student__account ORDER BY student__Id DESC');
         $Plugin_New_ID =  $id;
     } 
      
-    $length = 12;
+    $length = 11;
     $number = '1234567890';
     $numberLength = strlen($number);
     $randomNumber = '';
     for ($i = 0; $i < $length; $i++) {
         $randomNumber .= $number[rand(0, $numberLength - 1)];
-    }
+    }  
+    $randomNumber = 'MCU'.$randomNumber;

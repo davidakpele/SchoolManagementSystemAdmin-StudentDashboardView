@@ -31,17 +31,164 @@ class Admin extends Controller {
         $this->view('Admin/index', $data);
     }
 
+    // Edit Professor
+    public function isEditProf(){
+        $response = array();
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+         if (isset($_FILES['file']['name']) != ''&& isset($_POST['id']) && isset($_POST['surname']) && isset($_POST['middlename']) 
+            && isset($_POST['lastname']) && isset($_POST['Accesscode']) && isset($_POST['Email']) && isset($_POST['Mobile'])
+            && isset($_POST['POB']) && isset($_POST['DOB']) && isset($_POST['Gender']) && isset($_POST['Rel'])
+            && isset($_POST['CVS']) && isset($_POST['CIZ']) && isset($_POST['NIN']) && isset($_POST['Height'])
+            && isset($_POST['Weight']) && isset($_POST['BlT']) && isset($_POST['Religion']) && isset($_POST['QTF'])
+            && isset($_POST['Address'])){
+            // validate file
+            $photo = $_FILES['file'];
+            $name = $photo['name'];
+            $response['status'] = 200;
+            $response['message'] = 'Yes';
+            $nameArray = explode('.', $name);
+            $fileName = $nameArray[0];
+            $fileExt = $nameArray[1];
+            $mime = explode('/', $photo['type']);
+            $mimeType = $mime[0];
+            $mimeExt = $mime[1];
+            $tmpLoc = $photo['tmp_name'];   
+            $fileSize = $photo['size']; 
+            // $allowed = array('jpg', 'jpeg', 'png');
+            $uploadName = md5(microtime()).'.'.$fileExt;
+            $uploadPath = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+            $dbpath     = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+            $folder = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+            //die($_POST['id']);
+            if ($fileSize > 90000000000000) {
+                $response['status'] = 300;
+                $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
+            }elseif ($fileSize < 90000000000000 ) {
+                if(!file_exists($folder)){
+                    mkdir($folder,077,true);
+                }
+                $data = 
+                [
+                    'Profile__Picture'=>$uploadPath,
+                    'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
+                    'Middle__name'=>trim(filter_var($_POST['middlename'], FILTER_SANITIZE_STRING)),
+                    'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),
+                    'Accesscode'=>trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
+                    'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
+                    'Telephone_No'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
+                    'Date_of_Birth'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
+                    'Place__of__birth'=>trim(filter_var($_POST['POB'], FILTER_SANITIZE_STRING)),
+                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
+                    'Relationship_sts'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
+                    'Civil_status'=>trim(filter_var($_POST['CVS'], FILTER_SANITIZE_STRING)),
+                    'Citizenship'=>trim(filter_var($_POST['CIZ'], FILTER_SANITIZE_STRING)),
+                    'NIN'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
+                    'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
+                    'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
+                    'Blood_Type'=>trim(filter_var($_POST['BlT'], FILTER_SANITIZE_STRING)),
+                    'Religion'=>trim(filter_var($_POST['Religion'], FILTER_SANITIZE_STRING)),
+                    'Qualification'=>trim(filter_var($_POST['QTF'], FILTER_SANITIZE_STRING)),
+                    'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
+                    'Professor__id'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
+                ];
+                   move_uploaded_file($tmpLoc,$dbpath);
+                if($this->userModel->EditProfessor($data)){
+                    $response['status'] = 200;
+                    $response['message'] = 'This Profile Has Successfully Updated.!';
+                } 
+            }
+         }
+         echo json_encode($response);
+    }
+// Adding new professor
+public function isAddNewProf(){
+    $response = array();
+    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        if (isset($_FILES['file']['name']) != ''&& isset($_POST['id']) && isset($_POST['surname']) && isset($_POST['middlename']) 
+        && isset($_POST['lastname']) && isset($_POST['Accesscode']) && isset($_POST['Email']) && isset($_POST['Mobile'])
+        && isset($_POST['POB']) && isset($_POST['DOB']) && isset($_POST['Gender']) && isset($_POST['Rel'])
+        && isset($_POST['CVS']) && isset($_POST['CIZ']) && isset($_POST['NIN']) && isset($_POST['Height'])
+        && isset($_POST['Weight']) && isset($_POST['BlT']) && isset($_POST['Religion']) && isset($_POST['QTF'])
+        && isset($_POST['Address'])){
+        // validate file
+        $photo = $_FILES['file'];
+        $name = $photo['name'];
+        $response['status'] = 200;
+        $response['message'] = 'Yes';
+        $nameArray = explode('.', $name);
+        $fileName = $nameArray[0];
+        $fileExt = $nameArray[1];
+        $mime = explode('/', $photo['type']);
+        $mimeType = $mime[0];
+        $mimeExt = $mime[1];
+        $tmpLoc = $photo['tmp_name'];   
+        $fileSize = $photo['size']; 
+        // $allowed = array('jpg', 'jpeg', 'png');
+        $uploadName = md5(microtime()).'.'.$fileExt;
+        $uploadPath = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+        $dbpath     = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+        $folder = 'Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+        //die($_POST['id']);
+        if ($fileSize > 90000000000000) {
+            $response['status'] = 300;
+            $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
+        }elseif ($fileSize < 90000000000000 ) {
+            if(!file_exists($folder)){
+                mkdir($folder,077,true);
+            }
+
+            $data = 
+            [
+                'Profile__Picture'=>$uploadPath,
+                'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
+                'Middle__name'=>trim(filter_var($_POST['middlename'], FILTER_SANITIZE_STRING)),
+                'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),
+                'Accesscode'=>trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
+                'Password'=>trim(filter_var($_POST['Password'], FILTER_SANITIZE_STRING)),
+                'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
+                'Telephone_No'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
+                'Date_of_Birth'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
+                'featured'=>'1',
+                'Place__of__birth'=>trim(filter_var($_POST['POB'], FILTER_SANITIZE_STRING)),
+                'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
+                'Relationship_sts'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
+                'Civil_status'=>trim(filter_var($_POST['CVS'], FILTER_SANITIZE_STRING)),
+                'Citizenship'=>trim(filter_var($_POST['CIZ'], FILTER_SANITIZE_STRING)),
+                'NIN'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
+                'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
+                'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
+                'Blood_Type'=>trim(filter_var($_POST['BlT'], FILTER_SANITIZE_STRING)),
+                'Religion'=>trim(filter_var($_POST['Religion'], FILTER_SANITIZE_STRING)),
+                'Qualification'=>trim(filter_var($_POST['QTF'], FILTER_SANITIZE_STRING)),
+                'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
+                'Professor__id'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
+            ];
+            $data['Password'] = password_hash($data['Password'], PASSWORD_ARGON2ID);
+            move_uploaded_file($tmpLoc,$dbpath);
+           if($this->userModel->AddProfessor($data)){
+                $response['status'] = 200;
+                $response['message'] = 'Successfully Added New Profesor..!';
+            } 
+        }
+        }
+    echo json_encode($response);
+}
+
 // Admin all profile methodjhgouihpigfiyfougy98
     public function Professors(){
         if(!isLoggedInAdmin()){
             header('location:' . ROOT . 'Administration/Default');
          }
+         
         $stmt = $this->userModel->lectural();
+        $emailstmt = $this->userModel->SqlFetchAdminEmails();
         $data = 
         [
             'page_title' => 'PROFESSOR TABLE',
-            'All'=> $stmt
+            'All'=> $stmt,
+            'emailstmt'=>$emailstmt,
         ];
+        
         if(isset($_GET['featured'])){
 			// Sanitize POST data
             $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
@@ -61,353 +208,7 @@ class Admin extends Controller {
                     die('Sorry..! Something went wrong');
             }
          }
-         
-        if(isset($_POST['___AddNewProfessor']) && !empty($_FILES)){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-              // var_dump($_FILES);
-                $photo = $_FILES['Profile__Picture'];
-                $name = $photo['name'];
-                $nameArray = explode('.', $name);
-                $fileName = $nameArray[0];
-                $fileExt = $nameArray[1];
-                $mime = explode('/', $photo['type']);
-                $mimeType = $mime[0];
-                $mimeExt = $mime[1];
-                $tmpLoc = $photo['tmp_name'];   
-                $fileSize = $photo['size']; 
-                $allowed = array('jpg', 'jpeg', 'png');
-                $uploadName = md5(microtime()).'.'.$fileExt;
-                $uploadPath = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-                $dbpath = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-                $folder = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING));
-                $arr['Profile__Picture'] = $uploadPath;
-            $data = 
-                    [
-                    'page_title'=> 'ADD NEW PROFESSOR',
-                    'Professor__id'=>trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)),
-                    'Professor__idError'=> '',
-                    'Surname'=>trim(filter_var($_POST['Surname'], FILTER_SANITIZE_STRING)),
-                    'SurnameError'=>'',
-                    'Middle__name'=>trim(filter_var($_POST['Middle__name'], FILTER_SANITIZE_STRING)),
-                    'Middle__nameError'=>'',
-                    'Othername'=> trim(filter_var($_POST['Othername'], FILTER_SANITIZE_STRING)),
-                    'OthernameError'=>'',
-                    'Accesscode'=> trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
-                    'AccesscodeError'=>'',
-                    'Password'=>strip_tags(trim(filter_var($_POST['Password'], FILTER_SANITIZE_STRING))),
-                    'PasswordError'=>'',
-                    'Email'=>strip_tags(trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL))),
-                    'EmailError'=>'',
-
-                    'featured'=>'1',
-                    'featuredError'=>'',
-                    'Telephone_No'=>trim(filter_var($_POST['Telephone_No'], FILTER_SANITIZE_STRING)),
-                    'Telephone_NoError'=>'',
-                    'Date_of_Birth'=>trim(filter_var($_POST['Date_of_Birth'], FILTER_SANITIZE_STRING)),
-                    'Date_of_BirthError'=>'',
-                    'Place__of__birth'=>trim(filter_var($_POST['Place__of__birth'], FILTER_SANITIZE_STRING)),
-                    'Place__of__birthError'=>'',
-                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
-                    'GenderError'=>'',
-                    'Relationship_sts'=>trim(filter_var($_POST['Relationship_sts'], FILTER_SANITIZE_STRING)),
-                    'Relationship_stsError'=>'',
-                    'Civil_status'=>trim(filter_var($_POST['Civil_status'], FILTER_SANITIZE_STRING)),
-                    'Civil_statusError'=>'',
-                    'Citizenship'=>trim(filter_var($_POST['Citizenship'], FILTER_SANITIZE_STRING)),
-                    'CitizenshipError'=>'',
-                    'NIN'=>strip_tags(trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING))),
-                    'NINError'=>'',
-                    'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
-                    'HeightError'=>'',
-                    'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
-                    'WeightError'=>'',
-                    'Blood_Type'=>trim(filter_var($_POST['Blood_Type'], FILTER_SANITIZE_STRING)),
-                    'Blood_TypeError'=>'',
-                    'Religion'=>trim(filter_var($_POST['Religion'], FILTER_SANITIZE_STRING)),
-                    'ReligionError'=>'',
-                    'Qualification'=>trim(filter_var($_POST['Qualification'], FILTER_SANITIZE_STRING)),
-                    'QualificationError'=>'',
-                    'Profile__Picture'=>$uploadPath,
-                    'Profile__PictureError'=>'',
-                    'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
-                    'AddressError'=>'',
-                ];
-            
-            if(empty($data['Professor__id'])){
-                $data['Professor__idError']= 'Please provide the New Professor ID.';
-            }
-            if(empty($data['Surname'])){
-                $data['SurnameError']= 'Please provide the surname of the Professor..';
-            }
-            if(empty($data['Middle__name'])){
-               $data['Middle__nameError'] = "Enter Professor Middle Name.";
-            }
-            if(empty($data['Othername'])){
-                $data['OthernameError']= 'Please provide the Accountatnt Last  Name.';
-            }
-            if(empty($data['Accesscode'])){
-                $data['AccesscodeError']= 'Please provide the Accountatnt ACCESS CODE.';
-            }
-             if(empty($data['Password'])){
-               $data['PasswordError'] = "Set Password for the Professor.";
-            }
-            if(empty($data['Email'])){
-                $data['EmailError']= 'Please Enter The Professor Email Address.';
-            }elseif (!filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
-                    $data['EmailError'] = 'Please Enter The Correct Format.';
-                } else {
-                    //Check if email exists.
-                    if ($this->userModel->findProfessorByEmail($data['Email'])) {
-                    $data['EmailError'] = 'Email Is Already Taken By Another User.';
-                    }
-                }
-            if(empty($data['featured'])){
-                $data['featuredError']= 'Grant Access to this Professor..';
-            }
-            if(empty($data['Telephone_No'])){
-                $data['Telephone_NoError']= 'Enter the Professor Telephone Number.';
-            }
-             if(empty($data['Date_of_Birth'])){
-               $data['Date_of_BirthError'] = "Enter the Professor Date of birth.";
-            }
-            if(empty($data['Place__of__birth'])){
-                $data['Place__of__birthError']= 'Enter The Professor Place of birth.';
-            }
-            if(empty($data['Gender'])){
-                $data['GenderError']= 'Please Select Professor Gender.';
-            }
-            if(empty($data['Relationship_sts'])){
-                $data['Relationship_stsError']= 'Select the Professor Relationship Status..';
-            }
-            if(empty($data['Civil_status'])){
-                $data['Civil_statusError']= 'Enter the Professor Civil status.';
-            }
-             if(empty($data['Citizenship'])){
-               $data['CitizenshipError'] = "Enter the Professor Nationality";
-            }
-            if(empty($data['NIN'])){
-                $data['NINError']= 'Please Enter The Professor NIN Number.';
-            }
-            if(empty($data['Height'])){
-                $data['HeightError']= 'Please Select Professor Height. !!Important';
-            }
-            if(empty($data['Weight'])){
-                $data['WeightError']= 'Please Select Professor Weight. !!Important';
-            }
-            if(empty($data['Blood_Type'])){
-                $data['Blood_TypeError']= 'Please Select Professor Blood Type.';
-            }
-            if(empty($data['Religion'])){
-                $data['ReligionError'] = 'Please Select Professor Religion.';
-            }
-            if(empty($data['Qualification'])){
-                $data['QualificationError'] = 'Please Select his/her Qualification.';
-            }
-            if(empty($data['Profile__Picture'])){
-                $data['Profile__PictureError']= 'Please Select Professor Profile Picture';
-            }
-            if(empty($data['Address'])){
-                $data['AddressError']= 'Please Enter Professor Address.';
-            }
-            if (!in_array($fileExt, $allowed)) { 
-                 $data['Profile__PictureError']= 'Please Select Professor Profile Picture & MUST be image';
-                }
-            if ($fileExt != $mimeExt && ($mimeExt == 'jpg' && $fileExt != 'jpeg')) {
-                    $data['Profile__PictureError']= "File extention doesn't match the file required";
-            }
-            if($fileSize > 12000000){
-                $data['Profile__PictureError']= 'The file must be under 10mb';
-            }else{
-                if(empty($data['Professor__idError'])&& empty($data['SurnameError'])
-                    && empty($data['Middle__nameError'])&& empty($data['OthernameError'])
-                    && empty($data['AccesscodeError'])&& empty($data['PasswordError'])
-                    && empty($data['EmailError'])&& empty($data['featuredError'])
-                    && empty($data['Date_of_BirthError'])&& empty($data['Telephone_NoError'])
-                    && empty($data['Place__of__birthError'])&& empty($data['Relationship_stsError'])
-                    && empty($data['Civil_statusError'])&& empty($data['CitizenshipError'])
-                    && empty($data['HeightError'])&& empty($data['NINError'])&& empty($data['ReligionError'])
-                    && empty($data['WeightError'])&& empty($data['Blood_TypeError'])
-                    && empty($data['Profile__PictureError'])&& empty($data['AddressError'])
-                    && empty($data['QualificationError'])){
-                        if(!file_exists($folder)){
-                            mkdir($folder,077,true);
-                        }
-                    move_uploaded_file($tmpLoc,$dbpath);
-                     //hashing professor password
-                    $data['Password'] = password_hash($data['Password'], PASSWORD_ARGON2ID);
-                    if($this->userModel->AddProfessor($data)){
-                        // Redirect the page
-                        header('location:' . ROOT . 'Admin/Professors');
-                    }else{
-                        die('Something went wrong');
-                    }
-                }
-            }
-         }  
-
-           if(isset($_POST['__EditProfessor'])){
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-               // var_dump($_FILES);
-                $photo = $_FILES['Profile__Picture'];
-                $name = $photo['name'];
-                $nameArray = explode('.', $name);
-                $fileName = $nameArray[0];
-                $fileExt = $nameArray[1];
-                $mime = explode('/', $photo['type']);
-                $mimeType = $mime[0];
-                $mimeExt = $mime[1];
-                $tmpLoc = $photo['tmp_name'];   
-                $fileSize = $photo['size']; 
-                $allowed = array('jpg', 'jpeg', 'png');
-                $uploadName = md5(microtime()).'.'.$fileExt;
-                $uploadPath = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-                $dbpath     = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-                $folder = 'Professors/'.trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING));
-                $arr['Profile__Picture'] = $uploadPath;
-            $data = 
-            [
-                'page_title'=> 'Edit PROFESSOR DATA',
-                'Professor__id'=>trim(filter_var($_POST['Professor__id'], FILTER_SANITIZE_STRING)),
-                'Professor__idError'=>'',
-                'Surname'=>trim(filter_var($_POST['Surname'], FILTER_SANITIZE_STRING)),
-                'SurnameError'=>'',
-                'Middle__name'=>trim(filter_var($_POST['Middle__name'], FILTER_SANITIZE_STRING)),
-                'Middle__nameError'=>'',
-                'Othername'=> trim(filter_var($_POST['Othername'], FILTER_SANITIZE_STRING)),
-                'OthernameError'=>'',
-                'Accesscode'=> trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
-                'AccesscodeError'=>'',
-                'Email'=>trim(filter_var($_POST['Email'], FILTER_SANITIZE_STRING)),
-                'EmailError'=>'',
-                'Telephone_No'=>trim(filter_var($_POST['Telephone_No'], FILTER_SANITIZE_STRING)),
-                'Telephone_NoError'=>'',
-                'Date_of_Birth'=>trim(filter_var($_POST['Date_of_Birth'], FILTER_SANITIZE_STRING)),
-                'Date_of_BirthError'=>'',
-                'Place__of__birth'=>trim(filter_var($_POST['Place__of__birth'], FILTER_SANITIZE_STRING)),
-                'Place__of__birthError'=>'',
-                'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
-                'GenderError'=>'',
-                'Relationship_sts'=>trim(filter_var($_POST['Relationship_sts'], FILTER_SANITIZE_STRING)),
-                'Relationship_stsError'=>'',
-                'Civil_status'=>trim(filter_var($_POST['Civil_status'], FILTER_SANITIZE_STRING)),
-                'Civil_statusError'=>'',
-                'Citizenship'=>trim(filter_var($_POST['Citizenship'], FILTER_SANITIZE_STRING)),
-                'CitizenshipError'=>'',
-                'NIN'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
-                'NINError'=>'',
-                'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
-                'HeightError'=>'',
-                'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
-                'WeightError'=>'',
-                'Blood_Type'=>trim(filter_var($_POST['Blood_Type'], FILTER_SANITIZE_STRING)),
-                'Blood_TypeError'=>'',
-                'Religion'=>trim(filter_var($_POST['Qualification'], FILTER_SANITIZE_STRING)),
-                'ReligionError'=>'',
-                'Qualification'=>trim(filter_var($_POST['Qualification'], FILTER_SANITIZE_STRING)),
-                'QualificationError'=>'',
-                'Profile__Picture'=>$uploadPath,
-                'Profile__PictureError'=>'',
-                'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
-                'AddressError'=>'',
-            ];
-            if(empty($data['Professor__id'])){
-                $data['Professor__idError']= 'Please provide the New Professor ID.';
-            }
-            if(empty($data['Surname'])){
-                $data['SurnameError']= 'Please provide the surname of the Professor..';
-            }
-            if(empty($data['Middle__name'])){
-               $data['Middle__nameError'] = "Enter Professor Middle Name.";
-            }
-            if(empty($data['Othername'])){
-                $data['OthernameError']= 'Please provide the Accountatnt Last  Name.';
-            }
-            if(empty($data['Accesscode'])){
-                $data['AccesscodeError']= 'Please provide the Accountatnt ACCESS CODE.';
-            }
-            if(empty($data['Email'])){
-                $data['EmailError']= 'Please Enter The Professor Email Address.';
-            }elseif (!filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
-                    $data['EmailError'] = 'Please Enter The Correct Format.';
-                }
-            if(empty($data['Telephone_No'])){
-                $data['Telephone_NoError']= 'Enter the Professor Telephone Number.';
-            }
-            if(empty($data['Date_of_Birth'])){
-               $data['Date_of_BirthError'] = "Enter the Professor Date of birth.";
-            }
-            if(empty($data['Place__of__birth'])){
-                $data['Place__of__birthError']= 'Enter The Professor Place of birth.';
-            }
-            if(empty($data['Gender'])){
-                $data['GenderError']= 'Please Select Professor Gender.';
-            }
-            if(empty($data['Relationship_sts'])){
-                $data['Relationship_stsError']= 'Select the Professor Relationship Status..';
-            }
-            if(empty($data['Civil_status'])){
-                $data['Civil_statusError']= 'Enter the Professor Civil status.';
-            }
-             if(empty($data['Citizenship'])){
-               $data['CitizenshipError'] = "Enter the Professor Nationality";
-            }
-            if(empty($data['NIN'])){
-                $data['NINError']= 'Please Enter The Professor NIN Number.';
-            }
-            if(empty($data['Height'])){
-                $data['HeightError']= 'Please Select Professor Height. !!Important';
-            }
-            if(empty($data['Weight'])){
-                $data['WeightError']= 'Please Select Professor Weight. !!Important';
-            }
-            if(empty($data['Blood_Type'])){
-                $data['Blood_TypeError']= 'Please Select Professor Blood Type.';
-            }
-            if(empty($data['Religion'])){
-                $data['ReligionError'] = 'Please Select Professor Religion.';
-            }
-            if(empty($data['Qualification'])){
-                $data['QualificationError'] = 'Please Select his/her Qualification.';
-            }
-            if(empty($data['Profile__Picture'])){
-                $data['Profile__PictureError']= 'Please Select Professor Profile Picture';
-            }
-            if(empty($data['Address'])){
-                $data['AddressError']= 'Please Enter Professor Address.';
-            }
-            if (!in_array($fileExt, $allowed)) {
-                 $data['Profile__PictureError']= 'Please Select Professor Profile Picture & MUST be image';
-                }
-            if ($fileExt != $mimeExt && ($mimeExt == 'jpg' && $fileExt != 'jpeg')) {
-                    $data['Profile__PictureError']= "File extention doesn't match the file required";
-            }
-            if($fileSize > 12000000){
-                $data['Profile__PictureError']= 'The file must be under 10mb';
-            }
-            else{
-                if(empty($data['Professor__idError'])&& empty($data['SurnameError'])
-                    && empty($data['Middle__nameError'])&& empty($data['OthernameError'])
-                    && empty($data['AccesscodeError'])&& empty($data['EmailError'])
-                    && empty($data['Date_of_BirthError'])&& empty($data['Telephone_NoError'])
-                    && empty($data['Place__of__birthError'])
-                    && empty($data['Relationship_stsError'])&& empty($data['Civil_statusError'])
-                    && empty($data['CitizenshipError'])&& empty($data['NINError'])
-                    && empty($data['HeightError'])&& empty($data['WeightError'])
-                    && empty($data['Blood_TypeError']) && empty($data['AddressError'])
-                    && empty($data['Profile__PictureError'])){
-                    if(!file_exists($folder)){
-                        mkdir($folder,077,true);
-                    }
-                    move_uploaded_file($tmpLoc,$dbpath);
-                    if($this->userModel->EditProfessor($data)){
-                        // Redirect the page
-                        header('location:' . ROOT . 'Admin/Professors');
-                    }else{
-                        die('Something went wrong');
-                    }
-                }
-            }
-         } 
+        
          //  This right here will fetch data from the database to the UI
          if(isset($_GET['Edit'])){
             $Edit__id = trim(filter_var($_GET['Edit'], FILTER_SANITIZE_STRING));
@@ -495,6 +296,28 @@ class Admin extends Controller {
          
         $this->view('Admin/Professors', $data);
     }
+    // Checking if professor email exist 
+    public function isProfessorEmailExist(){
+        header("Access-Control-Allow-Origin: *"); 
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+        $isCheckEmail = $phpObject->{'Email'};
+      
+        $newJsonString = json_encode($phpObject);
+        $isFetchEmailexist = $this->userModel->findProfessorByEmail($isCheckEmail);
+        if($isFetchEmailexist) {
+            $response['status'] = 200;
+            $response['message']= '<b>ERROR:</b> Email Is Already Taken By Another User.';
+        }
+        ob_end_clean();
+        echo json_encode($response);
+    }
     // View professor profile 
     public function ProfessorsProfile($SSD){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -509,7 +332,6 @@ class Admin extends Controller {
                         'page_title'=>'View '.$patch.' Personal Data Sheet - PROFILE',
                         'returnIdS'=>$returnIdS,'fname'=>$fname,'lname'=>$lname,'mname'=>$mname,'Ascode'=>$Ascode,'email'=>$email,'ftd'=>$ftd,'tel'=>$tel,'DoB'=>$DoB,'PoD'=>$PoD,'gn'=>$gn,'relatx'=>$relatx,'Cst'=>$Cst,'Ctz'=>$Ctz,'nin'=>$nin,'Hat'=>$Hat,'Wat'=>$Wat,'QCT'=>$QCT,'Religion'=>$Religion,'Bty'=>$Bty,'photo'=>$photo,'Add'=>$Add,
                     ];
-                    var_dump($data);
                 }else if(!$fetchSingleUser == true){
                         header('location:' . ROOT . 'Admin/Professors/');
                     }else{
@@ -521,115 +343,70 @@ class Admin extends Controller {
     }
 
     public function MailToProfessor(){
-        if(isset($_POST['contactFrmSubmit'])
-            && !empty($_POST['SenderName'])  
-            && !empty($_POST['SenderMail'])  
-            && !empty($_POST['RecipientName']) 
-            && !empty($_POST['email']) 
-            && !empty($_POST['Subject']) 
-            && (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) === false) 
-            && !empty($_POST['message'])){
-          
-            $mail = new PHPMailer;
-         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-          // Submitted form data
-        $sEnDermail = strip_tags(trim($_POST["email"], FILTER_SANITIZE_EMAIL));
-        $rEcIpIenTmAIL = strip_tags(trim($_POST["SenderMail"], FILTER_SANITIZE_EMAIL));
-        $Sendername = str_replace(array("\r","\n"),array(" "," "),$sEnDermail);
-        $Recipientmailto = str_replace(array("\r","\n"),array(" "," "),$rEcIpIenTmAIL);
-        $uself = 0;
-        // Set the information received from the form as short variables 
-        $headersep = (!isset( $uself ) || ($uself == 0)) ? "\r\n" : "\n" ;
-        $BaseCon = 'Mercy College School Management System Software';
+        header("Access-Control-Allow-Origin: *"); 
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+
+        $email = $phpObject->{'Email'};
+        $RecipientName = $phpObject->{'RecipientName'};
+        $SenderMail = $phpObject->{'SenderMail'};
+        $SenderName = $phpObject->{'SenderName'};
+        $message = $phpObject->{'message'};
+        $subject = $phpObject->{'subject'};
+        $EmailID = $phpObject->{'EmailID'};
+        $SenderID = $phpObject->{'SenderID'};
+        $targetid = $phpObject->{'targetid'};
+        $newJsonString = json_encode($phpObject);
         $data = 
         [
-            'SenderName'=> strip_tags(trim(filter_var($_POST['SenderName'], FILTER_SANITIZE_STRING))),
-            'SenderMail'=> strip_tags(trim(filter_var($_POST['SenderMail'], FILTER_SANITIZE_EMAIL))),
-            'email'=> strip_tags(trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL))),
-            'RecipientName'=> trim(filter_var($_POST['RecipientName'], FILTER_SANITIZE_STRING)),
-            'Subject'=> strip_tags(trim(filter_var($_POST['Subject'], FILTER_SANITIZE_STRING))),
-            'message'=> strip_tags(trim(filter_var($_POST['message'], FILTER_SANITIZE_STRING))),
+            'EmailID'=> strip_tags(trim(filter_var($EmailID, FILTER_SANITIZE_EMAIL))),
+            'SenderID'=> strip_tags(trim(filter_var($SenderID, FILTER_SANITIZE_STRING))),
+            'targetid'=> strip_tags(trim(filter_var($targetid, FILTER_SANITIZE_STRING))),
+            'SenderName'=> strip_tags(trim(filter_var($SenderName, FILTER_SANITIZE_STRING))),
+            'SenderMail'=> strip_tags(trim(filter_var($SenderMail, FILTER_SANITIZE_EMAIL))),
+            'Email'=> strip_tags(trim(filter_var($email, FILTER_SANITIZE_EMAIL))),
+            'RecipientName'=> trim(filter_var($RecipientName, FILTER_SANITIZE_STRING)),
+            'Subject'=> trim(filter_var($subject, FILTER_SANITIZE_STRING)),
+            'message'=> trim(filter_var($message, FILTER_SANITIZE_STRING)),
+            'parent'=> '1',
         ]; 
-        if(empty($data['SenderName']) 
-        || empty($data['SenderMail']) 
-        || empty($data['email']) 
-        || empty($data['RecipientName']) 
-        || empty($data['Subject']) 
-        || empty($data['message'])){
-            header('Location:' . ROOT . 'Admin/Professors/');
-            exit();
-        }
-            // SMTP configuration
-            $mail->Charset = "utf-8";
-            $mail->IsSMTP();
-             // enable SMTP authentication
-            $mail->STMPAuth=true;
-            //disabled debug 
-            $mail->SMTPDebug=0;
-            // sets GMAIL as the SMTP server
-            $mail->Host='smtp.gmail.com';
-              // set the SMTP port for the GMAIL server
-            $mail->Port= '465';
-            //Set mail Security level
-            $Mail->STMPSecure='ssl';
-            // GMAIL username
-            $mail->Username=$data['SenderMail'];
-             // GMAIL password
-            $mail->Password= '12345';
-            // Sender info 
-            $mail->FromName=$data['SenderName'];
-            $mail->setFrom($From = "From: " .$data['SenderName'], "<small><".$data['SenderMail']."></small>");
-            $mail->addReplyTo("<small><".$data['SenderMail']."></small>", $data['SenderName']); 
-            // Add a recipient 
-            $mail->AddAddress($To = "To: " .$data['email'], "<small><".$data['RecipientName']."></small>"); 
-            // Email subject 
-            $mail->Subject = 'Subject';
-            // Set email format to HTML 
-            $mail->IsHTML(true);
-            // Email body content 
-            $mailContent = ' 
-                <h2>Send HTML Email using SMTP Server in PHP</h2> 
-                <p>It is a test email by MidTech, sent via SMTP server with PHPMailer using PHP.</p> 
-                <p>Read the tutorial and download this script from <a href="https://www.midtech.com/">MidTech</a>.</p>'; 
-            $mail->Body = $mailContent;
-            // Send email 
-            if(!$mail->send()){ 
-                echo 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo; 
-            }else{ 
-                echo 'Message has been sent.'; 
-            }
-            // Processing the mailer function
-            $messageproper =
-              // Set content-type header for sending HTML email
-            $headers = "MIME-Version: 1.0" . "\r\n";
-            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n".
-            "This message was sent from:\n" .
-            "$BaseCon\n" .
-            "------------------------------------------------------------\n" .
-            // Set the sender  name appending his/her email address.
-            $From = "From: " .$data['SenderName'] + " <small><".$data['SenderMail']."></small>\n".
-            // Set the recipient Name appending his/her email address.
-            $To = $data['RecipientName'] + " <small><".$data['email']."></small>\n".
-            // Set the subject 
+        if(!empty($data['EmailID']) && !empty($data['SenderID']) && !empty($data['targetid']) && !empty($data['SenderName']) && !empty($data['SenderMail']) && !empty($data['Email']) && !empty($data['RecipientName']) && !empty($data['Subject']) && !empty($data['message']))
+        {
+            $header = "From:".$data['SenderName']. ' to '.$data['RecipientName']."\r\n".
+            "------------------------------------------------------------\n";
+            $header .= "MIME-Version: 1.0\r\n";
+            $header .= "Content-type: text/html\r\n";
+
+            $to =  $data['Email'];
+            $name = $data['SenderName'];
             $subject= 'Subject: '.$data['Subject']."\n".
             "------------------------- MESSAGE -------------------------\n\n".
             // Set the body of the email you're sending
-            $Body__content = 'Message: '.$data['message']."\n".
+            $message = 'Message: '.$data['message']."\n".
             "\n\n------------------------------------------------------------\n";
-            $SendingMail = mail($messageproper);
-            // if the mail went through as SUCCESS. then also insert all data into the database so we can notify and count notifications on the dashboard.
-            // like how many messages comes in, from & when.
-            if($SendingMail == true){
-                // SQL METHOD TO INSERT DATA INTO THE DATABASE
-                if($SQL /**If the SQL is successfully executed which is TRUE */ ){
-                    // The redirect or prompt success message
-                }else {
-                    // throw error message that->  it SQL who fail to insert. just to be specific on where you have a promblem.
-                }
-            }else {
-               echo "Mail Error - >".$mail->ErrorInfo;
-            }
+        //   First store your data in your database just for future references
+            $isUserModel= $this->userModel->SQLSendProfEmail($data);
+            if($isUserModel == true){
+                // we are sending the mail structure not just txt but the email structure
+                $response['status']= 200;
+                $response['message']= 'Email Has Successfully Sent';
+                // if you want this function work completely to Live Email.. UNCOMMENT THIS BELOW
+                // $retval = mail ($to,$subject,$message,$header);
+                // if( $retval == true ) {
+                    
+                // }else {
+                //     echo "Message could not be sent...";
+                // }
+            } 
         }
+        ob_end_clean();
+        echo json_encode($response);
     }
     //Admin Delete method for lectural
     public function delete($Lectural___ID){
@@ -1323,12 +1100,32 @@ class Admin extends Controller {
          }
         $this->view('Admin/Accountant',$data);
     } 
-
+// Dismissed Professor From Management Role
+    public function DisMissedManagementRole(){
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
+        header("Access-Control-Allow-Origin: *"); 
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+        $getid=$phpObject->{'ID'};
+        $newJsonString = json_encode($phpObject);
+        $id = $getid;
+        //Return json message to the GUI
+        if($this->userModel->SQLDismissedManagementRole($id)){
+            $response['status'] = 200;
+            $response['message']= 'Successfully deleted.';
+        }
+        ob_end_clean();
+        echo json_encode($response);
+    }
  // Delete Accountant By Admin
     public function deleteProfessor(){
-         if(!isLoggedInAdmin()){
-            header('location:' . ROOT . 'Administration/Default');
-         }
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         header("Access-Control-Allow-Origin: *"); 
         header("Content-Type: application/json; charset=UTF-8");
         header("Access-Control-Allow-Methods: POST");
@@ -1340,19 +1137,11 @@ class Admin extends Controller {
         $phpObject = json_decode($jsonString);
         $getData=$phpObject->{'DataId'};
         $newJsonString = json_encode($phpObject);
-        $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-        if($id ==true){
-            //Return json message to the GUI
-            if($this->userModel->deleteUserProfessor($id)){
-                $response['status'] = 'success';
-                $response['message']= 'Successfully deleted.';
-            }else {
-                $response['status'] = 'error';
-                $response['message']= 'Sorry..! Something Happen At The Database Process.';
-            }
-        }else {
-            $response['status'] = 'error';
-            $response['message']= 'Invalid Data Sent. ';
+        $id = $getData;
+        //Return json message to the GUI
+        if($this->userModel->deleteUserProfessor($id)){
+            $response['status'] = 200;
+            $response['message']= 'Successfully deleted.';
         }
         ob_end_clean();
         echo json_encode($response);
@@ -1561,7 +1350,6 @@ class Admin extends Controller {
         $id = trim(filter_var($_POST['SSD'], FILTER_SANITIZE_STRING));
         $pthrow = $this->userModel->ReturnInvalidData($id);
         if($pthrow){
-            
             $existUserID = $pthrow->ID;
             $existFacultyid =$pthrow->Faculty__ref__id;
             $d= $pthrow->Designation;
@@ -1577,7 +1365,6 @@ class Admin extends Controller {
                 // Here is Multiple department 
                     $existDesignation = $pthrow->Designation;
                     $fetchdata = $this->userModel->ReadOnly($existDepartmentId);
-                //$vs = $this->namespacemodel->categoryfetch();
                 }else {
                     $fetchdata = $this->userModel->ReadOnly($existDepartmentId);
                 }
@@ -1592,16 +1379,14 @@ class Admin extends Controller {
             $Oname=$runcheck->Othername;
             $e= $runcheck->Email;
             $xname = $sname .' '.$mname.' '. $Oname;
-        }else{
-            echo "FAIL";
         }
         $data= 
         [
             'id'=>$i,
-            'Department'=>$fetchdata,
             'n'=>$nin,
-            'ftyname'=>$n,
-            'designation'=>$d,
+            'Department'=>((!empty($fetchdata)?$fetchdata: '')),
+            'ftyname'=>((!empty($n)?$n: '')),
+            'designation'=>((!empty($d)?$d: '')),
             'checkingexistence'=>$pthrow,
             'User_idError'=>'',
             'sname'=>$xname,
@@ -1610,6 +1395,40 @@ class Admin extends Controller {
         ];
         
         $this->view('Admin/bootstrapModal/toggleProfessor', $data);
+    }
+    public function Emailtoggle(){
+        $SenderEmail =  $_SESSION['adminEmail'] ;
+        $n1 = $_SESSION['adminSurname'];
+        $n2 = $_SESSION['adminothername'];
+        $SenderId = $_SESSION['Admin__id'];
+        $SenderName = $n1 . " " .$n2;
+        $token = openssl_random_pseudo_bytes(50);
+        //Convert the binary data into hexadecimal representation.
+        $token = bin2hex($token);
+         if (isset($_POST['SSD'])) {
+            $ProfessorID = strip_tags(trim(filter_var((int)$_POST['SSD'], FILTER_SANITIZE_STRING)));
+            $stmt = $this->userModel->SQLProfessorEmailData($ProfessorID);
+            if ($stmt) {
+               $RecipicientName =$stmt->Surname.' '.$stmt->Othername;
+               $ToSendMail =$stmt->Email;
+               $RecipicientID =$stmt->Professor__id;
+            }
+         }else {
+             die();
+         }
+        $data =
+        [
+            
+            'ToSendMail'=>$ToSendMail,
+            'RecipicientName'=>$RecipicientName,
+            'RecipicientID'=>$RecipicientID,
+            'SenderiD'=>$SenderId,
+            'SenderEmail'=>$SenderEmail,
+            'SenderName'=>$SenderName,
+            'EmailID'=>$token,
+            'targetID'=>$ProfessorID,
+        ];
+        $this->view('Admin/bootstrapModal/Emailtoggle', $data);
     }
 
     public function UpdateAppointment(){

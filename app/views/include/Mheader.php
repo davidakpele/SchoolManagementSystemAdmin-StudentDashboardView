@@ -82,69 +82,48 @@
 </li>
 </ul>
 <div class="notification d-flex">
-<div class="dropdown d-flex">
-<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-language"></i></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/us.svg" alt="">English</a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/es.svg" alt="">Spanish</a>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/jp.svg" alt="">japanese</a>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/bl.svg" alt="">France</a>
-</div>
-</div>
-<div class="dropdown d-flex">
-<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-envelope"></i><span class="badge badge-success nav-unread"></span></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<ul class="right_chat list-unstyled w350 p-0">
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
-<div class="media-body">
-<span class="name">Donald Gardner</span>
-<div class="message">It is a long established fact that a reader</div>
-<small>11 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar5.jpg" alt="">
-<div class="media-body">
-<span class="name">Wendy Keen</span>
-<div class="message">There are many variations of passages of Lorem Ipsum</div>
-<small>18 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="offline">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar2.jpg" alt="">
-<div class="media-body">
-<span class="name">Matt Rosales</span>
-<div class="message">Contrary to popular belief, Lorem Ipsum is not simply</div>
-<small>27 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar3.jpg" alt="">
-<div class="media-body">
-<span class="name">Phillip Smith</span>
-<div class="message">It has roots in a piece of classical Latin literature from 45 BC</div>
-<small>33 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-</ul>
-<div class="dropdown-divider"></div>
- <a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
-</div>
-</div>
+<div class="notification d-flex">
+		<div class="dropdown d-flex" id="emailbox">
+			<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown">
+				<i class="fa fa-envelope"></i>
+				<span class="badge badge-success <?=(($data['emailstmt'])?'nav-unread' :'')?>"></span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+				<ul class="<?=(($data['emailstmt'])?'right_chat list-unstyled w350 p-0' :'')?>">
+				<!-- Start  -->
+				<?php 
+				if ($data['emailstmt']):
+					foreach ($data['emailstmt'] as $emailLoop): ?>
+				<?php 
+					$emailid =  $emailLoop['EmailID'];
+					$sendername = $emailLoop['SenderName'];
+					$senderemail=  $emailLoop['SenderMail'];
+					$emailsubject=  $emailLoop['Subject'];
+					$emailbody =  $emailLoop['message'];
+					$emailtimesent= $emailLoop['Time'];
+				?>
+					<li class="online">
+						<a href="<?=((isset($emailid))?ROOT.'Admin/Professors/Inbox?'.$emailid: '#')?>" class="media">
+							<img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
+							<div class="media-body">
+								<span class="name"><?=((isset($sendername))?$sendername: '')?></span>
+								<div class="message"><?=((isset($emailsubject))?$emailsubject:'')?></div>
+								<small><?=((isset($emailtimesent))?$emailtimesent:'')?></small>
+								<span class="badge badge-outline status"></span>
+							</div>
+						</a>
+					</li>
+					<!-- End -->
+					<div class="dropdown-divider"></div>
+					<a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
+			<?php endforeach;?>
+			<?php else: ?>
+					<span class="text-center text-muted-dark" style="text-align:center">Empty Inbox</span>
+			<?php endif;?>
+				</ul>
+			</div>
+		</div>
+
 <div class="dropdown d-flex">
 <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
 <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">

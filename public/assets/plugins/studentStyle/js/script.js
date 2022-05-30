@@ -1,2 +1,0 @@
-(function($,Drupal,window,document){'use strict';Drupal.behaviors.my_custom_behavior={attach:function(context,settings){}};jQuery(window).scroll(function(){if(jQuery(this).scrollTop()>100){jQuery('.header').addClass("sticky");}
-else{jQuery('.header').removeClass("sticky");}});})(jQuery,Drupal,this,this.document);

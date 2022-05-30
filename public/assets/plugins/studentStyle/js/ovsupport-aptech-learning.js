@@ -1,1 +1,0 @@
-function change_user_role(){var roleid=jQuery('#user_role option:selected').val();jQuery.ajax({type:"POST",url:"aptech-learning",data:{"user_role":roleid},success:function(data){window.location=data;},error:function(xhr,textStatus,errorThrown){jQuery("#studentstate").html("Unable to fetch data.").show();}});}

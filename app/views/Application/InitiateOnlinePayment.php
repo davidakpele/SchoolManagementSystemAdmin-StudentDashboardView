@@ -20,7 +20,7 @@
     <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
     <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
     <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)">
-    <title>Application Form for Freshers | Mercy College School Managment System Software</title>
+    <title>Initiate Online Payment Application | Mercy College School Managment System Software</title>
     <link rel="shortcut icon" href="<?=ASSETS?>icons/favicon.ico">
     <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/> 
     <link type="text/json" href="http://localhost/Student/public/assets/light/manifest.json"/>

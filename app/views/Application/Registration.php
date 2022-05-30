@@ -27,7 +27,7 @@ include_once 'include.file/migrate.php';
                     <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
                     <input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
                     <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTUyNDQ3MTU1NQ9kFgQCAQ8WAh4HVmlzaWJsZWgWAgIBDxYCHgRUZXh0ZWQCAw9kFgQCAw8QDxYGHg1EYXRhVGV4dEZpZWxkBRNBcHBsaWNhdGlvblR5cGVOYW1lHg5EYXRhVmFsdWVGaWVsZAURQXBwbGljYXRpb25UeXBlSUQeC18hRGF0YUJvdW5kZ2QQFQ4ADFBvc3RncmFkdWF0ZRxTY2hvb2wgb2YgRm91bmRhdGlvbiBTdHVkaWVzA0lDRQ1VbmRlcmdyYWR1YXRlNUh1bWFuIFJlc291cmNlcyBEZXZlbG9wbWVudCBDZW50cmUgRGlwbG9tYSBQcm9ncmFtbWVzG0Rpc3RhbmNlIExlYXJuaW5nIEluc3RpdHV0ZQ5JQ0UgKFNhbmR3aWNoKQ1VbmRlcmdyYWR1YXRlAAEtA0lNUyNVbml2ZXJzaXR5IG9mIExhZ29zIEJ1c2luZXNzIFNjaG9vbDZVbml2ZXJzaXR5IG9mIExhZ29zIEJ1c2luZXNzIFNjaG9vbCAoU2hvcnQgUHJvZ3JhbW1lcykVDgAMUG9zdGdyYWR1YXRlCkZvdW5kYXRpb24DSUNFDVVuZGVyZ3JhZHVhdGUESFJEQwNETEkPSUNFIChFRFVDQVRJT04pDVVuZGVyZ3JhZHVhdGUAAS0DSU1TBFVMQlMHVUxCUy1TUBQrAw5nZ2dnZ2dnZ2dnZ2dnZxYBZmQCBQ8QZGQWAGRk2/T7ZMkY7ntGcd/botvxcKAzneuyj4BSIpLHIhWxR58=" />
-                </div>
+                </div> 
                     <input type="text" id="___NewStudentIdNo" name="student__id" class="form-control" value="<?=$Plugin_New_ID;?>" style="display:none" />
                     <input type="text" name="RollNo" id="EnrollmentNumber" value="<?=$randomNumber;?>" style="display:none;"/>
                         <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> 

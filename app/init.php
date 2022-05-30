@@ -11,10 +11,6 @@ require "../app/core/controller.php";
 require "../app/core/app.php";
 // Accessing helpers file
 require "../app/helpers/session_helper.php";
-// require the php mailer
-require "../app/helpers/phpMailer/PHPMailerAutoload.php";
-// require the php mailer class
-require "../app/helpers/phpMailer/class.phpmailer.php";
 // ZOOM APIs
 require_once '../app/helpers/vendor/firebase/php-jwt/src/BeforeValidException.php';
 require_once '../app/helpers/vendor/firebase/php-jwt/src/ExpiredException.php';

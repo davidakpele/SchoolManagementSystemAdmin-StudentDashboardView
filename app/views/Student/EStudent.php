@@ -17,7 +17,7 @@
       </div>
     <div class="container"  id="formcontainer" style="margin-top:10px;background:#FFF; border-radius: 5px; max-width:990px; margin:0 auto;padding: 25px;" id="App1">
         <div id="successmessagediv" class="success-ico" style="display:none"></div>
-        <div id="error" class="error-ico errormsg" style="display:none"></div>
+        <div id="error" class="error-ico errormsg" style="display:none; padding-left:20px"></div>
         <form method="POST" class="form-group" autocomplete="off" action="javascript:void(0)" id="editStudentDetails">
             <div class="row">
                 <div class="col-md-6">

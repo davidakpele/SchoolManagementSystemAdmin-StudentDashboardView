@@ -10,44 +10,34 @@
       </ol>
     </nav>
     <div class="welcome-msg pt-3 pb-4">
-      <h1>Hi <span class="text-primary"><?=$_SESSION['globalname']?></span>, Welcome back</h1>
-      <p>Clean & featured dashboard.</p>
+      <div class="lw-dv1">
+        <h1>Hi <span class="text-primary"><?=$_SESSION['globalname']?></span>, Welcome back</h1>
+        <p>Clean & featured dashboard.</p>
+      </div>
+       <div class="lw-dv1 pull-right" style="top:130px; position:absolute; right:0; margin-right:66px">
+         <button id="fgroupingdropdown" type="button" class="btn btn-outline-primary dropdown-toggle pull" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Grouping drop-down menu">
+          <i class="icon fa fa-th  fa-fw "></i>
+          <span class="d-sm-inline-block" data-active-item-text="">
+            Settings
+          </span>
+        </button>
+       <ul class="dropdown-menu" role="menu" data-show-active-item="" data-skip-active-class="true" aria-labelledby="fgroupingdropdown">
+          <li>
+            <a class="dropdown-item  btn btn-primary" href="<?=ROOT?>Student/ExamCenter/" data-filter="sort" data-pref="lastaccessed" data-value="ul.timeaccess desc" aria-label="Sort courses by last accessed date" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem">
+              <i class="icon fa fa-pencil fa-fw " style="color:blue"></i>Examination
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item btn btn-primary" href="<?=ROOT?>Student/CStudent/" data-filter="sort" data-pref="title" data-value="fullname" aria-label="Sort courses by course name" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" aria-current="true">
+              <i class="icon fa fa-cog fa-fw " style="color:blue"></i>Reset Password
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   <div class="row">
     <div class="col-md-9">
       <div class="statistics">
-        <div class="col-xl-12 pr-xl-2">
-          <div class="row">
-            <div class="col-sm-3 pr-sm-2 statistics-grid">
-              <div class="card card_border border-primary-top p-4">
-                <i class="lnr lnr-users"> </i>
-                <h3 class="text-primary number">29.75 M</h3>
-                <p class="stat-text">Total Users</p>
-              </div>
-            </div>
-            <div class="col-sm-3 pl-sm-2 statistics-grid">
-              <div class="card card_border border-primary-top p-4">
-                <i class="lnr lnr-eye"> </i>
-                <h3 class="text-secondary number">51.25 K</h3>
-                <p class="stat-text">Daily Visitors</p>
-              </div>
-            </div>
-            <div class="col-sm-3 pr-sm-2 statistics-grid">
-              <div class="card card_border border-primary-top p-4">
-                <i class="lnr lnr-cloud-download"> </i>
-                <h3 class="text-success number">166 M</h3>
-                <p class="stat-text">Downloads</p>
-              </div>
-            </div>
-            <div class="col-sm-3 pl-sm-2 statistics-grid">
-              <a href="<?=ROOT?>Student/Examcenter"><div class="card card_border border-primary-top p-4">
-                <i class="lnr lnr-book"> </i>
-                <h3 class="text-danger number">1,250k</h3>
-                <p class="stat-text">View Exam</p>
-              </div></a>
-            </div>
-          </div>
-        </div>
         <div class="course__Section">
           <h5 class="card-title d-inline">COURSE OVERVIEW</h5><br/><br/>
           <div data-region="filter" class="d-flex align-items-center flex-wrap" aria-label="Course overview controls">
@@ -152,10 +142,152 @@
           </div> 
         </div>
         <!-- Course Div -->
-        
+        <div class="course__section">
+         
+        </div>
     </div>
   </div>
 <!-- Here you have your courses roll in -->
+  <div class="courses__display__section" lang="EN-US">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="deckroll" >
+              <div class="breaker"style="">
+                <div class="f1-img" lang="EN-US">
+                  <img src="<?=ASSETS?>img/gallery/cia.jpg" alt="" srcset="" class="img-responsive" />
+                </div>
+                <div class="img__bottom" >
+                  <div class="card-body course-info-container" id="course-info-container-3917-16">
+                    <div class="d-flex align-items-start">
+                        <div class="w-100">
+                            <div class="text-muted muted">
+                              <span class="sr-only">Course category</span>
+                              <span class="categoryname text-truncate">Faculty of Sciences 2022</span>
+                            </div>
+                            <a href="#" class="coursename text-truncate">
+                              <span id="favorite-icon-3917-16" data-region="favourite-icon" data-course-id="3917">
+                                  <span class="text-primary hidden" data-region="is-favourite" aria-hidden="true">
+                                      <i class="icon fa fa-star fa-fw " title="Starred course" aria-label="Starred course"></i>
+                                      <span class="sr-only">Course is starred</span>
+                                  </span>
+                              </span>
+                              <span class="sr-only">Course name </span>Computer Hardware (CIT210_22)
+                          </a>
+                        </div>
+                        <div class="ml-auto dropdown">
+                          <button class="btn btn-link btn-icon icon-size-3 coursemenubtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="icon fa fa-ellipsis-h fa-fw " aria-hidden="true"></i>
+                              <span class="sr-only">Actions for current course Computer Hardware (CIT210_22)</span>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item " href="#" data-action="add-favourite" data-course-id="3917" aria-controls="favorite-icon-3917-16">Star this course
+                              <div class="sr-only">Star for Computer Hardware (CIT210_22)</div>
+                            </a>
+                            <a class="dropdown-item hidden" href="#" data-action="remove-favourite" data-course-id="3917" aria-controls="favorite-icon-3917-16">Unstar this course
+                                <div class="sr-only">Remove star for Computer Hardware (CIT210_22) </div>
+                            </a>
+                            <a class="dropdown-item hidden" href="#" data-action="show-course" data-course-id="3917" aria-controls="favorite-icon-3917-16">Restore to view
+                              <div class="sr-only">Restore Computer Hardware (CIT210_22) to view</div>
+                            </a>
+                            <a class="dropdown-item " href="#" data-action="hide-course" data-course-id="3917" aria-controls="favorite-icon-3917-16">Remove from view
+                              <div class="sr-only">Remove Computer Hardware (CIT210_22) from view</div>
+                            </a>
+                          </div>
+                        </div>          
+                      </div>
+                    </div>
+                  </div>
+                <div class="button_element">
+                  <div class="summary-icons">
+                    <a class="btn btn-default link-participants" href="#" id="yui_3_17_2_1_1653303534067_283" >
+                        <i class="icon fa icon-people fa-fw " title="Participants" aria-label="Participants"></i>
+                    </a>
+                    <a class="btn btn-default link-grades" href="#" id="yui_3_17_2_1_1653303534067_286">
+                        <i class="icon fa icon-book-open fa-fw " title="Grades" aria-label="Grades"></i>
+                    </a>
+                    <a class="btn btn-default link-badges" href="#" id="yui_3_17_2_1_1653303534067_289">
+                        <i class="icon fa icon-badge fa-fw " title="Badges" aria-label="Badges"></i>
+                    </a>
+                    <a class="btn btn-default link-course" href="#" id="yui_3_17_2_1_1653303534067_292">
+                        <i class="icon fa fa-arrow-right fa-fw " title="Click to enter this course" aria-label="Click to enter this course"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Second Course -->
+             <div class="breaker">
+                <div class="f1-img" lang="EN-US">
+                  <img src="<?=ASSETS?>img/gallery/cia.jpg" alt="" srcset="" class="img-responsive" />
+                </div>
+                <div class="img__bottom" >
+                  <div class="card-body course-info-container" id="course-info-container-3917-16">
+                    <div class="d-flex align-items-start">
+                        <div class="w-100">
+                            <div class="text-muted muted">
+                              <span class="sr-only">Course category</span>
+                              <span class="categoryname text-truncate">Faculty of Sciences 2022</span>
+                            </div>
+                            <a href="#" class="coursename text-truncate">
+                              <span id="favorite-icon-3917-16" data-region="favourite-icon" data-course-id="3917">
+                                  <span class="text-primary hidden" data-region="is-favourite" aria-hidden="true">
+                                      <i class="icon fa fa-star fa-fw " title="Starred course" aria-label="Starred course"></i>
+                                      <span class="sr-only">Course is starred</span>
+                                  </span>
+                              </span>
+                              <span class="sr-only">Course name </span>Computer Hardware (CIT210_22)
+                          </a>
+                        </div>
+                        <div class="ml-auto dropdown">
+                          <button class="btn btn-link btn-icon icon-size-3 coursemenubtn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="icon fa fa-ellipsis-h fa-fw " aria-hidden="true"></i>
+                              <span class="sr-only">Actions for current course Computer Hardware (CIT210_22)</span>
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item " href="#" data-action="add-favourite" data-course-id="3917" aria-controls="favorite-icon-3917-16">Star this course
+                              <div class="sr-only">Star for Computer Hardware (CIT210_22)</div>
+                            </a>
+                            <a class="dropdown-item hidden" href="#" data-action="remove-favourite" data-course-id="3917" aria-controls="favorite-icon-3917-16">Unstar this course
+                                <div class="sr-only">Remove star for Computer Hardware (CIT210_22) </div>
+                            </a>
+                            <a class="dropdown-item hidden" href="#" data-action="show-course" data-course-id="3917" aria-controls="favorite-icon-3917-16">Restore to view
+                              <div class="sr-only">Restore Computer Hardware (CIT210_22) to view</div>
+                            </a>
+                            <a class="dropdown-item " href="#" data-action="hide-course" data-course-id="3917" aria-controls="favorite-icon-3917-16">Remove from view
+                              <div class="sr-only">Remove Computer Hardware (CIT210_22) from view</div>
+                            </a>
+                          </div>
+                        </div>          
+                      </div>
+                    </div>
+                  </div>
+                <div class="button_element">
+                  <div class="summary-icons">
+                    <a class="btn btn-default link-participants" href="#" id="yui_3_17_2_1_1653303534067_283" >
+                        <i class="icon fa icon-people fa-fw " title="Participants" aria-label="Participants"></i>
+                    </a>
+                    <a class="btn btn-default link-grades" href="#" id="yui_3_17_2_1_1653303534067_286">
+                        <i class="icon fa icon-book-open fa-fw " title="Grades" aria-label="Grades"></i>
+                    </a>
+                    <a class="btn btn-default link-badges" href="#" id="yui_3_17_2_1_1653303534067_289">
+                        <i class="icon fa icon-badge fa-fw " title="Badges" aria-label="Badges"></i>
+                    </a>
+                    <a class="btn btn-default link-course" href="#" id="yui_3_17_2_1_1653303534067_292">
+                        <i class="icon fa fa-arrow-right fa-fw " title="Click to enter this course" aria-label="Click to enter this course"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <!-- Close second course -->
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    
+  </div>
 </div>
     <div class="col-md-3">
       <div class="subp__side_menu" style="padding:20px" id="side_menu">
@@ -262,13 +394,15 @@
          <div class="card-body p-3" id="Useronline">
           <h6 id="instance-2333704-header" class="card-title d-inline" style="font-weight:600">ONLINE USERS</h6>
           <div class="card-text content mt-2">
-            <div class="user ">
-              <a href="#" title="59 secs">
-                <img src="<?=ASSETS?>img/f2" class="userpicture defaultuserpic" width="16" height="16" alt="">
-                <span>USMAN Dahiru Sagiru</span>
-                <span style="margin-left:20px">(MCU211100157)</span>
+          <?php  foreach ($data['online'] as $rvalue):?>
+            <div class="user">
+              <a href="<?=$rvalue['student__Id']?>" title="<?=$rvalue['student__Id']?>" style="display:flex">
+                <img src="<?=ASSETS?>img/f2" class="userpicture defaultuserpic" width="20" height="20" alt="<?=$rvalue['Surname'].' '.$rvalue['othername']; $rvalue['student__Id']?>">
+                <span style="margin-left:5px;"><?=$rvalue['Surname'].' '.$rvalue['othername']?><span class="active__online__std"></span></span>
+                <span style="margin-left:15px; margin-top:4px;font-size:12px">(<?=$rvalue['Roll__No'];?>)</span>
               </a>
             </div>
+            <?php endforeach;?>
             <div class="footer"></div>
           </div>
         </div>
@@ -282,10 +416,10 @@
           </div>
         </div>
         <div class="card-body p-3" id="yui_3_17_2_1_1652775199957_330">
-            <h6 id="instance-2333704-header" class="card-title d-inline" style="font-weight:600">UPCOMING EVENTS</h6>
-            <div class="card-text content mt-2">
-            <img class="icon " alt="Close window" title="Close window" src="<?=ASSETS?>img/icon">
-              <a href="#">Tutor Marked Assignment 1<small>(TMA1) Close Saturday, 4 June, 11:59 PM</small></a>
+          <h6 id="instance-2333704-header" class="card-title d-inline" style="font-weight:600">UPCOMING EVENTS</h6>
+          <div class="card-text content mt-2">
+          <img class="icon " alt="Close window" title="Close window" src="<?=ASSETS?>img/icon">
+            <a href="#" onclick="___CallViewEvent()">Tutor Marked Assignment 1<small>(TMA1) Close Saturday, 4 June, 11:59 PM</small></a>
           </div>
           <span class="border-bottom"></span>
         </div>
@@ -308,6 +442,35 @@
   <span class="fa fa-angle-up"></span>
 </button>
 <script>
+function ___CallViewEvent(SSD){
+		let data = {"SSD":SSD};
+		jQuery.ajax({
+			url: '<?=ROOT;?>PagesController/EventBox',
+			method: "POST",
+			data: data,
+			crossDomain: true,
+			dataType: 'html',
+			crossOrigin: true,
+			async: true,
+			cache: false,
+			processData: true,
+			headers: {
+						'Access-Control-Allow-Methods': '*',
+						"Access-Control-Allow-Credentials": true,
+						"Access-Control-Allow-Headers" : "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+						"Access-Control-Allow-Origin": "*",
+						"Control-Allow-Origin": "*",
+						"cache-control": "no-cache"
+					},
+			success:(data)=>{
+				$('body').append(data);
+				$('#EventModal').modal('show');
+			},
+			error: ()=>{
+				alert("Something went wrong..!");
+			}
+		});
+	}
   // When the user scrolls down 20px from the top of the document, show the button
   window.onscroll = function () {
     scrollFunction()

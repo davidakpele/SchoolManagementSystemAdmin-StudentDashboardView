@@ -9,11 +9,12 @@
             <meta name="msapplication-TileColor" content="#c9190c"/>
             <meta name="apple-mobile-web-app-capable" content="yes"/>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="keywords" content="<?=$data['meta_tag_content_Seo']?>" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta name="description" content="<?=$data['meta_tag_description']?>" />
-            <link rel="icon" type="image/png" sizes="16x16" href="<?=ASSETS?>img/favicon-16x16.png"/>
-            <link rel="icon" type="image/png" sizes="32x32" href="<?=ASSETS?>img/favicon-32x32.png"/>
+            <link rel="icon" type="image/png" sizes="16x16" href="<?=ASSETS?>icons/favicon.ico"/>
+            <link rel="icon" type="image/png" sizes="32x32" href="<?=ASSETS?>icons/favicon.ico"/>
+            <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/bootstrap.min.css" />
             <link rel="apple-touch-icon" href="<?=ASSETS?>icons/splash/launch-640x1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
             <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-750x1294.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
             <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1242x2148.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
@@ -21,13 +22,12 @@
             <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1536x2048.png" media="(min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)" />
             <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)" />
             <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)" />
-            <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/bootstrap.min.css" />
             <link rel="stylesheet" type="text/css" href="<?=ASSETS?>important__stylesheet__file/structure.css" />
-            <link rel="stylesheet" type="text/css"  href="<?=ASSETS?>important__stylesheet__file/responsive.css" />
-            <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/> 
-            <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/jquery.jgrowl.css"  media="screen"/>
-            <title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
+            <link rel="stylesheet" type="text/css" href="<?=ASSETS?>important__stylesheet__file/responsive.css" />
+            <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/jquery.jgrowl.css" media="screen"/>
             <link rel="shortcut icon" href="<?=ASSETS?>icons/favicon.ico" type="image/vnd.microsoft.icon"/>
+            <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/> 
+            <title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
             <script type="text/javascript" src="<?=ASSETS?>js/jquery2.js"></script>
             <script type="text/javascript" src="<?=ASSETS?>js/bootstrap.js"></script>
             <link type="text/json" href="<?=ASSETS?>light/manifest.json"/>
@@ -45,7 +45,7 @@
                 .png{max-width:100px; display: block;  margin-left: auto; margin-right: auto;}
                 .header-toggle{padding:15px;}
                 .error{background: #FAE8E8;border: 1px solid #DAB3B6;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-                .error-ico{padding-left:70px;background: url(http://localhost/school/public/assets/bullet_error.png) #FAE8E8 no-repeat 30px center;}
+                .error-ico{padding-left:70px;background: url(<?=ASSETS?>bullet_error.png) #FAE8E8 no-repeat 30px center;}
                 input:focus{outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
             </style>
         </head>
