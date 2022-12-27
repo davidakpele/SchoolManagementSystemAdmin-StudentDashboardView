@@ -36,7 +36,7 @@
         .float-center {text-align: center;color: #fff;font-size: 13px;}
         #content{margin: 0 auto;padding: 25px;}
         .error {background: #FAE8E8;border: 1px solid #DAB3B6;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-        #success {background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
+        .success {background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
         .float-center a {background: #c60d00;color: #fff;padding: 3px 10px;border-radius: 3px;}
         * {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
         #head{width: 100%; padding: 1%;border-bottom: 1px solid #EEE;position: static; top: 0px;left: 0px;z-index: 99;background: #008bc6; height: 60px; margin-bottom: 30px;}
@@ -54,7 +54,8 @@
             <div class="col-12">
                 <div class="float-left"> 
                     <span>
-                        <a href="<?=ROOT?>"> <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:45px;"/></a>
+                        <a href="<?=ROOT?>"> 
+                        <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:45px;"/></a>
                     </span>
                 </div>
             </div><!--end col div here -->
@@ -67,7 +68,6 @@
     </div>
 </div>
 <!--- Start Body -->
-   
     <div class="mini-container login-widget" style="padding-bottom:40px"> 
         <div id="messagediv" class="success success-ico" style="display:none"></div>
         <div id="error" class="error error-ico" style="display:none"></div>
@@ -176,6 +176,10 @@
                 <label for="inputMeetingID">Meeting ID:</label>
                 <input type="text" class="form-control" id="meetingId" value="<?=$data['Meetingid']?>" readOnly/>
             </div>
+             <div class="col-md-6">
+                <label for="securitykey">Starting Time:</label>
+                <input type="datetime-local" class="form-control" value="" id="startTime" />
+            </div>
             <div class="col-md-6">
                 <label for="securitykey">Passcode:</label>
                 <input type="text" class="form-control" value="" id="securitykey" placeholder="hYz21"/>
@@ -189,7 +193,7 @@
      </div>
 </div>
 <!-- footer div starts here -->
-<div class="container-fluid" style="position: fixed;bottom: 0px;padding-top: 20px;width: 100%;" >
+<div class="container-fluid" >
     <div class="container footer-wrap">
         <div class="row">
             <div class="col-sm-6 pull-left footer-left">
@@ -204,91 +208,95 @@
     <script type="text/javascript" src="<?=ASSETS?>js/jquery-3.6.0.js"></script>
     <script type="text/javascript" src="<?=ASSETS?>js/bootstrap.js"></script>
   <script>
-            $(document).ready(($)=> {
-                $("#error").hide();
-                $("#messagediv").hide();
-                //on submit
-                $('#zoomform').submit((e)=> {
-                    e.preventDefault();
-                    $("#error").hide();
-                    $("#messagediv").hide();
-                    //validate the input now
-                    let inputToPIC = $("#inputToPIC").val();
-                    if (inputToPIC == "") {
-                        $("#error").fadeIn().html("Please Provide The Meeting Topic..!");
-                        $("#inputToPIC").focus();
-                        return false;
-                    }       
-                    let FromTime = $("#FromTime").val();
-                    if (FromTime == "") {
-                        $("#error").fadeIn().html("This meeting will start when ?? <b>(Please Set the time)</b>");
-                        $("#FromTime").focus();
-                        return false;
-                    }
-                    let totime = $("#totime").val();
-                    if (totime == "") {
-                        $("#error").fadeIn().html("This meeting will end's when ?? <b>(Please Set the time)</b>");
-                        $("#totime").focus();
-                        return false;
-                    }
-                    let timeZone= $("#timeZone").val();
-                    if (timeZone == "") {
-                        $("#error").fadeIn().html("Please Select your timezone.");
-                        $("#timeZone").focus();
-                        return false;
-                    }
-                    let meetingId = $("#meetingId").val();
-                    if (meetingId == "") {
-                        $("#error").fadeIn().html("Sorry...! Make sure your device is connected to network first.");
-                        $("#meetingId").focus();
-                        return false;
-                    }
-                    let securitykey = $("#securitykey").val();
-                    if (securitykey == "") {
-                        $("#error").fadeIn().html("Please Provide The (Passcode) For Other User's To Again Access.");
-                        $("#securitykey").focus();
-                        return false; 
-                    }
-                    
-                const Plug = { 
-                                "inputToPIC": inputToPIC, "FromTime":FromTime, 
-                                "totime":totime, "timeZone": timeZone, 
-                                "meetingId":meetingId, "securitykey":securitykey
-                            };
-                let RouteUserDateToPhp = JSON.stringify(Plug);
-                $.ajax({
-                    type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
-                    dataType: 'JSON',
-                    contentType: "application/json; charset=utf-8",
-                    data: RouteUserDateToPhp,// our data object
-                    url: "http://localhost/Student/PagesController/ProcessNewStudentOnline",// the url where we want to POST
-                    processData: false,
-                    encode: true,
-                    crossOrigin: true,
-                    async: true,
-                    crossDomain: true,
-                    headers: {
-                                'Access-Control-Allow-Methods': '*',
-                                "Access-Control-Allow-Credentials": true,
-                                "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                                "Access-Control-Allow-Origin": "*",
-                                "Control-Allow-Origin": "*",
-                                "cache-control": "no-cache",
-                                'Content-Type': 'application/json'
-                            },
-                }).then((response) => {
-                    if(response.status == 3){
-                        $("#AppRegistration").fadeOut();
-                        $("#messagediv").fadeIn().html(response.Successmessage);
-                        
-                    }else{
-                        $("#error").fadeIn().html(response.message);
-                    }
-                }).fail((xhr, error) => {
-                    $("#error").fadeIn().html('Oops...Server is down! error');
-                });
+    $(document).ready(($)=> {
+        $("#error").hide();
+        $("#messagediv").hide();
+        //on submit
+        $('#zoomform').submit((e)=> {
+            e.preventDefault();
+            $("#error").hide();
+            $("#messagediv").hide();
+            //validate the input now
+            let inputToPIC = $("#inputToPIC").val();
+            if (inputToPIC == "") {
+                $("#error").fadeIn().html("Please Provide The Meeting Topic..!");
+                $("#inputToPIC").focus();
+                return false;
+            }       
+            let FromTime = $("#FromTime").val();
+            if (FromTime == "") {
+                $("#error").fadeIn().html("This meeting will start when ?? <b>(Please Set the time)</b>");
+                $("#FromTime").focus();
+                return false;
+            }
+            let totime = $("#totime").val();
+            if (totime == "") {
+                $("#error").fadeIn().html("This meeting will end's when ?? <b>(Please Set the time)</b>");
+                $("#totime").focus();
+                return false;
+            }
+            let timeZone= $("#timeZone").val();
+            if (timeZone == "") {
+                $("#error").fadeIn().html("Please Select your timezone.");
+                $("#timeZone").focus();
+                return false;
+            }
+            let startTime= $("#startTime").val();
+            if (startTime == "") {
+                $("#error").fadeIn().html("Please Set  your Start up time.");
+                $("#startTime").focus();
+                return false;
+            }
+            let meetingId = $("#meetingId").val();
+            if (meetingId == "") {
+                $("#error").fadeIn().html("Sorry...! Make sure your device is connected to network first.");
+                $("#meetingId").focus();
+                return false;
+            }
+            let securitykey = $("#securitykey").val();
+            if (securitykey == "") {
+                $("#error").fadeIn().html("Please Provide The (Passcode) For Other User's To Again Access.");
+                $("#securitykey").focus();
+                return false; 
+            }
+            
+        const Plug = { 
+                        "inputToPIC": inputToPIC, "FromTime":FromTime, 
+                        "totime":totime, "timeZone": timeZone, "startTime":startTime,
+                        "meetingId":meetingId, "securitykey":securitykey
+                    };
+        let RouteUserDateToPhp = JSON.stringify(Plug);
+        $.ajax({
+            type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            data: RouteUserDateToPhp,// our data object
+            url: "http://localhost/Student/PagesController/SetZoom",// the url where we want to POST
+            processData: false,
+            encode: true,
+            crossOrigin: true,
+            async: true,
+            crossDomain: true,
+            headers: {
+                        'Access-Control-Allow-Methods': '*',
+                        "Access-Control-Allow-Credentials": true,
+                        "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                        "Access-Control-Allow-Origin": "*",
+                        "Control-Allow-Origin": "*",
+                        "cache-control": "no-cache",
+                        'Content-Type': 'application/json'
+                    },
+            }).then((Messageresponse) => {
+                if(Messageresponse.status == 3){
+                    $("#messagediv").fadeIn().html(Messageresponse.Successmessage);
+                }else{
+                    $("#error").fadeIn().html(Messageresponse.message);
+                }
+            }).fail((xhr, error) => {
+                $("#error").fadeIn().html('Oops...Server is down! error');
             });
         });
+    });
     </script>
 <!-- footer div ends here -->
 </body>

@@ -24,11 +24,12 @@
     <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-1668x2224.png" media="(min-device-width: 834px) and (max-device-width: 834px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)" />
     <link rel="apple-touch-startup-image" href="<?=ASSETS?>icons/splash/launch-2048x2732.png" media="(min-device-width: 1024px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait)" />
     <link rel="shortcut icon" href="<?=ASSETS?>icons/favicon.ico" type="image/vnd.microsoft.icon"/>
-    <title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
+    <title><?=$data['page_title']?></title>
     <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/>
     <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/style-starter.css">
     <script type="text/javascript" src="<?=ASSETS?>js/jquery-3.6.0.js"></script>
     <style>
+    .sidebar-menu .sidebar-menu-inner ul >li a:hover{color:#fff; background: #008bc6;border-radius: 2px;}
     .file-upload {display: none;}
     .circle {border-radius: 100% !important;overflow: hidden;  width: 100px;height: 100px;border: 2px solid rgba(255, 255, 255, 0.2); }
     .upload-button {font-size:2.5em; }
@@ -59,7 +60,7 @@
     .user .userpicture{border-radius: 50%;}
     .course__Section>h5{font-weight:600;}
     .courses__display__section{display:block; margin:10px;}
-    .breaker{max-width:310px; max-height:180px;margin-bottom:150px; clear:both}
+    .breaker{max-width:280px; max-height:150px;margin-bottom:190px; clear:both}
     .breaker .f1-img >img{border:3px solid #fff; }
     .img__bottom{border:1px solid #fff; color:gray; font-size:14px;margin:0;}
     .active__online__std{width: 15px;height: 15px;background: #4CAF50;position: absolute;border: 3px solid #ffffff;border-radius: 50%;}
@@ -72,6 +73,14 @@
     .button_element .summary-icons .btn.link-badges .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f2c1";}
     .button_element .summary-icons .btn.link-course .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f0a9";}
     .button_element .summary-icons .btn .icon {display: block;font-size: 1.55rem;color: #e02928;width: inherit;height: inherit;margin: 0;padding: 0;-webkit-transition: .4s;-o-transition: .4s;transition: .4s;}
+    .courseName .more-text{display: none;}
+    .pagination {list-style-type: none;padding: 10px 0;display: inline-flex;justify-content: space-between;box-sizing: border-box;}
+    .pagination li {box-sizing: border-box;padding-right: 10px;}
+    .pagination li a {box-sizing: border-box;background-color: #e2e6e6;padding: 8px;text-decoration: none;font-size: 15px;font-weight: bold;color: #616872;border-radius: 4px;}
+    .pagination li a:hover {background-color: #d4dada;}
+    .pagination .next a, .pagination .prev a {text-transform: uppercase;font-size: 15px;background-color:#008bc6;color:#fff;}
+    .pagination .currentpage a {background-color: #518acb;color: #fff;}
+    .pagination .currentpage a:hover {background-color: #518acb;} 
   </style>
 
 </head>
@@ -91,20 +100,23 @@
     <div class="sidebar-menu-inner">
       <!-- sidebar nav start -->
       <ul class="nav nav-pills nav-stacked custom-nav">
-        <li class="active"><a href="<?=ROOT?>student/Dashboard/Default"><i class="fa fa-tachometer"></i><span> Dashboard</span></a>
+        <li class="active" style="color:#fff; background: #008bc6;border-radius: 2px;">
+          <a href="<?=ROOT?>student/Dashboard/Default">
+          <i class="fa fa-tachometer"></i>
+          <span> Dashboard</span></a>
         </li>
+        <li><a href="<?=ROOT?>Student/Dashboard/?redirect=0"><i class="fa fa-home"></i> <span>Site Home</span></a></li>
+        <li><a href="<?=ROOT?>Student/event"><i class="fa fa-table"></i> <span>Calendar</span></a></li>
+        <li><a href="<?=ROOT?>Student/file"><i class="fa fa-file"></i> <span>Private files</span></a></li>
         <li class="menu-list">
-          <a href="#"><i class="fa fa-cogs"></i>
+          <a href="javascript:void(0)"><i class="fa fa-graduation-cap"></i>
             <span>Elements <i class="lnr lnr-chevron-right"></i></span></a>
           <ul class="sub-menu-list">
-            <li><a href="carousels.html">Carousels</a> </li>
-            <li><a href="cards.html">Default cards</a> </li>
-            <li><a href="people.html">People cards</a></li>
+            <li><a href="javascript:void(0)">Carousels</a> </li>
+            <li><a href="javascript:void(0)">Default cards</a> </li>
+            <li><a href="javascript:void(0)">People cards</a></li>
           </ul>
         </li>
-        <li><a href="pricing.html"><i class="fa fa-table"></i> <span>Pricing tables</span></a></li>
-        <li><a href="blocks.html"><i class="fa fa-th"></i> <span>Content blocks</span></a></li>
-        <li><a href="forms.html"><i class="fa fa-file-text"></i> <span>Forms</span></a></li>
       </ul>
       <!-- //sidebar nav end -->
       <!-- toggle button start -->
@@ -141,9 +153,7 @@
                     <h5 class="user-name"><?=$_SESSION['globalname']?></h5>
                   </li>
                   <li> <a href="<?=ROOT?>Student/StudentProfile"><i class="lnr lnr-user"></i>Profile</a> </li>
-                  <li> <a href="#"><i class="lnr lnr-users"></i>Grade</a> </li>
-                  <li> <a href="#"><i class="lnr lnr-cog"></i>Messages</a> </li>
-                  <li> <a href="#"><i class="lnr lnr-heart"></i>Preferences</a> </li>
+                  <li> <a href="<?=ROOT?>Student/Studentgrade"><i class="lnr lnr-users"></i>Grade</a> </li>
                   <hr style="color:black">
                   <li class="logout"> <a href="<?=ROOT?>PageController/LogoutStudent"><i class="fa fa-power-off"></i> Logout</a> </li>
                 </ul>

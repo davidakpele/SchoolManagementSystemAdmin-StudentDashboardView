@@ -24,8 +24,8 @@ class zoom
 
     // function to create meeting
     public function createMeeting($dataAPi = array()){
-        $post_time = $dataAPi['start_date'];
-        $start_time = gmdate("Y-m-d\TH:i:s", strtotime($post_time));
+        //$post_time = $dataAPi['start_date'];
+       // $start_time = gmdate("Y-m-d\TH:i:s", strtotime($post_time));
 
         $createMeetingArray = array();
          if (!empty($data['alternative_host_ids'])) {
@@ -39,8 +39,9 @@ class zoom
         $createMeetingArray['topic']          = $dataAPi['topic'];
         $createMeetingArray['agenda']         = !empty($dataAPi['agenda']) ? $dataAPi['agenda'] : "";
         $createMeetingArray['type']           = !empty($dataAPi['type']) ? $dataAPi['type'] : 2;//schedule
-        $createMeetingArray['start_date']     = $start_time;
-        $createMeetingArray['timezone']       = 'Africa/Bangui';
+        $createMeetingArray['start_date']     = !empty($dataAPi['start_date']) ? $dataAPi['start_date'] : "";
+        $createMeetingArray['start_time']     = !empty($dataAPi['start_time']) ? $dataAPi['start_time'] : "";
+        $createMeetingArray['timezone']       = !empty($dataAPi['timezone']) ? $dataAPi['timezone'] : "";
         $createMeetingArray['password']       = !empty($dataAPi['password']) ? $dataAPi['password'] : "";
         $createMeetingArray['duration']       = !empty($dataAPi['duration']) ? $dataAPi['duration'] : 60;
 

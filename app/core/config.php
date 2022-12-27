@@ -1,9 +1,9 @@
 <?php 
-
 /*set your website title*/
 
 define('WEBSITE_TITLE', "Mercy College School Managment System Software");
-
+define('CHARSET', 'ISO-8859-1');
+define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 /*set database variables*/
 
 define('DB_TYPE','mysql');

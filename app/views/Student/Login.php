@@ -28,7 +28,7 @@
             <link rel="shortcut icon" href="<?=ASSETS?>icons/favicon.ico" type="image/vnd.microsoft.icon"/>
             <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/> 
             <title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
-            <script type="text/javascript" src="<?=ASSETS?>js/jquery2.js"></script>
+            <script type="text/javascript" src="<?=ASSETS?>js/jquery-3.6.0.js"></script>
             <script type="text/javascript" src="<?=ASSETS?>js/bootstrap.js"></script>
             <link type="text/json" href="<?=ASSETS?>light/manifest.json"/>
             <style type="text/css">
@@ -48,6 +48,9 @@
                 .error-ico{padding-left:70px;background: url(<?=ASSETS?>bullet_error.png) #FAE8E8 no-repeat 30px center;}
                 input:focus{outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
             </style>
+            <script>
+                let base_url='<?=ROOT?>';
+            </script>
         </head>
     <body>
         <div class="header-toggle container">

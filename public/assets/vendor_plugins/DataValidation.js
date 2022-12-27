@@ -18,7 +18,7 @@ RecoverMaticNo = () => {
                 dataType: 'JSON',
                 contentType: "application/json; charset=utf-8",
                 data: RouteUserDateToPhp,// our data object
-                url: 'http://localhost/Student/PageController/StudentRetrieveMatricNumberAPIsPortal',// the url where we want to POST
+                url: 'http://localhost/Student/PagesController/StudentRetrieveMatricNumberAPIsPortal',// the url where we want to POST
                 processData: false,
                 encode: true,
                 crossOrigin: true,
@@ -66,7 +66,7 @@ $(document).ready(($) => {
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
             data: RouteUserDateToPhp, // our data object
-            url: 'http://localhost/Student/PageController/StudentLoginAPIsPortal',// the url where we want to POST
+            url: base_url+'PagesController/StudentLoginAPIsPortal',// the url where we want to POST
             processData: false,
             encode: true,
             crossOrigin: true,
@@ -84,9 +84,10 @@ $(document).ready(($) => {
         }).then((response) => {
             //user is logged in successfully in the back-end
             $("#errorMessage").fadeIn().text(response.message, response.status);
-            if (response.status == 'ef6812481094e33f07fd7aec396fdc0d7e75e8a3f8bad2540935') {
-                $.jGrowl("Successfully Login.!", { header: 'Access Granted' });
-                let delay = 1000;
+            if (response.status == 200) {
+                $("#errorMessage").hide();
+                $("#errorMessage").fadeOut();
+                let delay = 100;
                 setTimeout(function () { window.location.reload(1); }, delay);
             }
         }).fail((xhr, error) => {
@@ -101,6 +102,7 @@ $(document).ready(($) => {
     //on submit
     $('#__AdminBoxText').submit((x) => {
         x.preventDefault();
+        x.stopImmediatePropagation();
         let Username = $("input#username").val();
         let Password = $("input#password").val();
         if (Username == "") {
@@ -119,7 +121,7 @@ $(document).ready(($) => {
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
             data: roll, // our data object
-            url: 'http://localhost/Student/PageController/SecretInterfaceBug',// the url where we want to POST
+            url: $('#__AdminBoxText')[0].action,// the url where we want to POST
             processData: false,
             encode: true,
             crossOrigin: true,
@@ -187,7 +189,7 @@ $(document).ready(($) => {
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
             data: ManagementLoginStringifyProcess, // our data object
-            url: 'http://localhost/Student/PageController/LoginManagement',// the url where we want to POST
+            url: 'http://localhost/Student/PagesController/LoginManagement',// the url where we want to POST
             processData: false,
             encode: true,
             crossOrigin: true,
@@ -257,7 +259,7 @@ RetrieveMatricNoFun = () => {
                 dataType: 'JSON',
                 contentType: "application/json; charset=utf-8",
                 data: RouteUserDateToPhp,// our data object
-                url: 'http://localhost/Student/PageController/RetrieveMatricNumberAPIsPortal',//the url where we want to POST
+                url: 'http://localhost/Student/PagesController/RetrieveMatricNumberAPIsPortal',//the url where we want to POST
                 processData: false,
                 encode: true,
                 crossOrigin: true,
@@ -307,7 +309,7 @@ ParentLoginAjax = () => {
                 dataType: 'JSON',
                 contentType: "application/json; charset=utf-8",
                 data: RouteUserDateToPhp,// our data object
-                url: 'http://localhost/Student/PageController/StudentLoginAPIsPortal',// the url where we want to POST
+                url: 'http://localhost/Student/PagesController/StudentLoginAPIsPortal',// the url where we want to POST
                 processData: false,
                 encode: true,
                 crossOrigin: true,
@@ -446,12 +448,12 @@ $(document).ready(() => {
         $("#Zoom__modalForm").modal();
     });
 });
-newFunction();
-function newFunction() {
-    document.getElementById("copyButton").addEventListener("click", () => {
-        copyToClipboard(document.getElementById("copyTarget"));
-    });
-}
+// newFunction();
+// function newFunction() {
+//     document.getElementById("copyButton").addEventListener("click", () => {
+//         copyToClipboard(document.getElementById("copyTarget"));
+//     });
+// }
 
 function copyToClipboard(elem) {
     // create hidden text element, if it doesn't already exist
@@ -510,7 +512,7 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
-    $('#myTable').DataTable();
-});
+// $(document).ready(function () {
+//     $('#myTable').DataTable();
+// });
 

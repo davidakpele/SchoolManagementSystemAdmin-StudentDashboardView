@@ -206,7 +206,7 @@ $this->DB->query('SELECT * FROM super__administrator ');
                     dataType: 'JSON',
                     contentType: "application/json; charset=utf-8",
                     data: GrabData,// our data object
-                    url: "http://localhost/student/Admin/AdminUpdatePassword",// the url where we want to POST
+                    url: "<?=ROOT?>Admin/AdminUpdatePassword",// the url where we want to POST
                     processData: false,
                     encode: true,
                     crossOrigin: true,

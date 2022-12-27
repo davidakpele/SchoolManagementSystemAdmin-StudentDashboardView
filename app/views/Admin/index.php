@@ -1,1629 +1,301 @@
-<!doctype html>
-<html lang="en" dir="ltr">
-   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
-    <link rel="stylesheet" href="<?=ASSETS?>RequirementJs/AdminFirstassets/plugins/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="<?=ASSETS?>RequirementJs/AdminFirstassets/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css">
-    <link rel="stylesheet" href="<?=ASSETS?>RequirementJs/AdminFirstassets/plugins/dropify/css/dropify.min.css">
-    <link rel="stylesheet" href="<?=ASSETS?>RequirementJs/AdminFirstassets/plugins/summernote/dist/summernote.css" />
-    <link rel="stylesheet" href="<?=ASSETS?>RequirementJs/AdminFirstassets/css/style.min.css" />
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<!-- Meta Tag -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title><?=$data['page_title'] . " | " . WEBSITE_TITLE;?></title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	
+	<!-- Required CSS -->
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/select2/css/select2.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/dist/css/AdminLTE.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/dist/css/skins/skin-blue.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/dist/css/skins/skin-yellow.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css">
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/pace/pace-theme-flash.css">
+	
+	<!-- Datatables Buttons -->
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/datatables.net-bs/plugins/Buttons-1.5.6/css/buttons.bootstrap.min.css">
+
+	<!-- textarea editor -->
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/codemirror/lib/codemirror.min.css">
+    <link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/froala_editor/css/froala_editor.pkgd.min.css">
+    <link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/froala_editor/css/froala_style.min.css">
+    <link rel="stylesheet" href="<?=ASSETS?>admin/assets/bower_components/froala_editor/css/themes/royal.min.css">
+	<!-- /texarea editor; -->
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="<?=ASSETS?>admin/assets/dist/css/mystyle.css">
+	<!-- include summernote css/js -->
+	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 </head>
-    <body class="font-muli theme-cyan gradient">
-        <div class="page-loader-wrapper">
-        <div class="loader">
+<!-- Must Load First -->
+<script src="<?=ASSETS?>admin/assets/bower_components/jquery/jquery-3.3.1.min.js"></script>
+<script src="<?=ASSETS?>admin/assets/bower_components/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="<?=ASSETS?>admin/assets/bower_components/select2/js/select2.full.min.js"></script>
+<script src="<?=ASSETS?>admin/assets/bower_components/moment/min/moment.min.js"></script>
+<script src="<?=ASSETS?>admin/assets/bower_components/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>		
+<body class="hold-transition skin-yellow sidebar-mini">
+	<div class="wrapper">
+		<header class="main-header">
+			<?php include_once 'components/HeaderLogo.php';?> 		
+			<?php include_once 'components/Nav.php';?> 		
+		</header>
+    <!-- Sidebar -->
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- Sidebar user panel (optional) -->
+            <?php include_once 'components/SideBarHeader.php';?> 		
+            <?php include_once 'components/SideBar.php';?>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+<!-- /.sidebar -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>Dashboard <small>Application Data</small></h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                <li class="active">Dashboard</li>
+                <li class="active">Application Data</li>
+            </ol>
+        </section>
+        <!-- Main content -->
+        <section class="content container-fluid">		
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-red">
+        <div class="inner">
+            <h3><?=(($data['NumParent'])?$data['NumParent'] : '0');?></h3>
+            <p>Parents</p>
         </div>
+        <div class="icon">
+            <i class="">
+                <img src="<?=ASSETS?>assets/img/parent1.png" alt="" style="max-width:90px">
+            </i>
         </div>
-    <div id="main_content">
-        <div id="header_top" class="header_top">
-            <div class="container">
-                <div class="hleft">
-                    <a class="header-brand" href="<?=ROOT?>Admin/index"><i class="fa fa-graduation-cap brand-logo"></i></a>
-                    <div class="dropdown">
-                        <a href="javascript:void(0)" class="nav-link icon menu_toggle"><i class="fe fe-align-center"></i></a>
-                        <a href="<?=ROOT?>Admin/Page-search" class="nav-link icon"><i class="fe fe-search" data-toggle="tooltip" data-placement="right" title="Search..."></i></a>
-                        <a href="<?=ROOT?>Admin/App-email" class="nav-link icon app_inbox"><i class="fe fe-inbox" data-toggle="tooltip" data-placement="right" title="Inbox"></i></a>
-                        <a href="<?=ROOT?>Admin/App-filemanager" class="nav-link icon app_file xs-hide"><i class="fe fe-folder" data-toggle="tooltip" data-placement="right" title="File Manager"></i></a>
-                        <a href="<?=ROOT?>Admin/App-social" class="nav-link icon xs-hide"><i class="fe fe-share-2" data-toggle="tooltip" data-placement="right" title="Social Media"></i></a>
-                        <a href="javascript:void(0)" class="nav-link icon theme_btn"><i class="fe fe-feather"></i></a>
-                        <a href="javascript:void(0)" class="nav-link icon settingbar"><i class="fe fe-settings"></i></a>
-                    </div>
-                </div>
-                <div class="hright">
-                    <a href="javascript:void(0)" class="nav-link icon right_tab"><i class="fe fe-align-right"></i></a>
-                    <a href="<?=ROOT?>PagesController/Logout" class="nav-link icon settingbar"><i class="fe fe-power"></i></a>
-                </div>
-            </div>
-        </div>
-        <div id="rightsidebar" class="right_sidebar">
-            <a href="javascript:void(0)" class="p-3 settingbar float-right"><i class="fa fa-close"></i></a>
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#Settings" aria-expanded="true">Settings</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#activity" aria-expanded="false">Activity</a></li>
-            </ul>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane vivify fadeIn active" id="Settings" aria-expanded="true">
-                    <div class="mb-4">
-                        <h6 class="font-14 font-weight-bold text-muted">Theme Color</h6>
-                        <ul class="choose-skin list-unstyled mb-0">
-                            <li data-theme="azure"><div class="azure"></div></li>
-                            <li data-theme="indigo"><div class="indigo"></div></li>
-                            <li data-theme="purple"><div class="purple"></div></li>
-                            <li data-theme="orange"><div class="orange"></div></li>
-                            <li data-theme="green"><div class="green"></div></li>
-                            <li data-theme="cyan" class="active"><div class="cyan"></div></li>
-                            <li data-theme="blush"><div class="blush"></div></li>
-                            <li data-theme="white"><div class="bg-white"></div></li>
-                        </ul>
-                    </div>
-                    <div class="mb-4">
-                        <h6 class="font-14 font-weight-bold text-muted">Font Style</h6>
-                        <div class="custom-controls-stacked font_setting">
-                            <label class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" name="font" value="font-muli" checked="">
-                                <span class="custom-control-label">Muli Google Font</span>
-                            </label>
-                            <label class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" name="font" value="font-montserrat">
-                                <span class="custom-control-label">Montserrat Google Font</span>
-                            </label>
-                            <label class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input" name="font" value="font-poppins">
-                                <span class="custom-control-label">Poppins Google Font</span>
-                            </label>
-                        </div>
-                    </div>
-                <div>
-                <h6 class="font-14 font-weight-bold mt-4 text-muted">General Settings</h6>
-                <ul class="setting-list list-unstyled mt-1 setting_switch">
-                    <li>
-                        <label class="custom-switch">
-                            <span class="custom-switch-description">Night Mode</span>
-                            <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-darkmode">
-                            <span class="custom-switch-indicator"></span>
-                        </label>
-                    </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Fix Navbar top</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-fixnavbar">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Header Dark</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-pageheader">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Min Sidebar Dark</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-min_sidebar">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Sidebar Dark</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-sidebar">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Icon Color</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-iconcolor">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <   span class="custom-switch-description">Gradient Color</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-gradient" checked="">
-                    <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Box Shadow</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxshadow">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">RTL Support</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-rtl">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-                <li>
-                    <label class="custom-switch">
-                        <span class="custom-switch-description">Box Layout</span>
-                        <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input btn-boxlayout">
-                        <span class="custom-switch-indicator"></span>
-                    </label>
-                </li>
-            </ul>
-        </div>
-        <hr>
-        <div class="form-group">
-            <label class="d-block">Storage <span class="float-right">77%</span></label>
-            <div class="progress progress-sm">
-                <div class="progress-bar" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 77%;"></div>
-            </div>
-            <button type="button" class="btn btn-primary btn-block mt-3">Upgrade Storage</button>
+        <a href="<?=ROOT?>Admin/Parents" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
         </div>
     </div>
-    <div role="tabpanel" class="tab-pane vivify fadeIn" id="activity" aria-expanded="false">
-    <ul class="new_timeline mt-3">
-        <li>
-            <div class="bullet pink"></div>
-            <div class="time">11:00am</div>
-            <div class="desc">
-                <h3>Attendance</h3>
-                <h4>Computer Class</h4>
-            </div>
-        </li>
-        <li>
-            <div class="bullet pink"></div>
-            <div class="time">11:30am</div>
-            <div class="desc">
-                <h3>Added an interest</h3>
-                <h4>“Volunteer Activities”</h4>
-            </div>
-        </li>
-        <li>
-            <div class="bullet green"></div>
-            <div class="time">12:00pm</div>
-            <div class="desc">
-                <h3>Developer Team</h3>
-                <h4>Hangouts</h4>
-                <ul class="list-unstyled team-info margin-0 p-t-5">
-                    <li><img src="../assets/images/xs/avatar1.jpg" alt="Avatar"></li>
-                    <li><img src="../assets/images/xs/avatar2.jpg" alt="Avatar"></li>
-                    <li><img src="../assets/images/xs/avatar3.jpg" alt="Avatar"></li>
-                    <li><img src="../assets/images/xs/avatar4.jpg" alt="Avatar"></li>
-                </ul>
-            </div>
-        </li>
-        <li>
-        <div class="bullet green"></div>
-        <div class="time">2:00pm</div>
-        <div class="desc">
-            <h3>Responded to need</h3>
-            <a href="javascript:void(0)">“In-Kind Opportunity”</a>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box"  style="background-color:#483D8B; color:#fff">
+        <div class="inner">
+            <h3><?=(($data['Studentcount'])?$data['Studentcount'] : '0');?></h3>
+            <p>Student</p>
         </div>
-    </li>
-    <li>
-        <div class="bullet orange"></div>
-        <div class="time">1:30pm</div>
-        <div class="desc">
-            <h3>Lunch Break</h3>
+        <div class="icon">
+            <i class="">
+                 <img src="<?=ASSETS?>assets/img/student.png" alt="" style="max-width:90px">
+            </i>
         </div>
-    </li>
-    <li>
-    <div class="bullet green"></div>
-    <div class="time">2:38pm</div>
-    <div class="desc">
-        <h3>Finish</h3>
-        <h4>Go to Home</h4>
+        <a href="<?=ROOT?>Admin/Students" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
     </div>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="theme_div">
-<div class="card">
-<div class="card-body">
-<ul class="list-group list-unstyled">
-<li class="list-group-item mb-2">
-<p>Light Version</p>
-<a href="<?=ROOT?>Admin/index"><img src="../assets/images/themes/default.png" class="img-fluid" alt="" /></a>
-</li>
-<li class="list-group-item mb-2">
-<p>Dark Version</p>
-<a href="<?=ROOT?>Admin/index"><img src="../assets/images/themes/dark.png" class="img-fluid" alt="" /></a>
-</li>
-<li class="list-group-item mb-2">
-<p>RTL Version</p>
-<a href="<?=ROOT?>Admin/index"><img src="../assets/images/themes/rtl.png" class="img-fluid" alt="" /></a>
-</li>
-</ul>
-</div>
-</div>
-</div>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-maroon">
+        <div class="inner">
+            <h3><?=($data['lecturalCount'])?></h3>
+            <p>Lecturer</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/professor.png" alt="" style="max-width:90px">        
+        </div>
+        <a href="<?=ROOT?>Admin/Professors" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-navy">
+        <div class="inner">
+            <h3><?=(($data['ReadOnly'])?$data['ReadOnly'] : '0');?></h3>
+            <p>Administrators</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/admin.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/users" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
 
-<div class="user_div">
-<ul class="nav nav-tabs">
-<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#righttab-statistics">Statistics</a></li>
-<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#righttab-Result">Result</a></li>
-<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#righttab-Students">Student</a></li>
-<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#righttab-Todo">Todo</a></li>
-</ul>
-<div class="tab-content mt-3">
-<div class="tab-pane fade show active" id="righttab-statistics" role="tabpanel">
-<div class="card">
-<div class="card-body">
-<div>Total Revenue</div>
-<div class="py-3 m-0 text-center h1 text-success">$79,452</div>
-<div class="d-flex">
-<span class="text-muted">Income</span>
-<div class="ml-auto"><i class="fa fa-caret-up text-success"></i>4%</div>
-</div>
-</div>
-<div class="card-footer">
-<ul class="list-unstyled mb-0">
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>$43,320</strong></div>
-<div class="float-right"><small class="text-muted">Bank of America</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-azure" role="progressbar" style="width: 87%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li>
-<div class="clearfix">
-<div class="float-left"><strong>$36,132</strong></div>
-<div class="float-right"><small class="text-muted">Wells Fargo</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-green" role="progressbar" style="width: 80%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-yellow"><i class="fa fa-users"></i> </div>
-<div class="content">
-<span>Total Student</span>
-<h5 class="number mb-0">2,051</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-gray"><i class="fa fa-sitemap"></i> </div>
-<div class="content">
-<span>Department</span>
-<h5 class="number mb-0">14</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-dark"><i class="fa fa-black-tie"></i> </div>
-<div class="content">
-<span>Total Teacher</span>
-<h5 class="number mb-0">27</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-azure"><i class="fa fa-tags"></i> </div>
-<div class="content">
-<span>Total Courses</span>
-<h5 class="number mb-0">31</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-pink"><i class="fa fa-credit-card"></i> </div>
-<div class="content">
-<span>Expense</span>
-<h5 class="number mb-0">$7,254</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-green"><i class="fa fa-bank"></i> </div>
-<div class="content">
-<span>Total Income</span>
-<h5 class="number mb-0">$27,852</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-cyan"><i class="fa fa-map-o"></i> </div>
-<div class="content">
-<span>Our Center</span>
-<h5 class="number mb-0">52</h5>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-body top_counter">
-<div class="icon bg-indigo"><i class="fa fa-smile-o"></i> </div>
-<div class="content">
-<span>Smiley Face</span>
-<h5 class="number mb-0">10K</h5>
-</div>
-</div>
-</div>
-</div>
-<div class="tab-pane fade" id="righttab-Result" role="tabpanel">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Result 2019</h3>
-<div class="card-options">
-<a href="#"><i class="fa fa-file-excel-o" data-toggle="tooltip" title="Export Excel"></i></a>
-</div>
-</div>
-<div class="card-body">
-<ul class="list-unstyled">
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>87%</strong></div>
-<div class="float-right"><small class="text-muted">Art & Design</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-azure" role="progressbar" style="width: 87%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>80%</strong></div>
-<div class="float-right"><small class="text-muted">Fashion</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-green" role="progressbar" style="width: 80%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>63%</strong></div>
-<div class="float-right"><small class="text-muted">Sports Science</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-orange" role="progressbar" style="width: 63%" aria-valuenow="36" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>91%</strong></div>
-<div class="float-right"><small class="text-muted">Computers</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-indigo" role="progressbar" style="width: 91%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li>
-<div class="clearfix">
-<div class="float-left"><strong>35%</strong></div>
-<div class="float-right"><small class="text-muted">Biological Sciences</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-pink" role="progressbar" style="width: 35%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-</ul>
-</div>
-<div class="card-footer">
-<div class="row text-center">
-<div class="col-6 border-right">
-<label class="mb-0">Total Pass</label>
-<div class="font-20 font-weight-bold">1,052</div>
-</div>
-<div class="col-6">
-<label class="mb-0">Total Fail</label>
-<div class="font-20 font-weight-bold">198</div>
-</div>
-</div>
-</div>
-</div>
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Result 2018</h3>
-<div class="card-options">
-<a href="#"><i class="fa fa-file-excel-o" data-toggle="tooltip" title="Export Excel"></i></a>
-</div>
-</div>
-<div class="card-body">
-<ul class="list-unstyled">
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>80%</strong></div>
-<div class="float-right"><small class="text-muted">Fashion</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-green" role="progressbar" style="width: 80%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>87%</strong></div>
-<div class="float-right"><small class="text-muted">Art & Design</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-azure" role="progressbar" style="width: 87%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>91%</strong></div>
-<div class="float-right"><small class="text-muted">Computers</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-indigo" role="progressbar" style="width: 91%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li class="mb-3">
-<div class="clearfix">
-<div class="float-left"><strong>35%</strong></div>
-<div class="float-right"><small class="text-muted">Biological Sciences</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-pink" role="progressbar" style="width: 35%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-<li>
-<div class="clearfix">
-<div class="float-left"><strong>63%</strong></div>
-<div class="float-right"><small class="text-muted">Sports Science</small></div>
-</div>
-<div class="progress progress-xxs">
-<div class="progress-bar bg-orange" role="progressbar" style="width: 63%" aria-valuenow="36" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-</li>
-</ul>
-</div>
-<div class="card-footer">
-<div class="row text-center">
-<div class="col-6 border-right">
-<label class="mb-0">Total Pass</label>
-<div class="font-20 font-weight-bold">845</div>
-</div>
-<div class="col-6">
-<label class="mb-0">Total Fail</label>
-<div class="font-20 font-weight-bold">142</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="tab-pane fade" id="righttab-Students" role="tabpanel">
-<div id="users">
-<div class="input-group mt-2 mb-2">
-<input type="text" class="form-control search" placeholder="Search Student">
-</div>
-<ul class="right_chat list-unstyled list">
-<li class="alfabet">A</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar1.jpg" alt="">
-<div class="media-body">
-<span class="name">Abigail Churchill</span>
-<span class="message">Art & Design</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar2.jpg" alt="">
-<div class="media-body">
-<span class="name">Alexandra Carr</span>
-<span class="message">Fashion</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar3.jpg" alt="">
-<div class="media-body">
-<span class="name">Alison Berry</span>
-<span class="message">Fashion</span>
-</div>
-</a>
-</li>
-<li class="alfabet">B</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
-<div class="media-body">
-<span class="name">Bella Alan</span>
-<span class="message">Sports Science</span>
-</div>
-</a>
-</li>
-<li class="alfabet">C</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar5.jpg" alt="">
-<div class="media-body">
-<span class="name">Caroline Alan</span>
-<span class="message">Sports Science</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar6.jpg" alt="">
-<div class="media-body">
-<span class="name">Connor Campbell</span>
-<span class="message">Computers</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar7.jpg" alt="">
-<div class="media-body">
-<span class="name">Charles Campbell</span>
-<span class="message">Computers</span>
-</div>
-</a>
-</li>
-<li class="alfabet">D</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar8.jpg" alt="">
-<div class="media-body">
-<span class="name">Donna Hudson</span>
-<span class="message">Computers</span>
-</div>
-</a>
- </li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar9.jpg" alt="">
-<div class="media-body">
-<span class="name">Dylan Jones</span>
-<span class="message">Computers</span>
-</div>
-</a>
-</li>
-<li class="alfabet">G</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar8.jpg" alt="">
-<div class="media-body">
-<span class="name">Gordon Hudson</span>
-<span class="message">Sports Science</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar9.jpg" alt="">
-<div class="media-body">
-<span class="name">Gabrielle Walker</span>
-<span class="message">Computers</span>
-</div>
-</a>
-</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar10.jpg" alt="">
-<div class="media-body">
-<span class="name">Gavin North</span>
-<span class="message">Computers</span>
-</div>
-</a>
-</li>
-<li class="alfabet">S</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar1.jpg" alt="">
-<div class="media-body">
-<span class="name">Stephanie Hudson</span>
-<span class="message">Sports Science</span>
-</div>
-</a>
-</li>
-<li class="alfabet">W</li>
-<li>
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar1.jpg" alt="">
-<div class="media-body">
-<span class="name">William Paige</span>
-<span class="message">Fashion</span>
-</div>
-</a>
-</li>
-</ul>
-</div>
-<div class="user_chatbody chat_app">
-<div class="card-header bline pt-1 pl-0 pr-0">
-<h3 class="card-title">Abigail Churchill <small>Online</small></h3>
-<div class="card-options">
-<a href="javascript:void(0)" class="p-1" data-toggle="dropdown"><i class="fa fa-cog"></i></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<a class="dropdown-item active" href="#">Online</a>
-<a class="dropdown-item" href="#">Away</a>
-<a class="dropdown-item" href="#">Do not disturb</a>
-<a class="dropdown-item" href="#">Invisible</a>
-</div>
-<a href="javascript:void(0)" class="p-1 chat_close"><i class="fa fa-close"></i></a>
-</div>
-</div>
-<div class="chat_windows">
-<ul class="mb-0">
-<li class="other-message">
-<img class="avatar mr-3" src="../assets/images/xs/avatar1.jpg" alt="avatar">
-<div class="message">
-<p class="bg-light-blue">Are we meeting today?</p>
-<span class="time">10:10 AM, Today</span>
-</div>
-</li>
-<li class="other-message">
-<img class="avatar mr-3" src="../assets/images/xs/avatar1.jpg" alt="avatar">
-<div class="message">
-<p class="bg-light-blue">Hi Aiden, how are you? How is the project coming along?</p>
-<p class="bg-light-blue">Are we meeting today?</p>
-<span class="time">10:15 AM, Today</span>
-</div>
-</li>
-<li class="my-message">
-<div class="message">
-<p class="bg-light-gray">Project has been already finished and I have results to show you.</p>
-<div class="file_folder">
-<a href="javascript:void(0);">
-<div class="icon">
-<i class="fa fa-file-excel-o text-success"></i>
-</div>
-<div class="file-name">
-<p class="mb-0 text-muted">Report2017.xls</p>
-<small>Size: 68KB</small>
-</div>
-</a>
-</div>
-<span class="time">10:17 AM, Today</span>
-</div>
-</li>
-<li class="other-message">
-<img class="avatar mr-3" src="../assets/images/xs/avatar1.jpg" alt="avatar">
-<div class="message">
-<div class="media_img">
-<img src="../assets/images/gallery/1.jpg" class="w100 img-thumbnail" alt="">
-<img src="../assets/images/gallery/2.jpg" class="w100 img-thumbnail" alt="">
-</div>
-<span class="time">10:15 AM, Today</span>
-</div>
-</li>
-<li class="other-message">
-<img class="avatar mr-3" src="../assets/images/xs/avatar1.jpg" alt="avatar">
-<div class="message">
-<p class="bg-light-blue">Are we meeting today I have results?</p>
-<span class="time">10:18 AM, Today</span>
-</div>
-</li>
-<li class="my-message">
-<div class="message">
-<p class="bg-light-gray">Well we have good budget for the project</p>
-<span class="time">10:25 AM, Today</span>
-</div>
-</li>
- </ul>
-<div class="chat-message clearfix">
-<a href="javascript:void(0);"><i class="icon-camera"></i></a>
-<a href="javascript:void(0);"><i class="icon-camcorder"></i></a>
-<a href="javascript:void(0);"><i class="icon-paper-plane"></i></a>
-<div class="input-group mb-0">
-<input type="text" class="form-control" placeholder="Enter text here...">
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="tab-pane fade" id="righttab-Todo" role="tabpanel">
-<ul class="list-unstyled mb-0 todo_list">
-<li>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked="">
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</li>
-<li>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</li>
-<li>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked="">
-<span class="custom-control-label">New logo design for Angular Admin</span>
-</label>
-</li>
-<li>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Design PSD files for Angular Admin</span>
-</label>
-</li>
-<li>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked="">
-<span class="custom-control-label">New logo design for Angular Admin</span>
-</label>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<!-- Side nar Open -->
-<?php $this->view('Admin/bootstrapModal/SidebarNav');?>
-<!-- Closing side bar -->
+     <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-blue">
+        <div class="inner">
+            <h3><?=(($data['App'])?$data['App'] : '0');?></h3>
+            <p>Application</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/app.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/Application" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+     <div class="col-lg-3 col-xs-6">
+        <div class="small-box" style="background-color:#8B008B; color:#fff">
+        <div class="inner">
+            <h3><?=(($data['faculty'])?$data['faculty'] : '0');?></h3>
+            <p>Faculties</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/ft.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/Faculties" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+     <div class="col-lg-3 col-xs-6">
+        <div class="small-box" style="background-color:#B22222; color:#fff">
+        <div class="inner">
+            <h3><?=(($data['department'])?$data['department'] : '0');?></h3>
+            <p>Departments</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/dp.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/Department" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+     <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-yellow">
+        <div class="inner">
+            <h3><?=(($data['CourseRow'])?$data['CourseRow'] : '0');?></h3>
+            <p>Courses</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/cs.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/Courses" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-purple">
+        <div class="inner">
+            <h3>2</h3>
+            <p>Data Analysis</p>
+        </div>
+        <div class="icon">
+            <img src="<?=ASSETS?>assets/img/piedata.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/Analysis" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-aqua">
+        <div class="inner">
+            <h3>1</h3>
+            <p>Questions</p>
+        </div>
+        <div class="icon">
+           <img src="<?=ASSETS?>assets/img/visa.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/soal" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-green">
+        <div class="inner">
+            <h3>2</h3>
+            <p>Results Generated</p>
+        </div>
+        <div class="icon">
+             <img src="<?=ASSETS?>assets/img/dollar.png" alt="" style="max-width:90px">
+        </div>
+        <a href="<?=ROOT?>Admin/hasilujian" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+        <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-orange">
+        <div class="inner">
+            <h3>3</h3>
+            <p>System Users</p>
+        </div>
+        <div class="icon">
+            <img src="<?=ASSETS?>assets/img/setting.png" alt="" style="max-width:90px">
+        </div>
+        <a href="http://localhost/ci_exam/users" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+        </a>
+        </div>
+    </div>
+    </div>
 
-<div class="page">
+			</section>
+			<!-- /.content -->
+			</div>
+			<?php include_once 'components/Footer.php';?>
 
-<div class="section-body" id="page_top">
-<div class="container-fluid">
-<div class="page-header">
-<div class="left">
-<div class="input-group">
-<input type="text" class="form-control" placeholder="What you want to find">
-<div class="input-group-append">
-<button class="btn btn-outline-secondary" type="button">Search</button>
-</div>
-</div>
-</div>
-<div class="right">
-<ul class="nav nav-pills">
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Pages</a>
-<div class="dropdown-menu">
-<a class="dropdown-item" href="<?=ROOT?>Admin/Page-empty">Empty page</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Profile">Profile</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Page-search">Search Results</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Page-timeline">Timeline</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Page-invoices">Invoices</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Page-pricing">Pricing</a>
- </div>
-</li>
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Auth</a>
-<div class="dropdown-menu">
-<a class="dropdown-item" href="<?=ROOT?>Admin/Login">Login</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Register">Register</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/Forgot-password">Forgot password</a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item" href="<?=ROOT?>Admin/404">404 error</a>
-<a class="dropdown-item" href="<?=ROOT?>Admin/500">500 error</a>
-</div>
-</li>
-</ul>
-<div class="notification d-flex">
-<div class="dropdown d-flex">
-<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-language"></i></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/us.svg" alt="">English</a>
-<div class="dropdown-divider"></div>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/es.svg" alt="">Spanish</a>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/jp.svg" alt="">japanese</a>
-<a class="dropdown-item" href="#"><img class="w20 mr-2" src="https://nsdbytes.com/template/ericssion/assets/images/flags/bl.svg" alt="">France</a>
-</div>
-</div>
-<div class="dropdown d-flex">
-<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-envelope"></i><span class="badge badge-success nav-unread"></span></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<ul class="right_chat list-unstyled w350 p-0">
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object" src="../assets/images/xs/avatar4.jpg" alt="">
-<div class="media-body">
-<span class="name">Donald Gardner</span>
-<div class="message">It is a long established fact that a reader</div>
-<small>11 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar5.jpg" alt="">
-<div class="media-body">
-<span class="name">Wendy Keen</span>
-<div class="message">There are many variations of passages of Lorem Ipsum</div>
-<small>18 mins ago</small>
- <span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="offline">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar2.jpg" alt="">
-<div class="media-body">
-<span class="name">Matt Rosales</span>
-<div class="message">Contrary to popular belief, Lorem Ipsum is not simply</div>
-<small>27 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-<li class="online">
-<a href="javascript:void(0);" class="media">
-<img class="media-object " src="../assets/images/xs/avatar3.jpg" alt="">
-<div class="media-body">
-<span class="name">Phillip Smith</span>
-<div class="message">It has roots in a piece of classical Latin literature from 45 BC</div>
-<small>33 mins ago</small>
-<span class="badge badge-outline status"></span>
-</div>
-</a>
-</li>
-</ul>
-<div class="dropdown-divider"></div>
-<a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
-</div>
-</div>
-<div class="dropdown d-flex">
-<a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-1" data-toggle="dropdown"><i class="fa fa-bell"></i><span class="badge badge-primary nav-unread"></span></a>
-<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-<ul class="list-unstyled feeds_widget">
-<li>
-<div class="feeds-left">
-<span class="avatar avatar-blue"><i class="fa fa-check"></i></span>
-</div>
-<div class="feeds-body ml-3">
-<p class="text-muted mb-0">Campaign <strong class="text-blue font-weight-bold">Holiday</strong> is nearly reach budget limit.</p>
-</div>
-</li>
-<li>
-<div class="feeds-left">
-<span class="avatar avatar-green"><i class="fa fa-user"></i></span>
-</div>
-<div class="feeds-body ml-3">
-<p class="text-muted mb-0">New admission <strong class="text-green font-weight-bold">32</strong> in computer department.</p>
- </div>
-</li>
-<li>
-<div class="feeds-left">
-<span class="avatar avatar-red"><i class="fa fa-info"></i></span>
-</div>
-<div class="feeds-body ml-3">
-<p class="text-muted mb-0">6th sem result <strong class="text-red font-weight-bold">67%</strong> in computer department.</p>
-</div>
-</li>
-<li>
-<div class="feeds-left">
-<span class="avatar avatar-azure"><i class="fa fa-thumbs-o-up"></i></span>
-</div>
-<div class="feeds-body ml-3">
-<p class="text-muted mb-0">New Feedback <strong class="text-azure font-weight-bold">53</strong> for university assessment.</p>
-</div>
-</li>
-</ul>
-<div class="dropdown-divider"></div>
-<a href="javascript:void(0)" class="dropdown-item text-center text-muted-dark readall">Mark all as read</a>
-</div>
-</div>
-<!-- Profile dropdown -->
-<?php $this->view('Admin/bootstrapModal/ProfileDrop');?>
-</div>
-</div>
-</div>
-</div>
-</div>
+			</div>
+			<script type="text/javascript">
+				$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
+					return {
+						"iStart": oSettings._iDisplayStart,
+						"iEnd": oSettings.fnDisplayEnd(),
+						"iLength": oSettings._iDisplayLength,
+						"iTotal": oSettings.fnRecordsTotal(),
+						"iFilteredTotal": oSettings.fnRecordsDisplay(),
+						"iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+						"iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+					};
+				};
 
-<div class="section-body">
-<div class="container-fluid">
-<div class="d-flex justify-content-between align-items-center">
-<div class="header-action">
-<h1 class="page-title">Dashboard</h1>
-<ol class="breadcrumb page-breadcrumb">
-<li class="breadcrumb-item"><a href="#">Ericsson</a></li>
-<li class="breadcrumb-item"><a href="#">University</a></li>
-<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-</ol>
-</div>
-<ul class="nav nav-tabs page-header-tab">
-<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#admin-Dashboard">Dashboard</a></li>
-<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#admin-Activity">Activity</a></li>
-</ul>
-</div>
-</div>
-</div>
-<div class="section-body mt-4">
-<div class="container-fluid">
-<div class="row clearfix row-deck">
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background:#f44336;border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body ribbon">
-<div class="ribbon-box green" data-toggle="tooltip" title="New Professors"><?=$data['lt'][0]['num']?></div>
-<a href="<?=ROOT?>Admin/Professors" class="my_sort_cut text-muted">
-<i class="fa fa-black-tie " style="color:#fff"></i>
-<span style="color:#fff">Professors</span>
-</a>
-</div>
-</div>
-</div>
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background: #15a087; border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body">
-<a href="<?=ROOT?>Admin/App-contact" class="my_sort_cut text-muted">
-<i class="fa fa-address-book" style="color:#fff"></i>
-<span style="color:#fff">Contact</span>
-</a>
-</div>
-</div>
-</div>
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background:#e91e63;border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body ribbon">
-<div class="ribbon-box orange" data-toggle="tooltip" title="New Staff">8</div>
-<a href="<?=ROOT?>Admin/Staff" class="my_sort_cut text-muted">
-<i class="fa fa-users" style="color:#fff"></i>
-<span style="color:#fff">Staff</span>
-</a>
-</div>
-</div>
-</div>
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background:#2196f3; border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body">
-<a href="<?=ROOT?>Admin/App-filemanager" class="my_sort_cut text-muted">
-<i class="fa fa-folder" style="color:#fff"></i>
-<span style="color:#fff">FileManager</span>
-</a>
-</div>
-</div>
-</div>
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background:#8e44ad; border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body">
-<a href="<?=ROOT?>Admin/Library" class="my_sort_cut text-muted">
-<i class="fa fa-book" style="color:#fff"></i>
-<span style="color:#fff">Library</span>
-</a>
-</div>
-</div>
-</div>
-<div class="col-6 col-md-4 col-xl-2">
-<div class="card" style="background:#00c303; border: 1px solid transparent;border-radius: 4px;">
-<div class="card-body">
-<a href="<?=ROOT?>Admin/Holiday" class="my_sort_cut text-muted">
-<i class="fa fa-bullhorn" style="color:#fff"></i>
-<span style="color:#fff">Holiday</span>
-</a>
-</div>
-</div>
-</div>
-</div>
-<div class="tab-content">
-<div class="tab-pane fade show active" id="admin-Dashboard" role="tabpanel">
-<div class="row clearfix">
-<div class="col-xl-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">University Report</h3>
- <div class="card-options">
-<a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
-<a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
-<a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
-</div>
-</div>
-<div class="card-body">
-<div class="d-sm-flex justify-content-between">
-<div class="font-12 mb-2"><span>Measure How Fast You’re Growing Monthly Recurring Revenue. <a href="#">Learn More</a></span></div>
-<div class="selectgroup w250">
-<label class="selectgroup-item">
-<input type="radio" name="intensity" value="low" class="selectgroup-input" checked="">
-<span class="selectgroup-button">1D</span>
-</label>
-<label class="selectgroup-item">
-<input type="radio" name="intensity" value="medium" class="selectgroup-input">
-<span class="selectgroup-button">1W</span>
-</label>
-<label class="selectgroup-item">
-<input type="radio" name="intensity" value="high" class="selectgroup-input">
-<span class="selectgroup-button">1M</span>
-</label>
-<label class="selectgroup-item">
-<input type="radio" name="intensity" value="veryhigh" class="selectgroup-input">
-<span class="selectgroup-button">1Y</span>
-</label>
-</div>
-</div>
-<div id="apex-chart-line-column"></div>
-</div>
-<div class="card-footer">
-<div class="row">
-<div class="col-xl-3 col-md-6 mb-2">
-<div class="clearfix">
-<div class="float-left"><strong>Fees</strong></div>
-<div class="float-right"><small class="text-muted">35%</small></div>
-</div>
-<div class="progress progress-xs">
-<div class="progress-bar bg-indigo" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<span class="text-uppercase font-10">Compared to last year</span>
-</div>
-<div class="col-xl-3 col-md-6 mb-2">
-<div class="clearfix">
-<div class="float-left"><strong>Donation</strong></div>
-<div class="float-right"><small class="text-muted">61%</small></div>
-</div>
-<div class="progress progress-xs">
-<div class="progress-bar bg-yellow" role="progressbar" style="width: 61%" aria-valuenow="61" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<span class="text-uppercase font-10">Compared to last year</span>
-</div>
-<div class="col-xl-3 col-md-6 mb-2">
-<div class="clearfix">
-<div class="float-left"><strong>Income</strong></div>
-<div class="float-right"><small class="text-muted">87%</small></div>
-</div>
-<div class="progress progress-xs">
-<div class="progress-bar bg-green" role="progressbar" style="width: 87%" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<span class="text-uppercase font-10">Compared to last year</span>
-</div>
-<div class="col-xl-3 col-md-6 mb-2">
-<div class="clearfix">
-<div class="float-left"><strong>Expense</strong></div>
-<div class="float-right"><small class="text-muted">42%</small></div>
-</div>
-<div class="progress progress-xs">
-<div class="progress-bar bg-pink" role="progressbar" style="width: 42%" aria-valuenow="42" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<span class="text-uppercase font-10">Compared to last year</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="row clearfix row-deck">
-<div class="col-xl-6 col-lg-6 col-md-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Exam Toppers</h3>
-<div class="card-options">
-<a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
-<div class="item-action dropdown ml-2">
-<a href="javascript:void(0)" data-toggle="dropdown"><i class="fe fe-more-vertical"></i></a>
-<div class="dropdown-menu dropdown-menu-right">
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Details </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-share-alt"></i> Share </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-cloud-download"></i> Download</a>
- <div class="dropdown-divider"></div>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-copy"></i> Copy to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-folder"></i> Move to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-edit"></i> Rename</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
-</div>
-</div>
-</div>
-</div>
-<div class="table-responsive" style="height: 310px;">
-<table class="table card-table table-vcenter text-nowrap table-striped mb-0">
-<tbody>
-<tr>
-<th>No.</th>
-<th>Name</th>
-<th></th>
-<th>Marks</th>
-<th>%AGE</th>
-</tr>
-<tr>
-<td>11</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar1.jpg" alt="avatar">
-</div>
-</td>
-<td>
-<div>Merri Diamond</div>
-<div class="text-muted">Science</div>
-</td>
-<td>199</td>
-<td>99.00</td>
-</tr>
-<tr>
-<td>23</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar2.jpg" alt="avatar">
-</div>
-</td>
-<td>
-<div>Sara Hopkins</div>
-<div class="text-muted">Mechanical</div>
-</td>
-<td>197</td>
-<td>98.00</td>
-</tr>
-<tr>
-<td>41</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar3.jpg" alt="avatar">
-</div>
- </td>
-<td>
-<div>Allen Collins</div>
-<div class="text-muted">M.C.A.</div>
-</td>
-<td>197</td>
-<td>98.00</td>
-</tr>
-<tr>
-<td>17</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar4.jpg" alt="avatar">
-</div>
-</td>
-<td>
-<div>Erin Gonzales</div>
-<div class="text-muted">Arts</div>
-</td>
-<td>194</td>
-<td>97.00</td>
-</tr>
-<tr>
-<td>57</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar5.jpg" alt="avatar">
-</div>
-</td>
-<td>
-<div>Claire Peters</div>
-<div class="text-muted">Science</div>
-</td>
-<td>192</td>
-<td>95.00</td>
-</tr>
-<tr>
-<td>85</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar6.jpg" alt="avatar">
-</div>
-</td>
-<td>
-<div>Claire Peters</div>
-<div class="text-muted">Science</div>
-</td>
-<td>192</td>
-<td>95.00</td>
-</tr>
-<tr>
-<td>9</td>
-<td class="w40">
-<div class="avatar">
-<img class="avatar" src="../assets/images/xs/avatar7.jpg" alt="avatar">
-</div>
-</td>
-<td>
- <div>Claire Peters</div>
-<div class="text-muted">Science</div>
-</td>
-<td>191</td>
-<td>95.00</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="card-footer d-flex justify-content-between">
-<div class="font-14"><span>Measure How Fast You’re Growing Monthly Recurring Revenue. <a href="#">View All</a></span></div>
-<div>
-<button type="button" class="btn btn-primary">Export</button>
-</div>
-</div>
-</div>
-</div>
-<div class="col-xl-6 col-lg-6 col-md-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Performance</h3>
-</div>
-<div class="card-body">
-<div id="apex-radar-multiple-series"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col-md-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">New Student List</h3>
-<div class="card-options">
-<a href="#" class="card-options-collapse" data-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
-<a href="#" class="card-options-fullscreen" data-toggle="card-fullscreen"><i class="fe fe-maximize"></i></a>
-<a href="#" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
-</div>
-</div>
-<div class="card-body">
-<div class="table-responsive">
-<table class="table table-striped mb-0 text-nowrap">
-<thead>
-<tr>
-<th>No</th>
-<th>Name</th>
-<th>Assigned Professor</th>
-<th>Date Of Admit</th>
-<th>Fees</th>
-<th>Branch</th>
-<th>Edit</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Jens Brincker</td>
-<td>Kenny Josh</td>
-<td>27/05/2016</td>
-<td>
- <span class="tag tag-success">paid</span>
-</td>
-<td>Mechanical</td>
-<td>
-<a href="javascript:void(0)"><i class="fa fa-check"></i></a>
-<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Mark Hay</td>
-<td> Mark</td>
-<td>26/05/2018</td>
-<td>
-<span class="tag tag-warning">unpaid</span>
-</td>
-<td>Science</td>
-<td>
-<a href="javascript:void(0)"><i class="fa fa-check"></i></a>
-<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Anthony Davie</td>
-<td>Cinnabar</td>
-<td>21/05/2018</td>
-<td>
-<span class="tag tag-success ">paid</span>
-</td>
-<td>Commerce</td>
-<td>
-<a href="javascript:void(0)"><i class="fa fa-check"></i></a>
-<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-</td>
-</tr>
-<tr>
-<td>4</td>
-<td>David Perry</td>
-<td>Felix </td>
-<td>20/04/2019</td>
-<td>
-<span class="tag tag-danger">unpaid</span>
-</td>
-<td>Mechanical</td>
-<td>
-<a href="javascript:void(0)"><i class="fa fa-check"></i></a>
-<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Anthony Davie</td>
-<td>Beryl</td>
-<td>24/05/2017</td>
-<td>
-<span class="tag tag-success ">paid</span>
-</td>
-<td>M.B.A.</td>
-<td>
-<a href="javascript:void(0)"><i class="fa fa-check"></i></a>
-<a href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="tab-pane fade" id="admin-Activity" role="tabpanel">
-<div class="row clearfix row-deck">
-<div class="col-xl-7 col-lg-6 col-md-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">Quick Mail</h3>
-<div class="card-options">
-<a href="javascript:void(0)" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
-<div class="item-action dropdown ml-2">
-<a href="javascript:void(0)" data-toggle="dropdown"><i class="fe fe-more-vertical"></i></a>
-<div class="dropdown-menu dropdown-menu-right">
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Details </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-share-alt"></i> Share </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-cloud-download"></i> Download</a>
-<div class="dropdown-divider"></div>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-copy"></i> Copy to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-folder"></i> Move to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-edit"></i> Rename</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
-</div>
-</div>
-</div>
-</div>
-<div class="card-body">
-<div class="input-group">
-<div class="input-group-prepend">
-<span class="input-group-text w80">To:</span>
-</div>
-<input type="text" class="form-control">
-<div class="input-group-append">
-<span class="input-group-text">CC BCC</span>
- </div>
-</div>
-<div class="input-group mt-1 mb-3">
-<div class="input-group-prepend">
-<span class="input-group-text w80">Subject:</span>
-</div>
-<input type="text" class="form-control">
-</div>
-<div class="summernote">
-Hi there,
-<br />
-<p>The toolbar can be customized and it also supports various callbacks such as <code>oninit</code>, <code>onfocus</code>, <code>onpaste</code> and many more.</p>
-<br />
-<p>Thank you!</p>
-<h6>Summer Note</h6>
-</div>
-<button class="btn btn-default mt-3">Send</button>
-</div>
-</div>
-</div>
-<div class="col-xl-5 col-lg-6 col-md-12">
-<div class="card">
-<div class="card-header">
-<h3 class="card-title">University Stats</h3>
-<div class="card-options">
-<a href="javascript:void(0)" class="card-options-remove" data-toggle="card-remove"><i class="fe fe-x"></i></a>
-<div class="item-action dropdown ml-2">
-<a href="javascript:void(0)" data-toggle="dropdown"><i class="fe fe-more-vertical"></i></a>
-<div class="dropdown-menu dropdown-menu-right">
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-eye"></i> View Details </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-share-alt"></i> Share </a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-cloud-download"></i> Download</a>
-<div class="dropdown-divider"></div>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-copy"></i> Copy to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-folder"></i> Move to</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-edit"></i> Rename</a>
-<a href="javascript:void(0)" class="dropdown-item"><i class="dropdown-icon fa fa-trash"></i> Delete</a>
-</div>
-</div>
-</div>
-</div>
-<div class="card-body">
-<div class="row text-center">
-<div class="col-lg-4 col-4 border-right">
-<label class="mb-0 font-10">Department</label>
-<h4 class="font-20 font-weight-bold">05</h4>
-</div>
- <div class="col-lg-4 col-4 border-right">
-<label class="mb-0 font-10">Total Teacher</label>
-<h4 class="font-20 font-weight-bold">43</h4>
-</div>
-<div class="col-lg-4 col-4">
-<label class="mb-0 font-10">Total Student</label>
-<h4 class="font-20 font-weight-bold">267</h4>
-</div>
-</div>
-<table class="table table-striped mt-4">
-<tbody><tr>
-<td>
-<label class="d-block">Mechanical Engineering<span class="float-right">43%</span></label>
-<div class="progress progress-xs">
-<div class="progress-bar bg-indigo" role="progressbar" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100" style="width: 43%;"></div>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<label class="d-block">Business Analysis - BUS <span class="float-right">27%</span></label>
-<div class="progress progress-xs">
-<div class="progress-bar bg-blue" role="progressbar" aria-valuenow="27" aria-valuemin="0" aria-valuemax="100" style="width: 27%;"></div>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<label class="d-block">Computer Technology - CT <span class="float-right">81%</span></label>
-<div class="progress progress-xs">
-<div class="progress-bar bg-cyan" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 81%;"></div>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<label class="d-block">Management - MGT <span class="float-right">61%</span></label>
-<div class="progress progress-xs">
-<div class="progress-bar bg-pink" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 61%;"></div>
-</div>
-</td>
-</tr>
-<tr>
-<td>
-<label class="d-block">Science <span class="float-right">77%</span></label>
-<div class="progress progress-xs">
-<div class="progress-bar bg-orange" role="progressbar" aria-valuenow="77" aria-valuemin="0" aria-valuemax="100" style="width: 77%;"></div>
-</div>
- </td>
-</tr>
-</tbody></table>
-</div>
-<div class="card-footer">
-<small>Measure How Fast You’re Growing Monthly Recurring Revenue. <a href="#">Learn More</a></small>
-</div>
-</div>
-</div>
-<div class="col-xl-12 col-lg-12">
-<div class="card">
-<div class="table-responsive todo_list">
-<table class="table table-hover text-nowrap table-striped table-vcenter mb-0">
-<thead>
-<tr>
-<th>Task</th>
-<th class="w150 text-right">Due</th>
-<th class="w100">Priority</th>
-<th class="w80 text-center"><i class="icon-user"></i></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked>
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</td>
-<td class="text-right">Feb 12-2019</td>
-<td><span class="tag tag-danger ml-0 mr-0">HIGH</span></td>
-<td>
-<span class="avatar avatar-pink" data-toggle="tooltip" data-placement="top" title="" data-original-title="Avatar Name">NG</span>
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</td>
-<td class="text-right">Feb 18-2019</td>
-<td><span class="tag tag-warning ml-0 mr-0">MED</span></td>
-<td>
-<img src="../assets/images/xs/avatar1.jpg" data-toggle="tooltip" data-placement="top" title="" alt="Avatar" class="avatar" data-original-title="Avatar Name">
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked>
-<span class="custom-control-label">New logo design for Angular Admin</span>
-</label>
-</td>
-<td class="text-right">March 02-2019</td>
-<td><span class="tag tag-success ml-0 mr-0">High</span></td>
-<td>
-<img src="../assets/images/xs/avatar2.jpg" data-toggle="tooltip" data-placement="top" title="" alt="Avatar" class="avatar" data-original-title="Avatar Name">
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked>
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</td>
-<td class="text-right">Feb 12-2019</td>
-<td><span class="tag tag-danger ml-0 mr-0">HIGH</span></td>
-<td>
-<span class="avatar avatar-pink" data-toggle="tooltip" data-placement="top" title="" data-original-title="Avatar Name">NG</span>
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Report Panel Usag</span>
-</label>
-</td>
-<td class="text-right">Feb 18-2019</td>
-<td><span class="tag tag-warning ml-0 mr-0">MED</span></td>
-<td>
-<img src="../assets/images/xs/avatar3.jpg" data-toggle="tooltip" data-placement="top" title="" alt="Avatar" class="avatar" data-original-title="Avatar Name">
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1" checked>
-<span class="custom-control-label">New logo design for Angular Admin</span>
-</label>
-</td>
-<td class="text-right">March 02-2019</td>
-<td><span class="tag tag-success ml-0 mr-0">High</span></td>
-<td>
-<span class="avatar avatar-blue" data-toggle="tooltip" data-placement="top" title="" data-original-title="Avatar Name">NG</span>
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Design PSD files for Angular Admin</span>
-</label>
-</td>
-<td class="text-right">March 20-2019</td>
-<td><span class="tag tag-warning ml-0 mr-0">MED</span></td>
-<td>
-<img src="../assets/images/xs/avatar4.jpg" data-toggle="tooltip" data-placement="top" title="" alt="Avatar" class="avatar" data-original-title="Avatar Name">
-</td>
-</tr>
-<tr>
-<td>
-<label class="custom-control custom-checkbox">
-<input type="checkbox" class="custom-control-input" name="example-checkbox1" value="option1">
-<span class="custom-control-label">Design PSD files for Angular Admin</span>
-</label>
-</td>
-<td class="text-right">March 20-2019</td>
-<td><span class="tag tag-warning ml-0 mr-0">MED</span></td>
-<td>
-<img src="../assets/images/xs/avatar5.jpg" data-toggle="tooltip" data-placement="top" title="" alt="Avatar" class="avatar" data-original-title="Avatar Name">
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+				function ajaxcsrf() {
+					var csrfname = 'csrf_test_name';
+					var csrfhash = '4546c4c40312eb1a952fb0d1002c7246';
+					var csrf = {};
+					csrf[csrfname] = csrfhash;
+					$.ajaxSetup({
+						"data": csrf
+					});
+				}
 
-<div class="section-body">
-<footer class="footer">
-<div class="container-fluid">
-<div class="row">
-<div class="col-md-6 col-sm-12">
-Copyright © 2019 <a href="https://www.midtech.digital/"></a>.
-</div>
-<div class="col-md-6 col-sm-12 text-md-right">
-<ul class="list-inline mb-0">
-<li class="list-inline-item"><a href="<?=ROOT?>Admin/index">Documentation</a></li>
-<li class="list-inline-item"><a href="javascript:void(0)">FAQ</a></li>
-<li class="list-inline-item"><a href="javascript:void(0)" class="btn btn-outline-primary btn-sm">Buy Now</a></li>
-</ul>
- </div>
-</div>
-</div>
-</footer>
-</div>
-</div>
-</div>
+				function reload_ajax() {
+					table.ajax.reload(null, false);
+				}
 
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/bundles/lib.vendor.bundle.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/bundles/counterup.bundle.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/bundles/apexcharts.bundle.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/bundles/summernote.bundle.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/js/core.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminRoute/assets/js/page/index.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminRoute/assets/js/page/summernote.js" type="0f569e33e42d35ce2b7a20d1-text/javascript"></script>
-<script src="<?=ASSETS?>RequirementJs/AdminFirstassets/js/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="0f569e33e42d35ce2b7a20d1-|49" defer=""></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v64f9daad31f64f81be21cbef6184a5e31634941392597" integrity="sha512-gV/bogrUTVP2N3IzTDKzgP0Js1gg4fbwtYB6ftgLbKQu/V8yH2+lrKCfKHelh4SO3DPzKj4/glTO+tNJGDnb0A==" data-cf-beacon='{"rayId":"6b538d11d985406c","version":"2021.11.0","r":1,"token":"f79813393a9345e8a59bb86abc14d67d","si":100}' crossorigin="anonymous"></script>
-</body>
-</html>
+				$(document).ready(function() {
+					$('.summernote').summernote({
+						toolbar: [
+							// [groupName, [list of button]]
+							['style', ['bold', 'italic', 'underline', 'clear']],
+							['font', ['strikethrough', 'superscript', 'subscript']],
+							['fontsize', ['fontsize']],
+							['color', ['color']],
+							['para', ['ul', 'ol', 'paragraph']],
+							['height', ['height']]
+						]
+					});
+				});
+			</script>
+
+			</body>
+
+			</html>

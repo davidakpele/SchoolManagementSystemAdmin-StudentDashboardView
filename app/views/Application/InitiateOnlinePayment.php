@@ -28,9 +28,9 @@
     <link href="<?=ASSETS?>important__stylesheet__file/responsive.css" rel="stylesheet" />
     <style type="text/css">
         body {background: linear-gradient(rgba(0,0,0, 0.56), rgba(0,0,0, 0.56)), url(<?=ASSETS?>img/gallery/login_bg.jpg) no-repeat;background-size: cover;}
-        #head { border-bottom: 0px;opacity: 0.9;}
         h2 {color: #fff;}
-        .login-widget{max-width: 540px;background: #FFF;border-radius: 5px;margin: 0 auto;padding: 25px}
+        .space{margin-top:50px}
+        .login-widget{max-width: 682px;background: #FFF;border-radius: 5px;margin: 0 auto;padding: 25px}
         .login-widget input[type='text'], .login-widget input[type='password'] {border: 1px solid #E2E1E1;color: #999;width: 100%;border-radius: 4px;padding: 7px;font-size: 14px;}
         .login-widget label {display: block;padding: 3px 0px 3px 0px;font-size: 14px;font-weight: 100;width: auto;height: auto;}
         .login-widget input[type='submit'] {border: none;padding: 10px;color: #FFF;width: 100%;text-align: center;background: #2383ad;font-size: 17px;border-radius: 4px;margin-top: 10px;}
@@ -40,32 +40,21 @@
         #success {background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
         .float-center a {background: #c60d00;color: #fff;padding: 3px 10px;border-radius: 3px;}
         * {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
-        #head{width: 100%; padding: 1%;border-bottom: 1px solid #EEE;position: static; top: 0px;left: 0px;z-index: 99;background: #008bc6; height: 60px; margin-bottom: 30px;}
+        #head{ border-bottom: 0px;opacity: 0.9;width: 100%; padding: 1%;position: static; top: 0px;left: 0px;z-index: 99;background: #008bc6; height: 82px; margin-bottom: 30px;}
         .loading {display: flex;justify-content: center;align-items:center;transition: 0.5s;position:fixed;top:0;width:100%;height:100%;}
         .loading::after {content: "";width: 37.6px;height: 37.6px;border: 8px solid #bbdbfc;border-top-color: #0c6cf2;border-radius: 50%;animation: loading 1s linear infinite;}
         @keyframes loading {to {transform: rotate(1turn);}}
         .content {transition: 0.5s;opacity:0;}
+        
     </style>
 </head>
 <body>
-<div id="head">
+ <div id="head">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="float-left"> 
-                    <span>
-                        <a href="<?=ROOT?>"> <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:45px;"/></a>
-                    </span>
-                </div>
+                <a href="<?=ROOT?>"><img src="<?=ASSETS?>img/product/1.png" style="max-width:50px; margin-bottom:30px"/></a>
             </div><!--end col div here -->
-            <div class="float-right">
-                <div class="horizontal-list">
-                <ul>
-
-                </ul>
-                </div>
-            </div>
-            <br class="clear" />
         </div><!-- end row here -->
     </div><!-- close container -->
 </div>
@@ -75,38 +64,41 @@
     </div>
 </div>
 <!--- Start Body -->
-    <h2 class="h-2" style="text-align:center">Pay Online</h2>
+<div class="space">
+    <h2 class="h-4" style="text-align:center;font-size:20px; margin-bottom:15px">Pay Online</h2>
     <div class="mini-container login-widget"> 
         <div id="errorMessage" class="error invalid-feedba" style="display:none;"></div>
-        <div  id="success" style="display:none; color:#000;"></div>
-            <form method="POST" action="javascript:void(0)" id="InitiateOnlinePayment" autocomplete="off">
+        <div id="success" style="display:none; color:#000;"></div>
+            <form method="POST" action="javascript:void(0)" id="InitiateOnlinePayment" autocomplete="off" style="margin:5px;">
                 <div class="element">
-                    <label>Reference No </label>
+                    <label style="color:#7D7D7D">Reference No </label>
                     <input name="RefNo" type="text" id="RefNo" value=""/>
                 </div>
-                <div class="element">
-                <input name="submit" type="submit" id="submit" value="Continue" />
+                <div class="element" style="margin-top:15px; margin-bottom:10px">
+                    <input name="submit" type="submit" id="submit" value="Continue" />
                 </div>
             </form>
         </div>
-    <div class="mini-container float-center"  style="margin-top: 20px; width: 100%;"><p>Contact the administrator <a href="#">Support</a></p></div>
-    <br class="clear" />
+        <div class="mini-container float-center"  style="margin-top: 20px; width: 100%;"><p>Contact the administrator <a href="#">Support</a></p></div>
+        <br class="clear" />
      <br class="clear" />
+    </div>
 </div>
 <!-- End Body --><br />
     <!-- footer div starts here -->
-    <div class="container-fluid" style="position: fixed;bottom: 0px;padding-top: 20px;width: 100%;" >
+    <div class="container-fluid" style="margin-top:150px;" >
         <div class="container footer-wrap">
             <div class="row">
                 <div class="col-sm-6 pull-left footer-left">
                    <p style="color:#b9b9b9;">&copy; All Right Reserved</p> 
                 </div>
                 <div class="col-sm-6 text-right pull-right footer-right">
-                    <p style="color:#b9b9b9;">Powered by <a href="http://www.midtech.digital" style="color:#2383ad; text-decoration:underline">MidTech Digital Solution</a></p>     
+                    <p style="color:#b9b9b9;">Powered by <a href="http://www.midtech.digital" style="color:#2383ad; text-decoration:underline">MidTech</a></p>     
                 </div>
             </div>
         </div>
     </div>
+    
     <script type="text/javascript" src="<?=ASSETS?>js/jquery-3.6.0.js"></script>
     <script type="text/javascript" src="<?=ASSETS?>js/bootstrap.js"></script>
     <script>
@@ -120,7 +112,7 @@
             e.preventDefault();
             let ref = $("input#RefNo").val();
             if (ref == "") {
-                $("#errorMessage").fadeIn().text("Please Enter Your Reference Nunber.");
+                $("#errorMessage").fadeIn().text("Please Enter Your Reference Number.");
                 $("input#RefNo").css('border-color', 'red');
                 $("input#RefNo").focus();
                 return false;

@@ -14,21 +14,20 @@
         }
     }
     function isLoggedInAdmin() {
-        if (isset($_SESSION['Admin__id']) && isset($_SESSION['username']) && isset($_SESSION['admin_level'])) {
-            // $now = time();
-            // if($now > $_SESSION['expire']) {
-            //     unset($_SESSION['Admin__id']);
-            //     unset($_SESSION['admin_level']);
-            //     unset($_SESSION['username']);
-            //     unset($_SESSION['adminEmail']);
-            //     unset($_SESSION['adminSurname']);
-            //     unset($_SESSION['adminothername']);
-            //     echo "<script>
-            //             alert('Session expire');
-            //         </script>";
-                
-            // }
-            return true;
+        if (isset($_SESSION['Admin__id']) && isset($_SESSION['username']) && isset($_SESSION['Role'])){
+                $now = time();   
+        // Then when they get to submitting login details, just check whether they're within the 5 minute window
+            if ($now > $_SESSION['expire']) { // 300 seconds = 5 minutes
+                unset($_SESSION['Admin__id']);
+                unset($_SESSION['username']);
+                unset($_SESSION['adminEmail']);
+                unset($_SESSION['adminSurname']);
+                unset($_SESSION['adminothername']);
+                header('location:' . ROOT . 'Administration/Default/');
+            }else {
+                // they're within the 30 minutes so save the details to the database 
+                return true;
+            }
         } else {
             return false;
         }
@@ -41,7 +40,7 @@
         }
     }
     function isLoggedInStudent(){
-        if (isset($_SESSION['globalname']) && isset($_SESSION['Department']) && isset($_SESSION['Reference']) && isset($_SESSION['student__Id'])) {
+        if (isset($_SESSION['globalname']) && isset($_SESSION['Department']) && isset($_SESSION['Classid']) && isset($_SESSION['semsterid']) && isset($_SESSION['Reference']) && isset($_SESSION['student__Id'])) {
             return true;
             } else {
             return false;
@@ -82,15 +81,6 @@
             return false;
         }
     }
-   
-if(isset($_SESSION['success_flash'])){
-    echo '<script>alert("'.$_SESSION['success_flash'].'")</script>';
-    unset($_SESSION['success_flash']);
-}
-if(isset($_SESSION['error_flash'])){
-    echo '<div class="bg-danger"><p class="text-danger text-center">'.$_SESSION['error_flash'].'</p></div>';
-    unset($_SESSION['error_flash']);
-}
  function pretty_date($date){
     return date("M d, Y, h:i A", strtotime($date));
 }
@@ -105,7 +95,6 @@ function pretty_html_special_characters($text){
     $text = preg_replace("/=\"\"/", "=", $text);
     return $text;
 }
-function htmlspanishchars($str)
-{
+function htmlspanishchars($str){
     return str_replace(array("&lt;", "&gt;"), array("<", ">"), htmlspecialchars($str, ENT_NOQUOTES, "UTF-8"));
 }

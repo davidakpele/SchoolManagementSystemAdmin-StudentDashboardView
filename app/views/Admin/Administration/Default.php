@@ -34,7 +34,7 @@
     <script type="text/javascript" src="<?=ASSETS?>js/bootstrap.js"></script>
     <style>
         .error{background: #FAE8E8;border: 1px solid #DAB3B6;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-        .error-ico{padding-left:70px;background: url(http://localhost/school/public/assets/bullet_error.png) #FAE8E8 no-repeat 30px center;}
+        .error-ico{padding-left:70px;background: url(http://localhost/Student/public/assets/bullet_error.png) #FAE8E8 no-repeat 30px center;}
         input:focus{outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
     </style>
 </head>
@@ -59,7 +59,7 @@
                 <div class="mini-container login-widget"> 
                     <div class="container__login">
                         <div id="AdminLoginerrorMessage" class="error error-ico" style="display:none"></div>
-                        <form method="POST" id="__AdminBoxText" class="form-group" autocomplete="off" action="javascript:void(0)">
+                        <form method="POST" id="__AdminBoxText" class="form-group" autocomplete="off" action="<?=ROOT?>PageController/SecretInterfaceBug">
                             <div class="row p-0">
                                 <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0">
                                     <div class="col-12 p-0 px-4"> 

@@ -1,6 +1,7 @@
 <?php
-class PagesController extends Controller {
-    /**parhamcurtis
+Class PagesController extends Controller {
+    /**
+     * 
      * Class PageController
      * @var false|mixed
      * Author: David AkpELE <akpeledavid@hotmail.com>
@@ -38,6 +39,7 @@ class PagesController extends Controller {
         if(!empty($___ApplicationType) && (is_numeric($___ApplicationType))){
             if ($___ApplicationType ==   1 || $___ApplicationType == 2 || $___ApplicationType ==   3) {
                 $crf= $this->userModel->FetchRender($___ApplicationType);
+                
                 if ($crf) {
                     $response['Status'] = '2001'; 
                     $response['result'] = $crf;
@@ -52,6 +54,63 @@ class PagesController extends Controller {
         echo json_encode($response); 
     }
 
+    public function Render(){
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+        $getData=$phpObject->{'DataId'};
+        $newJsonString = json_encode($phpObject);
+        $___ApplicationType = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+        if(!empty($___ApplicationType) && (is_numeric($___ApplicationType))){
+            if ($___ApplicationType ==   1 || $___ApplicationType == 2 || $___ApplicationType == 3) {
+                $crf= $this->userModel->selectFaculties($___ApplicationType);
+                if ($crf) {
+                    $response['Status'] = '2001'; 
+                    $response['result'] = $crf;
+                }else {
+                    $response['Status'] = 'Invalid Data requested.';
+                }
+            }
+         }else { 
+			header('location:' . ROOT . 'DeniedAccess');
+        }
+        ob_end_clean();
+        echo json_encode($response); 
+    }
+    public function RenderDep(){
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+        $getData=$phpObject->{'id'};
+        $newJsonString = json_encode($phpObject);
+        $id = strip_tags(trim(filter_var($getData, FILTER_SANITIZE_NUMBER_INT)));
+        if (!empty($id) && (is_numeric($id) && filter_var((int)$id, FILTER_VALIDATE_INT) !== false && is_int($id) || ctype_digit($id) && strval(intval($id)) === strval($id) && ltrim($id, 0))){
+            $crf= $this->userModel->selectDeps($id);
+            if ($crf) {
+                $response['Status'] = '2001'; 
+                $response['result'] = $crf;
+            }else {
+                $response['Status'] = 'Invalid Data requested.';
+            }
+            
+        }else { 
+			header('location:' . ROOT . 'DeniedAccess');
+        }
+        ob_end_clean();
+        echo json_encode($response); 
+    }
     public function RenderProgrammeList(){
         ob_start();
         
@@ -131,8 +190,13 @@ class PagesController extends Controller {
     // ======================================================
 
     public function Default(){
-       @$data = ['page_title' => 'Admin Dashboard Login System'];
-		@$this->view("Admin/Administration/Default", @$data);	
+        if(isLoggedInAdmin()){
+            header('location:' . ROOT . 'Admin/');
+        }else {
+            @$data = ['page_title' => 'Admin Dashboard Login System'];
+            @$this->view("Admin/Administration/Default", @$data);
+        }
+    	
     }
 
     public function SecretInterfaceBug(){
@@ -376,7 +440,6 @@ class PagesController extends Controller {
         }
         // Set cookie is set to test timeStamp hashing using Md5 encryptions. is the md5 is true we take our random_bytes hash code
        $cookSet= (($tokenX60hash))?$token : $token;
-       //var_dump($cookSet);
         @$data = 
             [
                 'page_title' => 'Student\'s Login Portal',
@@ -401,11 +464,11 @@ class PagesController extends Controller {
         $PostUsername=$phpObject->{'Username'};
         $PostPassword=$phpObject->{'Password'};
         $newJsonString = json_encode($phpObject);
-        $StudentUsername = strip_tags(trim(filter_var((string)$PostUsername, FILTER_SANITIZE_STRING)));
-        $StudentPassword = strip_tags(trim(filter_var($PostPassword, FILTER_SANITIZE_STRING)));
+        $StudentUsername = trim(filter_var($PostUsername, FILTER_SANITIZE_STRING));
+        $StudentPassword = trim(filter_var($PostPassword, FILTER_SANITIZE_STRING));
         @$loggedInstudent = $this->userModel->studentLogin($StudentUsername, $StudentPassword);
         if($loggedInstudent){
-            $response['status'] =  'ef6812481094e33f07fd7aec396fdc0d7e75e8a3f8bad2540935';
+            $response['status'] =  200;
             $this->createstudentSession($loggedInstudent);
         }else {
             $response['message']= 'Username/Password mismatch';
@@ -422,6 +485,7 @@ class PagesController extends Controller {
 
         $this->view('Application/RetrieveMatricNo', @$data); 
     }
+    
     public function StudentRetrieveMatricNumberAPIsPortal(){
 
         header("Access-Control-Allow-Origin: *"); 
@@ -467,14 +531,10 @@ class PagesController extends Controller {
     }
 
     public function EntryRequirements(){
-        @$DF = @$this->userModel->findAllData();
         @$DC = @$this->userModel->SelectSpecial__ID();
-        @$stmt__demo2= @$this->userModel->GetusersfunArray();
         @$data = [
                     'page_title' => 'Mercy College Entry Requirement Portal',
-                    'DisplayFaculty' => @$DF,
                     'DisplayCateogries' => @$DC,
-                    'stmt' => @$stmt__demo2,
                 ];
         @$this->view('Application/EntryRequirements', @$data); 
     }
@@ -483,19 +543,37 @@ class PagesController extends Controller {
 // =================================================
 // Register Method for New Fresher
 // ==================================================
-public function ProcessNewStudentOnline(){
-
+public function isExistStudentEmail(){
     header("Access-Control-Allow-Origin: *"); 
     header("Content-Type: application/json; charset=UTF-8");
     header("Access-Control-Allow-Methods: POST");
     header("Access-Control-Max-Age: 3600");
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
     ob_start();
     $jsonString = file_get_contents("php://input");
     $response = array();
     $phpObject = json_decode($jsonString);
-
+    $Stm = $phpObject->{'Email'};
+    $newJsonString = json_encode($phpObject);
+    $checksql = $this->userModel->isExistsEmail($Stm);
+    if($isFetchEmailexist) {
+        $response['status'] = 303;
+        $response['message']= 'Sorry..! Email Already Been Used By Another Student.';
+    }
+    ob_end_clean();
+    echo json_encode($response);
+}
+public function ProcessNewStudentOnline(){
+    header("Access-Control-Allow-Origin: *"); 
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Methods: POST");
+    header("Access-Control-Max-Age: 3600");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    ob_start();
+    $jsonString = file_get_contents("php://input");
+    $response = array();
+    $phpObject = json_decode($jsonString);
+    
     $NewStudentIdTagNo = $phpObject->{'NewStudentId'};
     $NewStudentEnrollmentNo = $phpObject->{'EnrollmentNumber'};
     $App = $phpObject->{'Application'};
@@ -512,11 +590,28 @@ public function ProcessNewStudentOnline(){
     $Tel = $phpObject->{'Telephone Number'};
     $Ses =$phpObject->{'Session'};
     $isJwtApi = $phpObject->{'JwtApi'};
-    // Setting surname as the user default password
-    $password = password_hash($sur, PASSWORD_ARGON2ID);
-    $newJsonString = json_encode($phpObject);
     
-    $Sender = 
+    // $pid = $phpObject->{'guidanceID'};
+    // $pgender =$phpObject->{'who'};
+    // $psname=$phpObject->{'GSurname'};
+    // $plname=$phpObject->{'GLastname'};
+    // $pemail=$phpObject->{'GEmail'};
+    // $pmobile=$phpObject->{'Gmobile'};
+    // $pdob = $phpObject->{'GDOB'};
+    // $paddress =$phpObject->{'GAddress'};
+     $newJsonString = json_encode($phpObject);
+    
+    // This is jwt token is use to process student /parent data
+    
+    $isFetchEmailexist = $this->userModel->isExistsEmail($Stm);
+    if($isFetchEmailexist) {
+        $response['status'] = 505;
+        $response['message']= 'Sorry..! Email Already Been Used By Another Student.';
+    }else {
+       // Setting surname as the user default password
+        $password = password_hash(strtolower($sur), PASSWORD_ARGON2ID);
+        $pwd = password_hash($psname, PASSWORD_BCRYPT);
+        $Sender = 
         [
             'NewID'=>trim(filter_var($NewStudentIdTagNo, FILTER_SANITIZE_STRING)),
             'EnrollmentNumber' =>trim(filter_var($NewStudentEnrollmentNo, FILTER_SANITIZE_STRING)),
@@ -533,72 +628,61 @@ public function ProcessNewStudentOnline(){
             'Relationship'=>trim(filter_var($ReS, FILTER_SANITIZE_STRING)),
             'Tel'=>trim(filter_var($Tel, FILTER_SANITIZE_STRING)),
             'Session'=>trim(filter_var($Ses, FILTER_SANITIZE_STRING)),
-            'password'=>$password
+            'password'=>$password,
+            //parent data
+            // 'img'=>'',
+            // 'pfname'=>trim(filter_var($psname, FILTER_SANITIZE_STRING)),
+            // 'plname'=>trim(filter_var($plname, FILTER_SANITIZE_STRING)),
+            // 'pDOB'=>trim(filter_var($pdob, FILTER_SANITIZE_STRING)),
+            // 'pGender'=>trim(filter_var($pgender, FILTER_SANITIZE_STRING)),
+            // 'pemail'=>trim(filter_var($pemail, FILTER_SANITIZE_STRING)),
+            // 'pfeatured'=>'1',
+            // 'pwd'=>$pwd,
+            // 'pmobile'=>trim(filter_var($pmobile, FILTER_SANITIZE_STRING)),
+            // 'paddress'=>trim(filter_var($paddress, FILTER_SANITIZE_STRING)),
+            // 'ChildId'=>trim(filter_var($NewStudentIdTagNo, FILTER_SANITIZE_STRING)),
+            // 'Fatherid'=>trim(filter_var($pid, FILTER_SANITIZE_STRING)),
         ];
 
-        $insertingData = $this->userModel->processor($Sender);
-        if($insertingData == true) {
-            $response['status'] = 3;
+         $insertingDataStudent = $this->userModel->processor($Sender);
+         //$insertingParentData = $this->userModel->isParentSQLstmt($Sender);
+         $_SESSION['api'] =$isJwtApi;
+         $_SESSION['userID'] = $Sender['NewID'];
+        if($insertingDataStudent){
+            $response['api']= $_SESSION['api'];
+            $response['userid']= $_SESSION['userID'];
+            // Send Student Via Email
+            // if email is sent, show this message
+            $response['status']= 200;
             $response['Successmessage']= 'Verification mail has been sent to the email you provided. Please verify email to continue application. If you have used a wrong email, please fill the form again with a valid email address. 
-            <br /><br/><a class="buttonResendEmail" href="'.ROOT.'Application/Registration">Fill Parents Details</a> ';
+            <br/><br/><a class="buttonResendEmail" href="'.ROOT.'Application/Registration"><b>Continue Application</b></a> ';
+            // close sending email
+            
         }else {
             $response['message']= 'Sorry.. Something went';
         }
-        ob_end_clean();
-        echo json_encode($response);
+    }
+    ob_end_clean();
+    echo json_encode($response);
     } 
 
-    public function Steptwo(){
-
-        $data= 
-        [
-            'page_title'=> 'Step to complete registration'
-        ];
-        $this->view('Application/Steptwo', $data);
-    }
-
     public function Registration(){
-        @$DF = @$this->userModel->findAllData();
         @$DC = @$this->userModel->SelectSpecial__ID();
-        @$stmt__demo2= @$this->userModel->GetusersfunArray();
         @$throwprogram = @$this->userModel->SelectProgram();
         @$throwSession= @$this->userModel->Selectsession();
         @$throwEntrylevel = @$this->userModel->SelectEntryLevel();
+        $parentid= md5(microtime(true).mt_Rand());
             @$data =
             [
                 'page_title' => 'Application Form for Freshers',
-                'DisplayFaculty' => $DF, 'DisplayCateogries' => $DC,
-                'stmt' => $stmt__demo2,'throw' => $throwprogram, 
-                'StmtEntrylevel' => $throwEntrylevel, 'StmtSession' => $throwSession
-                ];
-        
-            @$this->view('Application/Registration', @$data);      
+                'DisplayCateogries' => $DC,
+                'throw' => $throwprogram, 
+                'StmtEntrylevel' => $throwEntrylevel,
+                'StmtSession' => $throwSession, 
+                'pid'=>$parentid,
+            ];
+        @$this->view('Application/Registration', @$data);      
     }
-
-    // Checking if new Student email exist before.
-    public function isExistStudentEmail(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $isCheckEmail = $phpObject->{'Email'};
-        // This is jwt token is use to process student /parent data
-        $isCheckjwt = $phpObject->{'JwtApi'};
-        $newJsonString = json_encode($phpObject);
-        $isFetchEmailexist = $this->userModel->isExistsEmail($isCheckEmail);
-        if($isFetchEmailexist) {
-            $response['status'] = '200';
-            $response['message']= 'Sorry..! Email Already Been Used By Another Student.';
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-
     public function isDeleteStudent(){
         header("Access-Control-Allow-Origin: *"); 
         header("Content-Type: application/json; charset=UTF-8");
@@ -800,6 +884,7 @@ public function ProcessNewStudentOnline(){
     }
     
     // =====================================================
+    // =====================================================
     // Accountant Method to change password
     // =====================================================
 
@@ -957,34 +1042,46 @@ public function ProcessNewStudentOnline(){
     }
 
     public function Dashboard(){
-        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}
-        $id= $_SESSION['student__Id'];
-        // set variable for course id
-        $ft = $this->userModel->Viewstd($id);
-       if ($ft) {
-            foreach ($ft as $keyvalue) {
-                $Sname = $keyvalue['Surname'];
-                $Oname = $keyvalue['othername'];
-                $Dob = $keyvalue['Date__of__birth'];
-                $gender= $keyvalue['gender'];
-                $email= $keyvalue['email'];
-                $rel= $keyvalue['relationship'];
-                $tel= $keyvalue['telephone'];
-                $img= $keyvalue['image'];
-                $settings= $keyvalue['settings'];
-                $Courseid = $keyvalue['Department__Type'];
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $ft = $this->userModel->Viewstd($id);
+            $depid =$_SESSION['Department'];
+            $clasid=$_SESSION['Classid'];
+            $semid=$_SESSION['semsterid'];
+            $onlineUser = $this->userModel->OnlineStudent($depid, $clasid, $semid);
+            if ($onlineUser) {
+                
             }
-       }
-       $FIndCosId = $this->userModel->FindCourseId($Courseid); 
-        @$data = 
-                [
-                    'page_title' => 'Dashboard',
-                    'photo'=>$img,
-                    'online'=>$FIndCosId,
-                ];
-            
+            if ($ft) {
+                    foreach ($ft as $keyvalue) {
+                        $email= $keyvalue['email'];
+                        $img= $keyvalue['image']; 
+                    }
+                    
+            }
+               
+            @$data = 
+                    [
+                        'page_title' => 'Dashboard',
+                        'photo'=>$img,
+                        'parentCourse'=>$parentCourse,
+                        'online'=>$onlineUser,
+                    ];   
+            }
+        
         @$this->view('Student/Dashboard/index', @$data);
     }
+
+    // public function HealthForm(){
+    //     if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}
+    //     $data = 
+    //     [
+    //         'page_title'=>'Health Form',
+    //         'meta_tag_description'=>'Health Form',
+    //         'meta_tag_content_Seo'=>'Health Form'
+    //     ];
+    //     $this->view('Student/HealthForm',$data);
+    // }
     public function ExamModal(){
         if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}
         if(isset($_GET['id']) && $_GET['id'] > 0){
@@ -1001,8 +1098,7 @@ public function ProcessNewStudentOnline(){
                     'ApplicationName'=>$catname,
                     'isCount'=>$CountExam,
                     'isHighScore'=>$PassScore,
-                    'examid'=>$Courseid
-                    
+                    'examid'=>$Courseid,
                 ];
            
         }else {
@@ -1012,76 +1108,133 @@ public function ProcessNewStudentOnline(){
     }
     
     public function Examination(){
-        if(!isLoggedInStudent())
-        {
+        if(!isLoggedInStudent()){
            echo "<script>
                     alert('Sorry..! You have no permission to this page,not until you login with the right credentials');
                     window.location.assign('".ROOT."Student/Login/');
                 </script>";
         }else{ 
-            $Courseid=$_SESSION['Department'];
-            @$selectAllExam =  $this->namespacemodel->calluserfun($Courseid);
-            $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
-            $CountExam = $this->namespacemodel->isCounter($Courseid);
-            $CourseName = $FetchDepartment->Child_name;
-            if ($selectAllExam){
-                @$timeController = $this->namespacemodel->examTimer($Courseid);
-                if($timeController) {
-                    $startingclock=$timeController->StartTime;
-            }else {
-                    echo "<script>alert('The Time Of Your Exam Has not been set yet. Please Contact The School Admin or Your Lecturar')</script>";
-                }
-            }else {
-                echo "<script>
-                        alert('Exam Has not been set for this Course.');
-                        window.location.replace('".ROOT."Student/Dashboard/');
-                    </script>";
-            }
-            if (isset($_GET['id']) && $_GET['id'] == $Courseid) {
-                try{
+            if(@$_GET['q']== 'start' && @$_GET['step']== 2) {
+                $eid=@$_GET['eid'];
+                $sn=@$_GET['n'];
+                $total=@$_GET['t'];
+                $isSelectExam= $this->namespacemodel->getExam($eid);
+                $CountExam = $this->namespacemodel->isCounter($eid);
+                $GetExamTime= $this->namespacemodel->isexamTime($eid);
+                
+                //dnd($isSelectExam);
+            // $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
+               
+                //dnd($CountExam);
+            // $CourseName = $FetchDepartment->Child_name;
+            // if ($selectAllExam){
+            //     @$timeController = $this->namespacemodel->examTimer($Courseid);
+            //     if($timeController) {
+            //         $startingclock=$timeController->StartTime;
+            // }else {
+            //         echo "<script>alert('The Time Of Your Exam Has not been set yet. Please Contact The School Admin or Your Lecturar')</script>";
+            //     }
+            // }else {
+            //     echo "<script>
+            //             alert('Exam Has not been set for this Course.');
+            //             window.location.replace('".ROOT."Student/Dashboard/');
+            //         </script>";
+            // }
+            // if (isset($_GET['id']) && $_GET['id'] == $Courseid) {
+            //     try{
                     $data =
                         [
                             'page_title'=>'Student Examination Board',
-                            'examcontroller'=>@$selectAllExam,
-                            'examName'=>$CourseName,
-                            'Starting__time'=>$startingclock,
-                            'examid'=>$Courseid,
+                            'examcontroller'=>$isSelectExam,
+                            'examTime'=>$GetExamTime,
+                            // 'examName'=>$CourseName,
+                            // 'Starting__time'=>$startingclock,
+                            // 'examid'=>$Courseid,
                             'isCount'=>$CountExam,
                         ];
                     $this->view("Student/Examination", $data);
-                }catch(ViewPageException $e){
-                    die('Sorry.. Something went wrong..!');
-                }
-            }elseif(isset($_GET['id']) && $_GET['id'] != $Courseid) {
-                 echo "<script>
-                        alert('Sorry..This exam doesn\'t exists in our portal.');
-                        window.location.replace('".ROOT."Student/Dashboard/');
-                    </script>";
-            }
-               
+                // }catch(ViewPageException $e){
+                //     throw new Exception("Error Processing Request", 1);
+                // }
+            // }elseif(isset($_GET['id']) && $_GET['id'] != $Courseid) {
+            //      echo "<script>
+            //             alert('Sorry..This exam doesn\'t exists in our portal.');
+            //             window.location.replace('".ROOT."Student/Dashboard/');
+            //         </script>";
+            // }
+            }  
         }  
     }
 
+    public function AuthExamination(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $ft = $this->userModel->Viewstd($id);
+            $email = $_SESSION['studEmail'];
+            $depid =$_SESSION['Department'];
+            $clasid=$_SESSION['Classid'];
+            $semid=$_SESSION['semsterid'];
+            $demo1 = $this->namespacemodel->demo1();
+            @$ar =[];
+            foreach($demo1 as $i){
+                $examid= $i['eid'];
+                $demo2 = $this->namespacemodel->demo2($examid, $id);
+                $ar[] = @$demo2->Meid;
+            }  
+            $render = array_filter($ar); 
+            // to check is array is empty...i use array_filter() function
+            if(!empty($render)){
+                $eid = $ar;
+                $getdata= $this->namespacemodel->GetNoneExistingExam($eid,$depid,$clasid,$semid);
+            }else {
+                $getdata= $this->namespacemodel->examTime($depid,$clasid,$semid);
+            }
+            if ($ft) {
+                foreach ($ft as $keyvalue) {
+                    $email= $keyvalue['email'];
+                    $img= $keyvalue['image']; 
+                }
+            }
+           
+            $data =
+            [
+                'page_title'=>'Welcome to Exam Portal',
+                'studentEmail'=>$email,
+                'photo'=>$img,
+                'examTime'=>$getdata,
+            ];
+          
+            $this->view('Student/AuthExam', $data);
+        }
+    }
     public function ExamResult(){
-        if(!isLoggedInStudent())
-        {
+        if(!isLoggedInStudent()){
            echo "<script>
                     alert('Sorry..! You have no permission to this page,not until you login with the right credentials');
                     window.location.assign('".ROOT."Student/Login/');
                 </script>";
         }else{
-            $check =  $this->namespacemodel->ExamCount();
+           
             $id = $_SESSION['student__Id'];
-            $Courseid=$_SESSION['Department'];
+            $Courseid= $_POST['courseid'];
             $appType = $this->namespacemodel->FetchStudentData($id);
             // ============================================
-            $Application__Type = $appType->Application__Type;
+            $Application__Type = $appType->Application_id;
             // ============================================
             $core1 = $this->userModel->fetchApp($Application__Type);
             // ================================
             $Catname1 = $core1->Category__name;
+            $eid = $_POST['exam_id'];
+            $i=1;
+            $userid = $_SESSION['student__Id'];
+            if(!empty($userid)){
+                $insertMonitor = $this->namespacemodel->insertMonitor($userid, $eid);
+            }
+           
             $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
-            $CourseName = $FetchDepartment->Child_name;
+            $CourseName = $FetchDepartment->CourseTitle;
+            $GetExamTime= $this->namespacemodel->isexamTime($eid);
+            $check = $_POST['total'];
             // =============================
             /**
              * Instead of testing each student Post Answers against the RIGHT one, 
@@ -1093,23 +1246,29 @@ public function ProcessNewStudentOnline(){
              * Default way is, if(student_ansNum1 = database[ans1]) if(student_ansNum =database[ans2]). 
              * this is really to long and just to keep out work prettier, i just  Asynchronous Option
              */
-            $i=1;
+            
             // Checking all existing  exam by run post ++
             for($i;$i<=$check;$i++){
                 // Set the student post into array
-                @$userselected = $_POST[$i];
+                $userselected = $_POST[$i];
                 // Update the student post and test against the default answer
-                $updateAnswers = $this->namespacemodel->UpdateExamAnswers($userselected, $i);
+                // $ar =$userselected;
+                $updateAnswers = $this->namespacemodel->InsertAns($userselected,$userid, $i);
             } 
+           //$_ENResult = $this->namespacemodel->updateExamstatus($eid);
             // Now fetch the post answers from students
             $stmt = $this->namespacemodel->StudentRecords();
+           
+            $insertMonitor = $this->namespacemodel->insertMonitor($userid, $eid);
                if($stmt){
                 //    Loop each one and match all ONCE TO the dafault answer
                     foreach($stmt as $key){
-                        if($key['answer'] == $key['Student__answer']){
+                         
+                        if($key['ReceivedAns'] == $key['ans']){
+                           
                             // if true ANY, variable score should override variable key and start score record by 1. 
                             // The +=1 is [We given the variable ability to increase in a state of True]
-                            @$scores +=1;
+                            @$scores = $_GET['no'];
                         }
                     }
                     // 'no' is a Ride over variablen
@@ -1142,7 +1301,7 @@ public function ProcessNewStudentOnline(){
                         $scores = '0';
                     }
             $data = 
-                [
+                [                     
                     'page_title'=>'Examination Result',
                     'ActualScore'=>'<b>'.@$scores.'</b> Out Of <b>('.$check.')</b>',
                     'DisplayResult'=>'<b>'. $finallyGrade .'</b>%',
@@ -1597,29 +1756,25 @@ public function ProcessNewStudentOnline(){
     // =======================================================
     // THIS IS SESSION AREA. CREATING SESSIONS
     // =======================================================
-
+ 
     // Creating Session for Admin
     public function createUserSession($data){
-        // Here you determine WHO LOGs-IN TO ADMIN and You can set a control for each User. 
-        // ==================================================================================
-        // You can direct them  base upon the permission just like the manegement Log action
-        @$permission = 'Admin';
-        @$permissions = explode(',', @$data->permission);
-        if(in_array($permission, $permissions, true)){
-            @$last_login = date("Y-m-d H:i:s");
-            @$Admin__id = @$data->Admin__id;
-            @$Route = @$this->userModel->lastlog($last_login, $Admin__id);
-            if($Route){
-                $_SESSION['Admin__id'] = @$data->Admin__id;
-                $_SESSION['username'] = @$data->username;
-                $_SESSION['admin_level'] = (int)@$data->admin_level;
-                $_SESSION['adminEmail'] = @$data->Email;
-                $_SESSION['adminSurname']= @$data->Surname;
-                $_SESSION['adminothername']= @$data->Othername;
+        @$last_login = date("Y-m-d H:i:s");
+        @$Admin__id = @$data->Admin__id;
+        $id = $Admin__id;
+        @$Route = @$this->userModel->lastlog($last_login, $Admin__id);
+        $stmt = $this->userModel->SQLuserEdit($id);
+            if($stmt){
+                $_SESSION['Admin__id'] = @$stmt->Admin__id;
+                $_SESSION['username'] = @$stmt->username;
+                $_SESSION['adminExmail'] = @$stmt->Email;
+                $_SESSION['adminSurname']= @$stmt->Surname;
+                $_SESSION['adminothername']= @$stmt->Othername;
+                $_SESSION['Role'] = $stmt->Role;
                 // Taking current system Time
                 $_SESSION['start'] = time();
-                 // Destroying session after 1 minute
-                $_SESSION['expire'] = $_SESSION['start'] + (30 * 60) ;  
+                //set session to expire after one day 24hr
+                $_SESSION['expire'] = $_SESSION['start'] + (24 * 60 * 60) ;  
                 // Use a ternary operation to set the URL 
                 $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
                 if(isset($url)){ 
@@ -1631,10 +1786,6 @@ public function ProcessNewStudentOnline(){
                     echo '</nosript>';
                 }
             }
-        }else {
-            $_SESSION['error_flash']='<i class="fa fa-info-circle"></i>Sorry...! You Just Dont Have Access To Login..!';
-            return false;
-        }
     }
 
     // =========================================================
@@ -1648,7 +1799,10 @@ public function ProcessNewStudentOnline(){
         if ($updatesqlTime) {
             $_SESSION['Reference'] = @$data->Roll__No;
             $_SESSION['student__Id'] = @$data->student__Id;
-            $_SESSION['Department'] = @$data->Department__Type;
+            $_SESSION['Department'] = $data->Department_id;
+            $_SESSION['Classid'] = $data->Class_id;
+            $_SESSION['semsterid'] = $data->Semester_id;
+            $_SESSION['studEmail'] = $data->email;
             @$s = @$data->Surname;
             @$o = @$data->othername;
             @$globalname= @$s .' '.@$o;
@@ -1793,30 +1947,30 @@ public function ProcessNewStudentOnline(){
 	public function LogoutLectural(){
         if (session_status() == PHP_SESSION_ACTIVE) {
             if (isLoggedInLectural() && !isLoggedDashboardController() && !iscsrf()) {
+                 dnd('1');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
                 unset($_SESSION['UsenrNin']);
                 unset($_SESSION['Profile__Picture']);
-                unset($_SESSION['expire']);
                 unset($_SESSION['DashboardID']);
                 header('location:' . ROOT . 'Management/Log/');
             }elseif (isLoggedDashboardController()) {
+                 dnd('2');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
                 unset($_SESSION['UsenrNin']);
                 unset($_SESSION['Profile__Picture']);
-                unset($_SESSION['expire']);
                 unset($_SESSION['DashboardID']);
                 header('location:' . ROOT . 'Management/Log/');
             }elseif (iscsrf()) {
+                dnd('3');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
                 unset($_SESSION['UsenrNin']);
                 unset($_SESSION['Profile__Picture']);
-                unset($_SESSION['expire']);
                 unset($_SESSION['DashboardID']);
                 unset($_SESSION['ProfTimestart']);
                 unset($_SESSION['Prof_email']);
@@ -1828,45 +1982,20 @@ public function ProcessNewStudentOnline(){
         }
     } 
 
-     // Logout for Accountant On management
-	public function LogoutAccountant(){
-        if (session_status() == PHP_SESSION_ACTIVE) {
-            unset($_SESSION['AccountantID']);
-            unset($_SESSION['Accesscode']);
-            unset($_SESSION['Profile__Picture']);
-            unset($_SESSION['Department_name']);
-            header('location:' . ROOT . 'Management/Log/');
+
+public function LogoutStudent(){
+    if (session_status() == PHP_SESSION_ACTIVE) {
+        $id = $_SESSION['student__Id'];
+        if($updateStatus = $this->userModel->UpdateUserStatus($id)){
+            unset($_SESSION['Reference']);
+            unset($_SESSION['student__Id']);
+            unset( $_SESSION['Department']);
+            unset($_SESSION['globalname']);
+            header('location:' . ROOT . 'Student/Login/'); 
         }
-    } 
-
-    // ========================================================
-      // Logout for Staff On management
-    // ========================================================  
-
-	public function LogoutStaff(){
-        if (session_status() == PHP_SESSION_ACTIVE) {
-            unset($_SESSION['StaffID']);
-            unset($_SESSION['Accesscode']);
-            unset($_SESSION['Profile__Picture']);
-            unset($_SESSION['Department_name']);
-            header('location:' . ROOT . 'Management/Log/');
-        }
-    } 
-
-    // =======================================================
-      // Logout for Human resources On management
-    // ========================================================
-    
-	public function LogoutHr(){
-        if (session_status() == PHP_SESSION_ACTIVE) {
-            unset($_SESSION['HRID']);
-            unset($_SESSION['Accesscode']);
-            unset($_SESSION['Profile__Picture']);
-            unset($_SESSION['Department_name']);
-            header('location:' . ROOT . 'Management/Log/');
-        }
-    } 
-
+        
+    }
+}
     // ========================================================
     // Logout for Admin
     // ========================================================
@@ -1874,7 +2003,6 @@ public function ProcessNewStudentOnline(){
 	public function Logout(){
         if (session_status() == PHP_SESSION_ACTIVE) {
             unset($_SESSION['Admin__id']);
-            unset($_SESSION['admin_level']);
             unset($_SESSION['username']);
             unset($_SESSION['adminEmail']);
             unset($_SESSION['adminSurname']);
@@ -1883,24 +2011,7 @@ public function ProcessNewStudentOnline(){
         }	
     }  
 
-    // ============================================================= 
-     // Logout for Student
-    // =============================================================
-
-	public function LogoutStudent(){
-      if (session_status() == PHP_SESSION_ACTIVE) {
-           $id = $_SESSION['student__Id'];
-            $updatesqlTime = $this->userModel->updateStudentLogOutTime($id);
-            if ($updatesqlTime) {
-                unset($_SESSION['Reference']);
-                unset($_SESSION['student__Id']);
-                unset($_SESSION['globalname']);
-                unset($_SESSION['Department']);
-                header('location:' . ROOT . 'Student/Login/');
-            }
-        } 
-    }
-
+ 
     public function HZoom(){
         @$zoom_meeting = new zoom();
         @$dataAPi = array();
@@ -1930,9 +2041,244 @@ public function ProcessNewStudentOnline(){
                 }catch(Exception $ex){
                     echo @$ex;
                 }
-                 
-
          $this->view('Application/HZoom', $data);
+    }
+    public function SetZoom(){
+        header("Access-Control-Allow-Origin: *"); 
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $Messageresponse = array();
+        $phpObject = json_decode($jsonString);
+        
+        $FromTime=$phpObject->{'FromTime'};
+        $totime=$phpObject->{'totime'};
+        $Topic=$phpObject->{'inputToPIC'};
+        $meetingId=$phpObject->{'meetingId'};
+        $securitykey=$phpObject->{'securitykey'};
+        $startTime=$phpObject->{'startTime'};
+        $timeZone=$phpObject->{'timeZone'};
+        $mx =new DateTime($startTime);
+        $date1 =  strtotime($FromTime);
+        $date2 =  strtotime($totime);
+
+        $diff = ($date2 - $date1);
+        $Setmin = date("i", $diff);
+        $Sethr = date("h", $diff);
+        if ($Setmin > 50 || $Sethr >01) {
+            $Messageresponse['message']= "You duration can not be more than 1hr. else subscribe for premier";
+        }else {
+            @$zoom_meeting = new zoom();
+            @$dataAPi = array();
+            @$dataAPi['topic'] = $Topic;
+            // @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
+            @$dataAPi['start_time'] = $startTime;
+            @$dataAPi['duration'] =$Setmin;
+            @$dataAPi['type']=2;
+            @$dataAPi['timezone']=$timeZone;
+            @$dataAPi['password'] = $securitykey;
+            $newJsonString = json_encode($phpObject);
+             if($newJsonString){
+                try{
+                        @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+                        $Messageresponse['status'] =  3;
+                        $Messageresponse['Successmessage'] = 'Successfully Scheduled.';
+                    }catch(Exception $ex){
+                        echo @$ex;
+                    }
+            }else {
+                $Messageresponse['message']= 'FAIL';
+            }
+        }
+        ob_end_clean();
+        echo json_encode($Messageresponse);
+    }
+
+    public function Studentgrade(){
+        $id= $_SESSION['student__Id'];
+        $ft = $this->userModel->Viewstd($id);
+        if ($ft) {
+            foreach ($ft as $keyvalue) {
+                $email= $keyvalue['email'];
+                $img= $keyvalue['image']; 
+            } 
+        }
+        $data =
+        [
+            'page_title'=>'Grade - '.$_SESSION['globalname'],
+            'studentEmail'=>$email,
+            'photo'=>$img
+        ];
+        $this->view("Student/Studentgrade", $data);
+    }
+   
+ 
+    public function registerParentData(){
+        $response = array();
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        if (isset($_FILES['file']['name']) != '' && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['DOB']) && isset($_POST['Gender'])
+            && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['address']) 
+            && isset($_POST['ChildId']) && isset($_POST['Fatherid'])){
+            // validate file
+            $photo = $_FILES['file'];
+            $name = $photo['name'];
+            $nameArray = explode('.', $name);
+            $fileName = $nameArray[0];
+            $fileExt = $nameArray[1];
+            $mime = explode('/', $photo['type']);
+            $mimeType = $mime[0];
+            $mimeExt = $mime[1];
+            $tmpLoc = $photo['tmp_name'];   
+            $fileSize = $photo['size']; 
+            // $allowed = array('jpg', 'jpeg', 'png');
+            $uploadName = md5(microtime()).'.'.$fileExt;
+            $uploadPath =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+            $dbpath     =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+            $folder =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING));
+            if ($fileSize > 90000000000000) {
+                $response['status'] = 300;
+                $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
+            }elseif ($fileSize < 90000000000000) {
+                if(!file_exists($folder)){
+                    mkdir($folder,077,true);
+                }
+                move_uploaded_file($tmpLoc,$dbpath);
+                $password = password_hash($_POST['fname'], PASSWORD_ARGON2ID);
+                $data = 
+                [
+                    'img'=>$uploadPath,
+                    'fname'=>trim(filter_var($_POST['fname'], FILTER_SANITIZE_STRING)),
+                    'lname'=>trim(filter_var($_POST['lname'], FILTER_SANITIZE_STRING)),
+                    'DOB'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
+                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
+                    'email'=>trim(filter_var($_POST['email'], FILTER_SANITIZE_STRING)),
+                    'featured'=>'1',
+                    'password'=>$password,
+                    'mobile'=>trim(filter_var($_POST['mobile'], FILTER_SANITIZE_STRING)),
+                    'address'=>trim(filter_var($_POST['address'], FILTER_SANITIZE_STRING)),
+                    'mobile'=>trim(filter_var($_POST['mobile'], FILTER_SANITIZE_STRING)),
+                    'ChildId'=>trim(filter_var($_POST['ChildId'], FILTER_SANITIZE_STRING)),
+                    'Fatherid'=>trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)),
+                ];
+        
+                if ($this->userModel->isParentSQLstmt($data)){
+                    unset($_SESSION['api']);
+                    unset($_SESSION['userID']);
+                    $response['status'] = 200;
+                    $response['message'] = '<b>Application Has Successfully Completed..!</b><p>Your Matric number has also sent to your parent email.</p>';
+                } 
+            }
+        }
+        echo json_encode($response);
+    }
+    public function MedicalReport(){
+        header("Access-Control-Allow-Origin: *");
+        header("Content-Type: application/json; charset=UTF-8");
+        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        //You can either use this or json_decode function
+        $phpObject = json_decode($jsonString);
+        $id =  $phpObject->{'id'};
+        $Blood_Type =  $phpObject->{'Blood_Type'};
+        $height =  $phpObject->{'height'};
+        $Weight =  $phpObject->{'Weight'};
+
+        if ($Blood_Type == "") {
+            $response['message']="The  field is required.";
+            $response['status1'] = false;
+        }
+         if ($height == "") {
+            $response['message']="The  field is required.";
+            $response['status2'] = false;
+        }
+         if ($Weight == "") {
+            $response['message']="The  field is required.";
+            $response['status3'] = false;
+        }
+        elseif (!empty($id) && !empty($Blood_Type) && !empty($height) && !empty($Weight) ) {
+            $data = 
+            [
+                'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
+                'Blood_Type'=>trim(filter_var($Blood_Type, FILTER_SANITIZE_STRING)),
+                'height'=>trim(filter_var($height, FILTER_SANITIZE_STRING)),
+                'Weight'=>trim(filter_var($Weight, FILTER_SANITIZE_STRING)),
+            ];
+           if ($this->userModel->isCreateHealthData($data)) {
+                $response['message']= '<b>Congratulation</b> Your School Application Has Successfully Completed Configurations. <b>You can now Login.</b>';
+                $response['status'] = true;
+            }else {
+                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                $response['status1'] = false;
+            }     
+        }
+        ob_end_clean();
+        echo json_encode($response);
+    }
+
+    public function AuthUser(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            if (isset($_GET['Search'])) {
+                $id= strip_tags(trim(filter_var((int)($_GET['Search']), FILTER_SANITIZE_STRING)));
+                // FETCH DATA
+                $isReturn = $this->namespacemodel->getSearchUser($id);
+                if ($isReturn) {
+                    //set data
+                    $data = 
+                    [
+                        'page_title'=> 'Found User',
+                        'returnData'=> $isReturn
+                    ];
+                    
+                }
+                $data = 
+                    [
+                        'page_title'=> 'Found User',
+                        'returnData'=> $isReturn
+                    ];
+                $this->view("Student/AuthUser", $data);
+            }
+        }
+    }
+    public function ReadMore(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            if (isset($_GET['Search'])) {
+                $id= strip_tags(trim(filter_var((int)($_GET['Search']), FILTER_SANITIZE_STRING)));
+                // FETCH DATA
+                $isReturn = $this->namespacemodel->getSearchCourse($id);
+                if ($isReturn) {
+                    //set  data
+                    $data = 
+                    [
+                        'page_title'=> 'Read More About Course',
+                        'returnData'=> $isReturn
+                    ];
+                }
+                $this->view("Student/__readmore", $data);
+            }
+        }
+    }
+
+    public function ParentDashboard(){
+        $this->view("Parents/ParentDashboard");
+    }
+    public function event(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $data =
+            [
+                'page_title'=>'MCU::Calendar',
+            ];
+            $this->view("Student/__event", $data);
+        }
+    }
+    public function __allEvent(){
+
     }
 }
 

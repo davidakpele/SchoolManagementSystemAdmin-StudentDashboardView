@@ -90,7 +90,7 @@
                                                         <td style="text-align: center"><?=$data['Category']?></td>
                                                         <td style="text-align: center"><?=$data['ActualScore']?></td>
                                                         <td style="text-align: center">100</td>
-                                                    </tr>
+                                                    </tr> 
                                                     <tr>
                                                         <th scope="row" colspan="3"></th>           
                                                         <td style="text-align: center"><b>Grade:</b></td>
@@ -103,7 +103,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td colspan="5" align="center">
-                                                            <i class="fa fa-print fa-2x pull-left btn btn-primary btn-xs" aria-hidden="true" style="cursor:pointer" OnClick="CallPrint(this.value)" ></i>
+                                                            <i class="fa fa-print fa-2x pull-left btn btn-primary btn-xs" aria-hidden="true" style="cursor:pointer" OnClick="printinfo(this.value)" ></i>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -120,14 +120,14 @@
     </div>
 </div>
     <script>
-        function CallPrint(strid) {
+        function printinfo(strid) {
             let prtContent = document.getElementById("exampl");
-            let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+            let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=500,toolbar=0,scrollbars=0,status=0');
             WinPrint.document.write(prtContent.innerHTML);
             WinPrint.document.close();
             WinPrint.focus();
             WinPrint.print();
-            WinPrint.close();
+           //WinPrint.close();
         }
     </script>
     </body>

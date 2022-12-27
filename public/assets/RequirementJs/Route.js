@@ -5,7 +5,7 @@ $(document).ready(function ($) {
         const JavascriptHook =
             { "DataId": ___ApplicationType };
         let StringData = JSON.stringify(JavascriptHook);
-        const Url = 'http://localhost/student/PageController/RenderRequirementData'; // the url where we want to POST
+        const Url = base_url+'PagesController/RenderRequirementData'; // the url where we want to POST
         $.ajax({
             type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
             dataType: 'JSON',//the type of data we are sending is json
@@ -51,7 +51,7 @@ $(document).ready(function ($) {
         const JavascriptHook =
             { "RestAPIDataId": val1, "ProgramId": val2,  };
         let StringData = JSON.stringify(JavascriptHook);
-        const Url = 'http://localhost/student/PagesController/RenderProgrammeList';
+        const Url = base_url+'PagesController/RenderProgrammeList';
         $.ajax({
             type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
             dataType: 'JSON',

@@ -1,8 +1,7 @@
 <?php 
+
 // Accessing the config file
 require "../app/core/config.php";
-// Accessing the Core-fucntion file
-require "../app/core/functions.php";
 // Accessing the Database file
 require "../app/core/database.php";
 //Accessing the controller file 
@@ -18,3 +17,6 @@ require_once '../app/helpers/vendor/firebase/php-jwt/src/SignatureInvalidExcepti
 require_once '../app/helpers/vendor/firebase/php-jwt/src/JWT.php';
 // To access my Zoom file
 require_once '../app/helpers/zoom.php';
+// Request POST METHOD
+require_once '../app/helpers/Request.php';
+

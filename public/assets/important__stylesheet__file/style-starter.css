@@ -7242,9 +7242,25 @@ a.text-dark:hover, a.text-dark:focus {
 @font-face {
   font-family: 'FontAwesome';
   src: url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.eot?v=4.7.0");
-  src: url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+  src: url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), 
+        url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), 
+        url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), 
+        url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), 
+        url("http://localhost/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
   font-weight: normal;
-  font-style: normal; }
+  font-style: normal; 
+}
+@font-face {
+  font-family: 'FontAwesome';
+  src: url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.eot?v=4.7.0");
+  src: url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), 
+        url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), 
+        url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), 
+        url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), 
+        url("http://127.0.0.1/Student/public/assets/important__stylesheet__file/stdfile/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+  font-weight: normal;
+  font-style: normal; 
+}
 
 .fa {
   display: inline-block;
