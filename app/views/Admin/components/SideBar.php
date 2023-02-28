@@ -45,7 +45,7 @@
                 <li class="">
                     <a href="<?=ROOT?>Admin/Students">
                         <i class="fa fa-bars"></i>
-                            Student
+                            Students
                     </a>
                 </li>
                 <li class="">

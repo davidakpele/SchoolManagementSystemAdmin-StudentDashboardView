@@ -35,7 +35,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-	            <a href="<?=ROOT?>">
+	            <a href="<?=ROOT?>Student/Dashboard/">
                     <div class="float-left"> 
                         <span style="display:flex">
                             <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:55px;"/>
@@ -62,7 +62,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-8 col-md-offset-2">
-                                <div class="panel">
+                                <div class="panel content-panel">
                                     <div class="panel-heading">
                                         <div class="panel-title">
                                             <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:70px; display: block;  margin-left: auto; margin-right: auto;">
@@ -70,7 +70,6 @@
                                             <hr />
                                             <span class="datalist"><b>Student Name: </b><?=$_SESSION['globalname']?></span><br/>
                                             <span class="datalist"><b>Student Roll ID: </b><?=$_SESSION['Reference']?></span><br/>
-                                            <span class="datalist"><b>Student Class:</b> Fourth(C)</span>
                                         </div>
                                         <div class="panel-body p-20" style="overflow-x:auto;">
                                             <table class="table table-hover table-bordered" border="1" width="100%">
@@ -88,22 +87,22 @@
                                                         <th scope="row" style="text-align: center"><?=$data['StdIdentity'];?></th>
                                                         <td style="text-align: center"><?=$data['DepartmentName']?></td>
                                                         <td style="text-align: center"><?=$data['Category']?></td>
-                                                        <td style="text-align: center"><?=$data['ActualScore']?></td>
+                                                        <td style="text-align: center">Pass <?=$data['ActualScore']?></td>
                                                         <td style="text-align: center">100</td>
-                                                    </tr> 
+                                                    </tr>
                                                     <tr>
                                                         <th scope="row" colspan="3"></th>           
-                                                        <td style="text-align: center"><b>Grade:</b></td>
-                                                        <td style="text-align: center"><?=$data['GradeResponse']?></td>
+                                                        <td style="text-align: center">Grade:</td>
+                                                        <td style="text-align: center"><b><?=$data['GradeResponse']?></b></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" colspan="3">Total Mark(s)</th>           
                                                         <td style="text-align: center"><b></b></td>
-                                                        <td style="text-align: center"><?= $data['DisplayResult'];?></td>
+                                                        <td style="text-align: center">Score (<?= $data['DisplayResult'];?>)</td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="5" align="center">
-                                                            <i class="fa fa-print fa-2x pull-left btn btn-primary btn-xs" aria-hidden="true" style="cursor:pointer" OnClick="printinfo(this.value)" ></i>
+                                                            <i class="fa fa-print fa-2x pull-left btn btn-primary btn-xs" aria-hidden="true" id="print_att" style="cursor:pointer" ></i>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -119,16 +118,33 @@
         </div>
     </div>
 </div>
-    <script>
-        function printinfo(strid) {
-            let prtContent = document.getElementById("exampl");
-            let WinPrint = window.open('', '', 'left=0,top=0,width=800,height=500,toolbar=0,scrollbars=0,status=0');
-            WinPrint.document.write(prtContent.innerHTML);
-            WinPrint.document.close();
-            WinPrint.focus();
-            WinPrint.print();
-           //WinPrint.close();
-        }
-    </script>
+<noscript>
+	<style>
+		table.table{
+			width:100%;
+			border-collapse:collapse
+		}
+		table.table td,table.table th{
+			border:1px solid
+		}
+		.text-center{
+			text-align:center
+		}
+	</style>
+</noscript>
+<script>
+	$('#print_att').click(function () {
+		var _c = $('.content-panel').html();
+		var ns = $('noscript').clone();
+		var nw = window.open('', '_blank', 'width=900,height=600')
+		nw.document.write(_c)
+		nw.document.write(ns.html())
+		nw.document.close()
+		nw.print()
+		setTimeout(() => {
+			nw.close()
+		}, 500);
+	})
+</script>
     </body>
 </html>

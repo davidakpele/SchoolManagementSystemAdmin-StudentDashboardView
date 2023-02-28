@@ -89,6 +89,12 @@
                                         </select>
 									</div>
 									<div class="col-md-4 col-sm-12 col-xs-12">
+										<label for="Faculty Type">Faculty:</label>
+                                        <select name="Faculty__Type" id="Faculty__Type" class="form-control select2">
+                                            <option value=""  selected="">--select--</option>
+                                        </select>
+									</div>
+									<div class="col-md-4 col-sm-12 col-xs-12">
 										<label for="Department Type">Department:</label>
                                         <select name="Department__Type" id="Department__Type" class="form-control select2">
                                             <option value=""  selected="">--select--</option>

@@ -54,7 +54,7 @@
     .badge {color: #fff;background-color: #008bc6;font-size: 13px;border-radius: 12px 12px 12px}
     .badge {display: inline-block;padding: 0.35em 0.65em;font-weight: 700;line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;}
     #main-header{position:relative;background: rgb(0,0,0)!important;background: radial-gradient(circle, rgba(0,0,0,0.48503151260504207) 22%, rgba(0,0,0,0.39539565826330536) 49%, rgba(0,212,255,0) 100%)!important;height:70vh;}
- </style> <!-- Font Awesome -->
+ </style> 
   
   </head>
 <body>
@@ -90,11 +90,12 @@
         <?php if(isset($_GET['eid'])): 
             $this->db = new Database;;?>
         <section class="mt-5 py-3">
-         <div class="h5 card-title" ><?= ($data['examTime']->title) ? $data['examTime']->title : '' ;?> Examination</div>
+         <div class="h5 card-title" >Taking <b style="text-decoration:underline"><?= ($data['examTime']->Course) ? $data['examTime']->Course : '' ;?></b> Exam</div>
             <div class="container">
                 <form action="<?=ROOT?>Student/ExamResult?no=<?=$data['isCount']?>" method="POST" id="form">
                     <input type="hidden" name="courseid"  value= "<?= ($data['examTime']->Course) ? $data['examTime']->Course : '' ;?>" />
                     <input type="hidden" name="exam_id"  value= "<?= ($data['examTime']->eid) ? $data['examTime']->eid : '' ;?>" />
+                    <input type="hidden" name="student_id"  value= "<?= ($_SESSION['student__Id']) ? $_SESSION['student__Id'] : '' ;?>" />
                     <div class="card card-outline card-navy shadow rounded-0" style="margin-top:70px">
                         <div class="card-header">
                         <?php $qi = 1;?>
@@ -130,14 +131,14 @@
                                                 <input type="hidden" name="total" value="<?=$data['isCount']?>">
                                             </div>
                                         </div>
-                                         
+                                         <!-- OPTIONS -->
                                        <div class="mx-3">
                                             <div class="row">
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
-                                                        <div class="custom-control"> 
+                                                        <div class="custom-control "> 
                                                             <label class="font-weight-normal">
-                                                                <input type="radio" name="<?=(($no == 1)?$no : $no)?>" value="<?=htmlspecialchars($key['opt1'])?>" >
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
                                                                 <?=htmlspecialchars($key['opt1'])?>
                                                             </label>
                                                         </div>
@@ -147,7 +148,7 @@
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
                                                             <label class="font-weight-normal">
-                                                                <input type="radio" name="<?=(($no == 1)?$no : $no)?>" value="<?=htmlspecialchars($key['opt2'])?>">
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>">
                                                                 <?=htmlspecialchars($key['opt2'])?>
                                                             </label>
                                                         </div>
@@ -157,7 +158,7 @@
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
                                                             <label class="font-weight-normal">
-                                                                <input type="radio" name="<?=(($no == 1)?$no : $no)?>" value="<?=htmlspecialchars($key['opt3'])?>" >
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
                                                                 <?=htmlspecialchars($key['opt3'])?>
                                                             </label>
                                                         </div>
@@ -167,7 +168,7 @@
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
                                                             <label class="font-weight-normal">
-                                                                <input type="radio" name="<?=(($no == 1)?$no : $no)?>" value="<?=htmlspecialchars($key['opt4'])?>" >
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
                                                                 <?=htmlspecialchars($key['opt4'])?>
                                                             </label>
                                                         </div>

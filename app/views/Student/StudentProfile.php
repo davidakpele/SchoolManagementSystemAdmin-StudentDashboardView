@@ -30,7 +30,7 @@
                    <a href="<?=ROOT?>Student/EStudent"><button type="button" class="btn btn-primary btn-sm" style="margin-top:10px">Edit Profile</button></a>
                 <div class="justify-content-between" style="margin-top:82px">
                    <h6><b>Privacy and policies</b></h6>
-                   <p><a href="<?=ROOT?>Student/CStudent/">Change Password<a/></p>
+                   <p><a href="<?=ROOT?>Student/change_password/">Change Password<a/></p>
                    <p><a href="#"><i class="lnr lnr-cog"></i>Data retention summary<a/></p>
                 </div>
                 <div class="justify-content-between" style="margin-top:25px">

@@ -47,9 +47,29 @@
         .png{max-width:55px; display: block;  margin-left: auto; margin-right: auto;}
         .header-toggle{padding:15px;}
         .error {background: #FAE8E8;border: 1px solid #DAB3B6;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-        .error-ico {padding-left:70px;background: url(http://localhost/school/public/assets/bullet_error.png) #FAE8E8 no-repeat 30px center;}
+        .error-ico {padding-left:70px;background: url(<?=ASSETS?>bullet_error.png) #FAE8E8 no-repeat 30px center;}
         input:focus {outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
+        .success {
+            background: #E4FFDE;
+            border: 1px solid #8EBD86;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px;
+            width: auto;
+            height: auto;
+            color: #333;
+            display: block;
+        }
+
+        .success_icon {
+            padding-left: 60px;
+            background: url(<?=ASSETS?>bullet_add.png) #E4FFDE no-repeat 30px center;
+        }
     </style>
+     <script>
+        var base_url = '<?=ROOT?>';
+    </script>
+
 </head>
 <body>
     <div class="header-toggle container">
@@ -57,7 +77,8 @@
     </div>
     <div class="mini-container login-widget"> 
         <div id="RetrieveMatricNoerrorMessage" class="error error-ico" style="display:none"></div>
-        <form method="POST" action="javascript:void(0)" class="form-group" id="__RecoverMercyCollegeStudentMatricNo">
+        <div id="SuccessMessage" class="success success_ico" style="display:none"></div>
+        <form method="POST" action="javascript:void(0)" class="form-group" id="__Recoverform" autocomplete="off">
             <div class="PhpHookSecurityAsycHidden">
                 <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTE4MDcwNzMxNA9kFgJmD2QWAgIJDxYCHgRocmVmBQ5pbWFnZXMvZmF2LnBuZ2RkdYzl8Hjtn1iQpAnQ2VIr7SmJgXUuALwWK9Wvj3RVCFg=" />
             </div>
@@ -75,7 +96,7 @@
             </div>
             <div class="element">
                 <label>Date Of Birth</label>
-                <input name="DateOfBirthBox" type="text" id="DateOfBirthBox" readonly="readonly"  class="datepicker" value="<?=(isset($_POST['DateOfBirthBox']))?$_POST['DateOfBirthBox']: '' ?>"/>
+                <input name="DateOfBirthBox" type="date" id="DateOfBirthBox" class="form-control" value="<?=(isset($_POST['DateOfBirthBox']))?$_POST['DateOfBirthBox']: '' ?>"/>
             </div>
         <div class="element">
             <input type="submit" value="Search"  class="btn btn-xs" onclick="RetrieveMatricNoFun();"/>

@@ -49,7 +49,7 @@
                 input:focus{outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
             </style>
             <script>
-                let base_url='<?=ROOT?>';
+                var base_url='<?=ROOT?>';
             </script>
         </head>
     <body>

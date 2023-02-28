@@ -15,19 +15,20 @@
     }
     function isLoggedInAdmin() {
         if (isset($_SESSION['Admin__id']) && isset($_SESSION['username']) && isset($_SESSION['Role'])){
-                $now = time();   
+               // $now = time();   
         // Then when they get to submitting login details, just check whether they're within the 5 minute window
-            if ($now > $_SESSION['expire']) { // 300 seconds = 5 minutes
-                unset($_SESSION['Admin__id']);
-                unset($_SESSION['username']);
-                unset($_SESSION['adminEmail']);
-                unset($_SESSION['adminSurname']);
-                unset($_SESSION['adminothername']);
-                header('location:' . ROOT . 'Administration/Default/');
-            }else {
-                // they're within the 30 minutes so save the details to the database 
-                return true;
-            }
+            // if ($now > $_SESSION['expire']) { // 300 seconds = 5 minutes
+            //     unset($_SESSION['Admin__id']);
+            //     unset($_SESSION['username']);
+            //     unset($_SESSION['adminEmail']);
+            //     unset($_SESSION['adminSurname']);
+            //     unset($_SESSION['adminothername']);
+            //     header('location:' . ROOT . 'Administration/Default/');
+            // }else {
+            //     // they're within the 30 minutes so save the details to the database 
+            //     return true;
+            // }
+            return true;
         } else {
             return false;
         }
@@ -35,7 +36,7 @@
     function isLoggedInLectural(){
        if (isset($_SESSION['ProfessorID']) && isset( $_SESSION['Prof_email']) && isset( $_SESSION['UsenrNin']) && isset($_SESSION['Accesscode']) && isset($_SESSION['Fullname']) && isset($_SESSION['Profile__Picture']) && isset($_SESSION['expire'])) {
             return true;
-            } else {
+            } else { 
             return false;
         }
     }

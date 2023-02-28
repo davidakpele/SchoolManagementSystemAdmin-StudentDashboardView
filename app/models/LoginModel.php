@@ -2,13 +2,6 @@
     class LoginModel
     {
 
-        /**
-         * 
-         * LoginModel Processing Model
-         * var [type]
-         * 
-         */
-
         private $Router;
         public function __construct(){
             $this->Router = new Database;
@@ -55,13 +48,16 @@
                 return false;
             }
         }
-        public function demo1(){
-            $this->Router->query('SELECT * FROM backup');
+        public function fetchtimedata($depid, $clasid, $semid){
+            $this->Router->query('SELECT * FROM exam__timeset WHERE Department=:depid AND Classes =:clasid AND Semester=:semid AND status=1');
+            $this->Router->bind(':depid', $depid);
+            $this->Router->bind(':clasid', $clasid);
+            $this->Router->bind(':semid', $semid);
             $num = $this->Router->resultSet();
             if(!empty($num)) {
                 return $num;
             }else {
-                return false;
+                return $num;
             }
         }
         public function demo2($examid, $id){
@@ -77,10 +73,37 @@
         }
 
         public function isexamTime($eid){
-            $this->Router->query('SELECT * FROM exam__timeset 
-                                WHERE eid=:eid');
+            $this->Router->query('SELECT * FROM exam__timeset WHERE eid=:eid');
             $this->Router->bind(':eid', $eid);
             $num = $this->Router->single();
+            if(!empty($num)) {
+                return  $num;
+            }else {
+                return false;
+            }
+        }
+        public function beforeSave($eid,$id){
+            $this->Router->query("SELECT * FROM monitor WHERE examid =:eid AND studentid=:id AND examstatus=1");
+            $this->Router->bind(':eid', $eid);
+            $this->Router->bind(':id', $id);
+            $num = $this->Router->resultSet();
+            if(!empty($num)) {
+                return  $num;
+            }else {
+                return false;
+            }
+        }
+        public function isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $GradeResponse, $id){
+            $this->Router->query('INSERT INTO monitor(examid, correctQuest, failQuest, defaultmark, score, grade, studentid, examstatus)
+                                VALUES(:eid, :getConAns, :FailAnsQ, :defaultmark, :finallyGrade, :GradeResponse, :id, 1)');
+            $this->Router->bind(':eid', $eid);
+            $this->Router->bind(':getConAns', $getConAns);
+            $this->Router->bind(':FailAnsQ', $FailAnsQ);
+            $this->Router->bind(':defaultmark', $defaultmark);
+            $this->Router->bind(':finallyGrade', $finallyGrade);
+            $this->Router->bind(':GradeResponse', $GradeResponse);
+            $this->Router->bind(':id', $id);
+            $num = $this->Router->execute();
             if(!empty($num)) {
                 return  $num;
             }else {
@@ -118,17 +141,6 @@
             }
         }
 
-        public function InsertAns($userselected,$userid, $i){ 
-            $this->Router->query('INSERT INTO studentans(studentid,ReceivedAns)VALUE(:userid, :userselected)');
-            $this->Router->bind(':userid', $userid);
-            $this->Router->bind(':userselected', $userselected);
-            if($this->Router->execute()){
-                return true;
-            }else{
-                return false;
-            }
-        }
-
         public function updateExamstatus($eid){ 
             $this->Router->query('UPDATE exam__timeset SET status=1 WHERE eid=:eid');
             $this->Router->bind(':eid', $eid);
@@ -138,22 +150,6 @@
                 return false;
             }
         }
-        public function insertMonitor($userid, $eid){ 
-            static $call_counter = 0;
-            if ( $call_counter>0 ) {
-                $this->Router->query('INSERT INTO monitor (Meid, studentid) VALUES(:eid, :userid)');
-                $this->Router->bind(':eid', $eid);
-                $this->Router->bind(':userid', $userid);
-                if($this->Router->execute()){
-                    return true;
-                    
-                }else{
-                    return false;
-                }
-            }
-            $call_counter++;
-        }
-       
         public function StudentRecords(){
             $this->Router->query('SELECT ReceivedAns,qid,ansid,ans FROM studentans, answer');
             $Statement = $this->Router->resultSet();
@@ -166,6 +162,18 @@
             $row = $this->Router->single();
             if(!empty($row)){
                 return  $row;
+            }else {
+                return false;
+            }
+        }
+        public function studentdata($relationid){
+            $this->Router->query('SELECT * FROM studentapp WHERE Conid = :relationid');
+            $this->Router->bind(':relationid', $relationid);
+            $row = $this->Router->single();
+            if(!empty($row)){
+                return  $row;
+            }else {
+                return false;
             }
         }
         public function FetchStudentDepartmentName($Courseid){
@@ -174,6 +182,8 @@
             $row = $this->Router->single();
             if(!empty($row)){
                 return  $row;
+            }else {
+                return false;
             }
         }
         public function FetchStudentCategoryName($Courseid){
@@ -292,7 +302,8 @@
         }
 
         public function getExam($eid){
-            $this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ORDER BY RAND() ");
+            //$this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ORDER BY RAND() ");
+            $this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ");
             $this->Router->bind(':eid', $eid);
             $stmt = $this->Router->resultSet();
              if(!empty($stmt)){
@@ -301,7 +312,28 @@
                 return false;
             }
         }
-      
+        public function isCheckExamAnsers($ci, $userAnswers){
+            $this->Router->query("SELECT * FROM answer WHERE qid=:ci AND ans=:userAnswers");
+            $this->Router->bind(':ci', $ci);
+            $this->Router->bind(':userAnswers', $userAnswers);
+            $stmt = $this->Router->resultSet();
+             if(!empty($stmt)){
+                return $stmt;
+            }else {
+                return false;
+            }
+        }
+        public function isCheckExam($eid){
+            $this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ");
+            $this->Router->bind(':eid', $eid);
+            $stmt = $this->Router->resultSet();
+             if(!empty($stmt)){
+                return $stmt;
+            }else {
+                return false;
+            }
+        }
+
         public function getSearchUser($id){
             $this->Router->query("SELECT * FROM student__account WHERE student__Id=:id");
             $this->Router->bind(':id', $id);

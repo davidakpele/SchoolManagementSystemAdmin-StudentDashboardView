@@ -26,7 +26,7 @@ RecoverMaticNo = function RecoverMaticNo() {
         contentType: "application/json; charset=utf-8",
         data: RouteUserDateToPhp,
         // our data object
-        url: 'http://localhost/Student/PagesController/StudentRetrieveMatricNumberAPIsPortal',
+        url: base_url + 'PagesController/RetrieveMatricNumber',
         // the url where we want to POST
         processData: false,
         encode: true,
@@ -62,13 +62,13 @@ $(document).ready(function ($) {
     var Password = $("input#Password").val();
 
     if (Username == "") {
-      $("#errorMessage").fadeIn().text("Please enter your matric Number or Application Number");
+      $("#errorMessage").fadeIn().text("Please Enter Your Matric Number Or Application Number");
       $("input#Roll__No").focus();
       return false;
     }
 
     if (Password == "") {
-      $("#errorMessage").fadeIn().text("Please enter your password");
+      $("#errorMessage").fadeIn().text("Please Enter Your Password");
       $("input#Password").focus();
       return false;
     }
@@ -112,6 +112,9 @@ $(document).ready(function ($) {
         setTimeout(function () {
           window.location.reload(1);
         }, delay);
+      } else {
+        $("#errorMessage").fadeIn().text(response.errormessage);
+        return false;
       }
     }).fail(function (xhr, error) {
       $("#errorMessage").fadeIn().text('Oops...Server is down! error');
@@ -238,7 +241,7 @@ $(document).ready(function ($) {
       contentType: "application/json; charset=utf-8",
       data: ManagementLoginStringifyProcess,
       // our data object
-      url: 'http://localhost/Student/PagesController/LoginManagement',
+      url: base_url + 'PagesController/LoginManagement',
       // the url where we want to POST
       processData: false,
       encode: true,
@@ -284,7 +287,7 @@ RetrieveMatricNoFun = function RetrieveMatricNoFun() {
     //hide messages
     $("#RetrieveMatricNoerrorMessage").hide(); //on submit
 
-    $('#__RecoverMercyCollegeStudentMatricNo').submit(function (e) {
+    $('#__Recoverform').submit(function (e) {
       e.preventDefault();
       var ApplicatioNo = $("input#ApplicatioNo").val();
       var Surname = $("input#Surname").val();
@@ -306,43 +309,46 @@ RetrieveMatricNoFun = function RetrieveMatricNoFun() {
         $("#RetrieveMatricNoerrorMessage").fadeIn().text("Please enter your Date Of birth");
         $("input#DateOfBirthBox").focus();
         return false;
+      } else if (ApplicatioNo != '' && Surname != '' && DateOfBirthBox != '') {
+        var Clonedata = {
+          "ApplicatioNo": ApplicatioNo,
+          "Surname": Surname,
+          "DateOfBirthBox": DateOfBirthBox
+        };
+        var RouteUserDateToPhp = JSON.stringify(Clonedata);
+        $.ajax({
+          type: 'POST',
+          // define the type of HTTP verb we want to use (POST for our form)
+          dataType: 'JSON',
+          contentType: "application/json; charset=utf-8",
+          data: RouteUserDateToPhp,
+          // our data object
+          url: base_url + 'PagesController/AuthMatricNUm',
+          //the url where we want to POST
+          processData: false,
+          encode: true,
+          crossOrigin: true,
+          async: true,
+          crossDomain: true,
+          headers: {
+            'Access-Control-Allow-Methods': '*',
+            "Access-Control-Allow-Credentials": true,
+            "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+            "Access-Control-Allow-Origin": "*",
+            "Control-Allow-Origin": "*",
+            "cache-control": "no-cache",
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
+          if (response.message == 200) {
+            $("#RetrieveMatricNoerrorMessage").fadeIn().text(response.message);
+          } else {
+            $("#RetrieveMatricNoerrorMessage").fadeIn().text(response.message);
+          }
+        }).fail(function (xhr, error) {
+          $("#RetrieveMatricNoerrorMessage").fadeIn().text('Oops...Server is down! error');
+        });
       }
-
-      var Clonedata = {
-        "ApplicatioNo": ApplicatioNo,
-        "Surname": Surname,
-        "DateOfBirthBox": DateOfBirthBox
-      };
-      var RouteUserDateToPhp = JSON.stringify(Clonedata);
-      $.ajax({
-        type: 'POST',
-        // define the type of HTTP verb we want to use (POST for our form)
-        dataType: 'JSON',
-        contentType: "application/json; charset=utf-8",
-        data: RouteUserDateToPhp,
-        // our data object
-        url: 'http://localhost/Student/PagesController/RetrieveMatricNumberAPIsPortal',
-        //the url where we want to POST
-        processData: false,
-        encode: true,
-        crossOrigin: true,
-        async: true,
-        crossDomain: true,
-        headers: {
-          'Access-Control-Allow-Methods': '*',
-          "Access-Control-Allow-Credentials": true,
-          "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-          "Access-Control-Allow-Origin": "*",
-          "Control-Allow-Origin": "*",
-          "cache-control": "no-cache",
-          'Content-Type': 'application/json'
-        }
-      }).then(function (response) {
-        // user is logged in successfully in the back-end
-        $("#RetrieveMatricNoerrorMessage").fadeIn().text(response.message);
-      }).fail(function (xhr, error) {
-        $("#RetrieveMatricNoerrorMessage").fadeIn().text('Oops...Server is down! error');
-      });
     });
   });
 };
@@ -352,7 +358,7 @@ ParentLoginAjax = function ParentLoginAjax() {
     //hide messages
     $("#errorMessage").hide(); //on submit
 
-    $('#__ParentViewStarPageMercyCollegeStudentMatricNo').submit(function (e) {
+    $('#__ParentLogin').submit(function (e) {
       e.preventDefault();
       var Username = $("input#UsernameTextBox").val().trim();
       var Password = $("input#PasswordTextBox").val().trim();
@@ -381,7 +387,7 @@ ParentLoginAjax = function ParentLoginAjax() {
         contentType: "application/json; charset=utf-8",
         data: RouteUserDateToPhp,
         // our data object
-        url: 'http://localhost/Student/PagesController/StudentLoginAPIsPortal',
+        url: base_url + 'PagesController/ParentLoginPortal',
         // the url where we want to POST
         processData: false,
         encode: true,
@@ -398,7 +404,8 @@ ParentLoginAjax = function ParentLoginAjax() {
           'Content-Type': 'application/json'
         }
       }).then(function (response) {
-        // user is logged in successfully in the back-end
+        if (response.message) {} else {}
+
         $("#errorMessage").fadeIn().text(response.message);
       }).fail(function (xhr, error) {
         $("#errorMessage").fadeIn().text('Oops...Server is down! error');
@@ -507,7 +514,7 @@ $(document).ready(function ($) {
       contentType: "application/json; charset=utf-8",
       data: RouteUserDateToPhp,
       // our data object
-      url: "http://localhost/Student/PagesController/ZoomAPIs",
+      url: base_url + "PagesController/ZoomAPIs",
       // the url where we want to POST
       processData: false,
       encode: true,

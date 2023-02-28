@@ -92,7 +92,6 @@
 						<th>Dept</th>
 						<th>ACTION</th>
 					</tr>
-					
 				</thead>
 					<tbody>
 					<?php 
@@ -107,7 +106,7 @@
 						$this->DB->bind(':department', $department);
 						$return = $this->DB->resultSet();
 						if ($return):
-							foreach ($return as $returnvalue):
+							foreach ($return as $returnvalue): 
 								$departmentname = $returnvalue['DepartmentName'];
 								$departmentid = $returnvalue['DepartmentID'];
 					?>

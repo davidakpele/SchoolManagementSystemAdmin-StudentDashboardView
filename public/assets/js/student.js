@@ -12,46 +12,83 @@ function validInput(e) {
   return true;
 }
 //please dont mess with the code here
-    $(document).ready(function($) {
-        $("#Application__Type").change(function () {
-            let ___ApplicationType = $("#Application__Type").val();
-            const JavascriptHook = {
-                "DataId": ___ApplicationType
-            };
-            let StringData = JSON.stringify(JavascriptHook);
-            const Url = base_url+'PageController/RenderRequirementData'; // the url where we want to POST
-            $.ajax({
-                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                dataType: 'JSON', //the type of data we are sending is json
-                contentType: "application/json; charset=utf-8",
-                data: StringData, // our data object
-                url: Url, //the post destination
-                processData: false, //false because the preprocessor are not trigger
-                encode: true, //turn on json encoding
-                crossOrigin: true, // true because we are sending data with ajax as json format to php
-                async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
-                crossDomain: true, //just in case we host the site
-                headers: {
-                    'Access-Control-Allow-Methods': '*',
-                    "Access-Control-Allow-Credentials": true,
-                    "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                    "Access-Control-Allow-Origin": "*",
-                    "Control-Allow-Origin": "*",
-                    "cache-control": "no-cache",
-                    'Content-Type': 'application/json'
-                },
-            }).done(function(response) {
-                Responed = response.result;
-                $('#Department__Type').empty();
-                Responed.forEach(function(CallRecieve) {
-                    $('#Department__Type').append('<option value="' + CallRecieve
-                        .Child_id + '">' + CallRecieve.Child_name + '</option>')
-                });
-            }).fail((xhr, status, error) => {
-                console.log('Oops...', 'Something went wrong with ajax !', 'error');
+$(document).ready(function($) {
+    $("#Application__Type").change(function () {
+        let ___ApplicationType = $("#Application__Type").val();
+        const JavascriptHook = {
+            "DataId": ___ApplicationType
+        };
+        let StringData = JSON.stringify(JavascriptHook);
+        const Url = base_url+'PageController/Render'; // the url where we want to POST
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            dataType: 'JSON', //the type of data we are sending is json
+            contentType: "application/json; charset=utf-8",
+            data: StringData, // our data object
+            url: Url, //the post destination
+            processData: false, //false because the preprocessor are not trigger
+            encode: true, //turn on json encoding
+            crossOrigin: true, // true because we are sending data with ajax as json format to php
+            async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
+            crossDomain: true, //just in case we host the site
+            headers: {
+                'Access-Control-Allow-Methods': '*',
+                "Access-Control-Allow-Credentials": true,
+                "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                "Access-Control-Allow-Origin": "*",
+                "Control-Allow-Origin": "*",
+                "cache-control": "no-cache",
+                'Content-Type': 'application/json'
+            },
+        }).done(function(response) {
+            Responed = response.result;
+            $('#Faculty__Type').empty();
+            Responed.forEach(function(CallRecieve) {
+                $('#Faculty__Type').append('<option value="' + CallRecieve.FacultyID + '">' + CallRecieve.FacultyName + '</option>')
             });
+        }).fail((xhr, status, error) => {
+            console.log('Oops...', 'Something went wrong with ajax !', 'error');
         });
-    });    
+    });
+});    
+$(document).ready(function($) {
+    $("#Faculty__Type").change(function () {
+        let ___FacultyType = $("#Faculty__Type").val();
+        const Data = {"DataId": ___FacultyType};
+        let StringData = JSON.stringify(Data);
+        const Url = base_url+'PageController/RenderRequirementData'; // the url where we want to POST
+        $.ajax({
+            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+            dataType: 'JSON', //the type of data we are sending is json
+            contentType: "application/json; charset=utf-8",
+            data: StringData, // our data object
+            url: Url, //the post destination
+            processData: false, //false because the preprocessor are not trigger
+            encode: true, //turn on json encoding
+            crossOrigin: true, // true because we are sending data with ajax as json format to php
+            async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
+            crossDomain: true, //just in case we host the site
+            headers: {
+                'Access-Control-Allow-Methods': '*',
+                "Access-Control-Allow-Credentials": true,
+                "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                "Access-Control-Allow-Origin": "*",
+                "Control-Allow-Origin": "*",
+                "cache-control": "no-cache",
+                'Content-Type': 'application/json'
+            },
+        }).done(function(response) {
+            Responed = response.result;
+            $('#Department__Type').empty();
+            Responed.forEach(function(CallRecieve) {
+                $('#Department__Type').append('<option value="' + CallRecieve
+                    .Child_id + '">' + CallRecieve.Child_name + '</option>')
+            });
+        }).fail((xhr, status, error) => {
+            console.log('Oops...', 'Something went wrong with ajax !', 'error');
+        });
+    });
+});    
 $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
         return {
             "iStart": oSettings._iDisplayStart,

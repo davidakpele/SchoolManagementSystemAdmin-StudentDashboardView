@@ -46,7 +46,7 @@
 					<li class="active">Edit Data</li>
 				</ol>
                 <div class="box-tools pull-left mt-2 mb-4">
-                    <a href="<?=ROOT?>Admin/Courses" class="btn btn-sm btn-flat btn-primary">
+                    <a href="<?=ROOT?>Admin/semester" class="btn btn-sm btn-flat btn-primary">
                         <i class="fa fa-arrow-left"></i>Go Back
                     </a>
                 </div>
@@ -56,13 +56,12 @@
                 <div class="row">
                     <div class="max-width" style="max-width: 540px;margin: 0 auto;background: #FFF;border-radius: 5px;margin: 0 auto;padding: 25px;">
                          <form action="javascript:void(e)" method="post" class="form-group" autocomplete="off">
+                            <input type="hidden" name="sid" id="sid" value="<?=((isset($data['id']))?$data['id']:'')?>" >
+                            <input type="hidden" name="parent" id="parent" value="<?=((isset($data['semesterdata']->Parent))?$data['semesterdata']->Parent:'')?>" >
                                 <div class="col-md-12 invalid1">
                                     <label for="Class">Class: </label>
                                     <select type="text" name="Class" id="ClassVal" class="form-control select2">
-                                        <option value="">--Empty--</option>
-                                        <?php foreach ($data['class'] as $d): ?>
-                                        <option value="<?=$d['ClassID']?>"><?=$d['Title']?></option>
-                                        <?php endforeach; ?>
+                                        <option value="<?=$data['class']->ClassID?>"><?=$data['class']->Title?></option>
                                     </select>
                                     <small class="help-block1" style="color:#dd4b39;"></small>
                                 </div>
@@ -73,11 +72,14 @@
                                 </div>
                                 <div class="col-md-6 invalid3">
                                     <label for="Classname2">Select (1) Options:* </label>
-                                    <select name="Classname2" id="Classname2" class="form-control select2">
-                                        <option value="">--Select--</option>
-                                        <option value="FIRST SEMESTER">FIRST SEMESTER</option>
-                                        <option value="SECOND SEMESTER">SECOND SEMESTER</option>
-                                    </select>
+                                    <input name="Classname2" id="Classname2" class="form-control">
+                                    <div class="select_default" style="display:none">
+                                        <select name="Classnamep" id="Classnamep" class="form-control select2">
+                                            <option value="">--Select--</option>
+                                            <option value="FIRST SEMESTER">FIRST SEMESTER</option>
+                                            <option value="SECOND SEMESTER">SECOND SEMESTER</option>
+                                        </select>
+                                    </div>
                                     <small class="help-block3" style="color:#dd4b39;"></small>
                                 </div>
                                 <div class="col-md-12 invalid4">
@@ -87,6 +89,7 @@
                                 </div>
                             </form>
                         <div class="footer">
+                            <button type="submit" style="margin-top:10px;margin-left:15px; max-width:100%" class="btn btn-default" onclick="isReset();">Reset Everything</button>
                             <button type="submit" style="margin-top:10px;margin-left:15px; max-width:100%" class="btn btn-success" onclick="isEditData();">Save Data</button>
                         </div>
                     </div>
@@ -124,13 +127,81 @@
 <script src="<?=ASSETS?>admin/assets/bower_components/codemirror/lib/codemirror.min.js"></script>
 <script src="<?=ASSETS?>admin/assets/bower_components/codemirror/mode/xml.min.js"></script>
 <script src="<?=ASSETS?>admin/assets/bower_components/froala_editor/js/froala_editor.pkgd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <!-- App JS -->
 <script src="<?=ASSETS?>admin/assets/dist/js/app/dashboard.js"></script>
 <script src="<?=ASSETS?>admin/assets/dist/js/jquery.mask.js" type="text/javascript"></script>
 <script src="<?=ASSETS?>admin/assets/dist/js/jquery.mask.min.js" type="text/javascript"></script>
 <script src="<?=ASSETS?>admin/assets/plugins/table/datatable.js" type="text/javascript"></script>
-<script src="<?=ASSETS?>js/adminEdituser.js"></script>
-<script src="<?=ASSETS?>js/editcourse.js"></script>
+<script src="<?=ASSETS?>admin/assets/plugins/js/editSemester.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function ($) {
+        let ClassVal, opt, Classname1, opt2;
+        ClassVal= $("#ClassVal").val(); 
+        opt2 = $("#parent").val(); 
+        Classname1 = $("#Classname1").val();
+
+        if (ClassVal == 1) {
+            opt = '(100)';
+            $("#Classname1").val(opt);
+            if (opt2 ==1) {
+                opt2 = 'FIRST SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }else{
+                opt2 = 'SECOND SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }
+        }else if(ClassVal == 2){
+            opt = '(200)';
+            $("#Classname1").val(opt);
+            if (opt2 ==1) {
+                opt2 = 'FIRST SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }else{
+                opt2 = 'SECOND SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }
+        }else if(ClassVal == 3){
+            opt = '(300)';
+            $("#Classname1").val(opt);
+            if (opt2 ==1) {
+                opt2 = 'FIRST SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }else{
+                opt2 = 'SECOND SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }
+        }else if(ClassVal == 4){
+            opt = '(400)';
+            $("#Classname1").val(opt);
+            if (opt2 ==1) {
+                opt2 = 'FIRST SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }else{
+                opt2 = 'SECOND SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }
+        }else if(ClassVal == 5){
+            opt = '(500)';
+            $("#Classname1").val(opt);
+            if (opt2 ==1) {
+                opt2 = 'FIRST SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }else{
+                opt2 = 'SECOND SEMESTER';
+                $("#Classname2").val(opt2);
+                $('#CombinedData').val(opt+' '+opt2);
+            }
+        }
+ });
+</script>
     </body>
 </html>

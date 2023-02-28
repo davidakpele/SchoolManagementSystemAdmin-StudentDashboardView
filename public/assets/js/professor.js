@@ -237,7 +237,7 @@
                         var plub = data_array['status'];
                         let messg = data_array['message'];
                         let errormessg = data_array['errormsg'];
-                        //continue from here...
+                        //continue from here... 
                         if (plub == 300) {
                             $(".statusMsg").fadeIn().text(errormessg);
                             $("#Profile__Picture").focus();

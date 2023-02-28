@@ -22,7 +22,7 @@
       </button>
        <ul class="dropdown-menu" role="menu" data-show-active-item="" data-skip-active-class="true" aria-labelledby="fgroupingdropdown">
         <li><a class="dropdown-item  btn btn-primary" href="<?=ROOT?>Student/AuthExamination" data-filter="sort" data-pref="lastaccessed" data-value="ul.timeaccess desc" aria-label="Sort courses by last accessed date" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem"><i class="icon fa fa-pencil fa-fw " style="color:blue"></i>Examination</a></li>
-        <li><a class="dropdown-item btn btn-primary" href="<?=ROOT?>Student/CStudent/" data-filter="sort" data-pref="title" data-value="fullname" aria-label="Sort courses by course name" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" aria-current="true"><i class="icon fa fa-cog fa-fw " style="color:blue"></i>Reset Password</a></li>
+        <li><a class="dropdown-item btn btn-primary" href="<?=ROOT?>Student/change_password/" data-filter="sort" data-pref="title" data-value="fullname" aria-label="Sort courses by course name" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" aria-current="true"><i class="icon fa fa-cog fa-fw " style="color:blue"></i>Reset Password</a></li>
       </ul>
       </div>
     </div>
@@ -37,10 +37,10 @@
             <!-- Start -->
               <?php
                  //define total number of results you want per page  
-                $results_per_page = 6;    
+              $results_per_page = 6;    
               $this->DB = new Database;
               $id = $_SESSION['Department'];
-              $Classid = $_SESSION['semsterid'];
+              $Classid = $_SESSION['Classid'];
               $semsterid = $_SESSION['semsterid'];
               $this->DB->query("SELECT * FROM courses WHERE ClassID =:Classid AND DepartmentID = :id AND SemesterID =:semsterid");
               $this->DB->bind(':id', $id);
@@ -66,7 +66,6 @@
                   $this->DB->bind(':page_first_result', $page_first_result);
                   $this->DB->bind(':results_per_page', $results_per_page);
                   $result = $this->DB->resultSet();
-                  //var_dump($result);
               ?>
               <div class="container-fluid">
                 <div class="card">

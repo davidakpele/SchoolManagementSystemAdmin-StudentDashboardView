@@ -36,79 +36,64 @@
 					</tr>
 					<tr style="background:#ceede8;">
             <td><b>S.N.</b></td>
-            <td><b>Topic</b></td>
+            <td><b>Course</b></td>
             <td><b>Total Question</b></td>
-            <td><b>Marks</b></td>
-            <td><b>Time limit</b></td>
+            <td><b>Time</b></td>
             <td></td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
             <?php 
-            @$this->DB = new Database;
-            $email= $_SESSION['studEmail'];
-            $Userid= $_SESSION['student__Id'];
-            $c =1;
-            if (!empty($data['examTime'])) {
-              foreach ($data['examTime'] as $row) { 
-              
-                  $eid = $row['eid'];
-                  $title = $row['title'];
-                  $total = $row['total'];
-                  $sahi = 2;
-                  $time = $row['time'];
-                
-                  @$this->DB->query('SELECT score FROM history WHERE eid=:eid AND email=:email');
-                  $this->DB->bind(':eid', $eid);
-                  $this->DB->bind(':email', $email);
-                  @$rowcount = $this->DB->rowCount();
-                  if($rowcount == 0){
-                      echo '<tr>
-                            <td>'.$c++.'</td>
-                            <td>'.$title.'</td>
-                            <td>'.$total.'</td>
-                            <td>'.$sahi*$total.'</td>
-                            <td>'.$time.'&nbsp;min</td>
-                            <td><b>
-                            <a href="Examination?q=start&step=2&eid='.$eid.'&n=1&t='.$total.'" class="btn btn-success text-center" style="background:#2db44a;">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;
-                            <span class="title1"><b>Commence Exam</b>
-                            </span></a></b>
-                            </td>
-                            </tr>';
-                          } else{
-                            echo '<tr style="color:#2db44a">
-                              <td>'.$c++.'</td>
-                              <td>'.$title.'&nbsp;<span title="This exam has been already solved by you" class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
-                              <td>'.$total.'</td>
-                              <td>'.$sahi*$total.'</td>
-                              <td>'.$time.'&nbsp;min</td>
-                                <td><b><a href="Update?q=quizre&step=25&eid='.$eid.'&n=1&t='.$total.'" class="pull-right btn sub1" style="margin:0px;background:#C82333; border-radius:0%">
-                                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>&nbsp;
-                                <span class="title1"><b>Restart</b></span></a></b>
-                              </td>
-                            </tr>';
+            $c =0;
+            $this->Router = new Database;
+            $examid = $data['eid'];
+            $id = $_SESSION['student__Id'];
+            $array = [];
+            if (!empty($data['exam'])):?>
+              <?php foreach ($data['exam'] as $row):?>
+              <?php 
+                $c++;
+                $examid = $row['eid'];
+                $eid = $row['eid'];
+                $Coursecode = $row['Course'];
+                $totalQuest = $row['total'];
+                $time= $row['time'];
+                ?>
+                <tr>
+                  <td><?=((isset($c))?$c:'')?></td>
+                  <td><?=((isset($Coursecode))?$Coursecode: '')?></td>
+                  <td><?=((isset($totalQuest))?$totalQuest: '')?></td>
+                  <td><?=((isset($time))?date("h:i A", strtotime($time)): '')?></td>
+                  <td>
+                      <?php 
+                        $this->Router->query("SELECT * FROM monitor WHERE examid =:examid AND studentid=:id AND examstatus=1");
+                        $this->Router->bind(':examid', $examid);
+                        $this->Router->bind(':id', $id);
+                        $stmt = $this->Router->resultSet();
+                        ?>
+                        <?php foreach ($stmt as $e){
+                            $array = $e['examid'];
                             }
-
                           ?>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                       <?php } $c=0; ?>
-                       <?php }else {?>
-                        <tr>
-                          <td colspan="6">
-                            <div class="alert alert-warning alert-sm" role="alert">
-                              <span>No exam has been set for your depaertment yet..! come back later.</span>
-                            </div>
-                          </td>
-                        </tr>
-                       <?php }?>
-                       </div>
-                    </tr>
+                            <?php if ($array == $eid):?>
+                                <button type="reset" class="btn btn-success btn-sm">Taken Already</button>
+                                <a href="check_result?action=result&eid=<?php echo $examid;?>&user=<?=$_SESSION['student__Id']?>" class="btn btn-secondary btn-sm">View Result</a>
+                                <?php else: ?>
+                                <a href="Examination?q=start&step=2&eid=<?=$eid?>&n=1&t=<?=$totalQuest?>" class="btn btn-success text-center" style="background:#2db44a;">
+                                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;
+                                  <span class="title1"><b>Commence Exam</b>
+                                  </span>
+                                </a>
+                              <?php endif;?>
+                            <?php endforeach;?>
+                       
+                      </td>
+                      </tr>
+                
+                <?php endif;?>
+              </div>
+              </tr>
 				</tbody>
 			</table>
         </form>

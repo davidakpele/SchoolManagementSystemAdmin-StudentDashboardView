@@ -26,63 +26,9 @@
     <link rel="shortcut icon" href="<?=ASSETS?>icons/favicon.ico" type="image/vnd.microsoft.icon"/>
     <title><?=$data['page_title']?></title>
     <link rel="stylesheet" href="<?=ASSETS?>fonts/font-awesome/css/all.css"/>
+    <link rel="stylesheet" href="<?=ASSETS?>students/css/style.css"/>
     <link rel="stylesheet" href="<?=ASSETS?>important__stylesheet__file/style-starter.css">
     <script type="text/javascript" src="<?=ASSETS?>js/jquery-3.6.0.js"></script>
-    <style>
-    .sidebar-menu .sidebar-menu-inner ul >li a:hover{color:#fff; background: #008bc6;border-radius: 2px;}
-    .file-upload {display: none;}
-    .circle {border-radius: 100% !important;overflow: hidden;  width: 100px;height: 100px;border: 2px solid rgba(255, 255, 255, 0.2); }
-    .upload-button {font-size:2.5em; }
-    .labelfocus{color:red;}
-    .p-image{ text-align: center;}
-    .upload-button:hover {transition: all .3s cubic-bezier(.175, .885, .32, 1.275);color: #999;}
-    #successmessagediv{background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-    #successmessagediv{padding-left: 60px;background: url(<?=ASSETS?>bullet_add.png) #E4FFDE no-repeat 30px center;}
-    .errormsg{background: #FAE8E8;border: 1px solid #DAB3B6;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-    .error-ico{padding-left:25px;background: url(<?=ASSETS?>bullet_error.png) #FAE8E8 no-repeat 30px center;}
-    .loading {display: flex;text-align:center.;justify-content: center;align-items:center;transition: 0.5s;position:absolute;top:0;width:100%;height:100%;}
-    .loading::after {content: "";width: 57.6px;height: 57.6px;border: 8px solid #bbdbfc;border-top-color: #0c6cf2;border-radius: 50%;animation: loading 1s linear infinite;}
-    @keyframes loading {to {transform: rotate(1turn);}}
-    .img-thumbnail{border-radius: 50%;}
-    .img-thumbnail:hover{box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5); }
-    #successmessagediv{background: #E4FFDE;border: 1px solid #8EBD86;padding: 10px;border-radius: 5px;margin: 7px;width: auto;height: auto;color: #333;display: block;}
-    .success-ico {padding-left: 60px;background: url(<?=ASSETS?>bullet_add.png) #E4FFDE no-repeat 30px center;}
-    #error{padding-left:70px;background: url(<?=ASSETS?>bullet_error.png) #FAE8E8 no-repeat 30px center;}
-    #side_menu{position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;-webkit-background-clip: border-box;background-clip: border-box;border: 1px solid #d7dfe3;    font-family: Arial,Verdana,Helvetica,sans-serif;font-size: .9375rem;font-weight: 400;line-height: 1.6;}
-    #side_menu>h6{font-weight:600;margin-top:25px;}
-    .dropdown-toggle::after {display: inline-block;margin-left: 0.255em;vertical-align: 0.255em;content: "";border-top: 0.3em solid;border-right: 0.3em solid transparent;border-bottom: 0;border-left: 0.3em solid transparent;}
-    .sec_div_flock{position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;-webkit-background-clip: border-box;background-clip: border-box;border: 1px solid #d7dfe3;    font-family: Arial,Verdana,Helvetica,sans-serif;font-size: .9375rem;font-weight: 400;line-height: 1.6;}
-    .sec_div_flock>h6{font-weight:600;margin-left:20px;}
-    #sec_m{margin:10px; display: flex;justify-content: space-between;}
-    .third__sec{margin-top:20px;}
-    .card-body{position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;-webkit-background-clip: border-box;background-clip: border-box;border: 1px solid #d7dfe3;    font-family: Arial,Verdana,Helvetica,sans-serif;font-size: .9375rem;font-weight: 400;line-height: 1.6;}
-    .user{display:flex;}
-    .user .userpicture{border-radius: 50%;}
-    .course__Section>h5{font-weight:600;}
-    .courses__display__section{display:block; margin:10px;}
-    .breaker{max-width:280px; max-height:150px;margin-bottom:190px; clear:both}
-    .breaker .f1-img >img{border:3px solid #fff; }
-    .img__bottom{border:1px solid #fff; color:gray; font-size:14px;margin:0;}
-    .active__online__std{width: 15px;height: 15px;background: #4CAF50;position: absolute;border: 3px solid #ffffff;border-radius: 50%;}
-    .s-time{color:green;}
-    .button_element{margin-bottom:50px;display: table;width: 100%;padding: 1px;background:#fff;}
-    .button_element .summary-icons{display: table-row;padding: 5px;justify-content: space-between;}
-    .button_element .summary-icons .btn {display: table-cell;text-align: center;padding: 0.8333333333rem 0;border: none;border-radius: 0;border-right: 1px solid #d7dfe3;background: transparent;}
-    .button_element .summary-icons .btn.link-participants .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f500";}
-    .button_element .summary-icons .btn.link-grades .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f518";}
-    .button_element .summary-icons .btn.link-badges .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f2c1";}
-    .button_element .summary-icons .btn.link-course .icon:before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f0a9";}
-    .button_element .summary-icons .btn .icon {display: block;font-size: 1.55rem;color: #e02928;width: inherit;height: inherit;margin: 0;padding: 0;-webkit-transition: .4s;-o-transition: .4s;transition: .4s;}
-    .courseName .more-text{display: none;}
-    .pagination {list-style-type: none;padding: 10px 0;display: inline-flex;justify-content: space-between;box-sizing: border-box;}
-    .pagination li {box-sizing: border-box;padding-right: 10px;}
-    .pagination li a {box-sizing: border-box;background-color: #e2e6e6;padding: 8px;text-decoration: none;font-size: 15px;font-weight: bold;color: #616872;border-radius: 4px;}
-    .pagination li a:hover {background-color: #d4dada;}
-    .pagination .next a, .pagination .prev a {text-transform: uppercase;font-size: 15px;background-color:#008bc6;color:#fff;}
-    .pagination .currentpage a {background-color: #518acb;color: #fff;}
-    .pagination .currentpage a:hover {background-color: #518acb;} 
-  </style>
-
 </head>
 <body class="sidebar-menu-collapsed" id="bodytag">
   <div class="se-pre-con"></div>

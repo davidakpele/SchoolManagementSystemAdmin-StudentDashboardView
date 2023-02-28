@@ -286,6 +286,7 @@ hapus = (id) => {
         let ClassVal = $("#ClassVal").val();
         let Classname1 = $("#Classname1").val();
         let Classname2 = $("#Classname2").val();
+        var parent = '';
         if (Classname2 == "") {
             $("#CombinedData").empty();
             $("#CombinedData").val('');

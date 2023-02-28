@@ -241,7 +241,7 @@
         <div class="icon">
             <img src="<?=ASSETS?>assets/img/setting.png" alt="" style="max-width:90px">
         </div>
-        <a href="http://localhost/ci_exam/users" class="small-box-footer">
+        <a href="<?=ROOT?>Admin/users/" class="small-box-footer">
             More info <i class="fa fa-arrow-circle-right"></i>
         </a>
         </div>

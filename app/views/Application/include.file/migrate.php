@@ -1,5 +1,5 @@
 <?php
-$this->DB = new Database;
+    $this->DB = new Database;
     $this->DB->query('SELECT * FROM student__account ORDER BY student__Id DESC');
     $row = $this->DB->single();
     if (empty($row)) {

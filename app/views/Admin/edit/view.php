@@ -136,7 +136,7 @@
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="<?=ROOT?>Admin/Course">
+                                    <a href="<?=ROOT?>Admin/Courses">
                                         <i class="fa fa-bars"></i>
                                             Course
                                     </a>
@@ -148,7 +148,7 @@
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="<?=ROOT?>Admin/Student">
+                                    <a href="<?=ROOT?>Admin/Students">
                                         <i class="fa fa-bars"></i>
                                             Student
                                     </a>
@@ -220,8 +220,15 @@
 			<section class="content container-fluid">
                 <div class="modal-body">
 				<div class="x_panel" >
+					<div class="row">
+						<div class="col-sm-12 mb-4">
+							<a href="<?=ROOT?>Admin/Students" class="btn btn-default">
+								<i class="fa fa-arrow-left"></i> Cancel
+							</a>
+						</div>
+					</div>
 					<div class="x_content col-md-12" >
-						<div class="container-fluid" style="border: 2px solid">
+						<div class="container-fluid content-box" style="border: 2px solid">
 							<div class="tab-content">
 								<!-- Personal info tab -->
 								<div id="pds" class="tab-pane active">
@@ -232,7 +239,9 @@
 										<div class="col-md-4">
 											<center><h5><strong>PERSONAL DATA SHEET</strong></h5></center>
 										</div>
+
 										<?php foreach ($data['returnData'] as $returnview):?>
+
 										<div class="col-md-4 pull-right" style="display:block ">
 											<strong>Student ID NO: <span style="text-decoration: underline;"><?=$returnview['student__Id'];?></span> </strong>
 										</div>
@@ -247,7 +256,7 @@
 											<tr border="3">
 												<td colspan="4">
 													<center id="pid"><b>PHOTO</b></center>
-													<img src="<?=PATHROOT. $returnview['image']?>" class="img-responsive img-thumbnail photo_fix">
+													<img src="<?=($returnview['image']) ? PATHROOT.$returnview['image'] : ASSETS.'img/avatar/emptyProfile.PNG';?>" class="img-responsive img-thumbnail photo_fix" style="width:100px; height:100px">
 												</td>
 											</tr>
 												<tr>
@@ -292,7 +301,7 @@
 												</tr>
 												<tr>
 													<td>Height</td>
-													<td><?=((isset($returnview['Height']))?$returnview['Height']:'')?></td>
+													<td><?=((isset($returnview['Height']))?$returnview['Height']:'')?>kg</td>
 												</tr>
 												<tr>
 													<td>Weight</td>
@@ -376,10 +385,12 @@
 											</tbody>
 											<?php endforeach; ?>
 										</table>
-										
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="printer mt-5">
+							<button class="btn btn-success btn-sm col-sm-3" type="button" id="print_att"><i class="fa fa-print"></i> Print</button>
 						</div>
 					</div>
 				</div>
@@ -417,12 +428,39 @@
 <script src="<?=ASSETS?>admin/assets/bower_components/codemirror/lib/codemirror.min.js"></script>
 <script src="<?=ASSETS?>admin/assets/bower_components/codemirror/mode/xml.min.js"></script>
 <script src="<?=ASSETS?>admin/assets/bower_components/froala_editor/js/froala_editor.pkgd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <!-- App JS -->
 <script src="<?=ASSETS?>admin/assets/dist/js/app/dashboard.js"></script>
 <script src="<?=ASSETS?>admin/assets/dist/js/jquery.mask.js" type="text/javascript"></script>
 <script src="<?=ASSETS?>admin/assets/dist/js/jquery.mask.min.js" type="text/javascript"></script>
 <script src="<?=ASSETS?>admin/assets/plugins/table/datatable.js" type="text/javascript"></script>
 <script src="<?=ASSETS?>js/adminEdituser.js"></script>
+<noscript>
+	<style>
+		table.table{
+			width:100%;
+			border-collapse:collapse
+		}
+		table.table td,table.table th{
+			border:1px solid
+		}
+		.text-center{
+			text-align:center
+		}
+	</style>
+</noscript>
+<script>
+	$('#print_att').click(function () {
+		var _c = $('.content-box').html();
+		var ns = $('noscript').clone();
+		var nw = window.open('', '_blank', 'width=900,height=600')
+		nw.document.write(_c)
+		nw.document.write(ns.html())
+		nw.document.close()
+		nw.print()
+		setTimeout(() => {
+			nw.close()
+		}, 500);
+	})
+</script>
     </body>
 </html>

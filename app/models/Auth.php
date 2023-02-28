@@ -1,0 +1,82 @@
+<?php 
+    class Auth
+    {
+
+        /**
+         * 
+         * LoginModel Processing Model
+         * var [type]
+         * 
+         */
+
+        private $DB;
+        public function __construct(){
+            $this->DB = new Database;
+        }
+        // ======================================================================
+        //Login student if that data provided by the student are correct
+        // ======================================================================
+
+        public function studentLogin($StudentUsername, $StudentPassword){
+            $this->DB->query('SELECT * FROM student__account WHERE Roll__No = :StudentUsername');
+            // Bind the values
+            $this->DB->bind(':StudentUsername', $StudentUsername);
+            $row = $this->DB->single();
+            if(!empty($row)){
+                $hashedPassword = $row->password;
+                if(password_verify($StudentPassword, $hashedPassword)){
+                    return $row;
+                }else {
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
+        public function SearchMatric($ApplicatioNo, $dbo, $SUname){
+            $this->DB->query("SELECT Roll__No, Surname, Date__of__birth FROM `student__account` WHERE Roll__No=:ApplicatioNo AND Surname=:SUname AND Date__of__birth=:dbo");
+            $this->DB->bind(':ApplicatioNo', $ApplicatioNo);
+            $this->DB->bind(':SUname', $SUname);
+            $this->DB->bind(':dbo', $dbo);
+            $stmt= $this->DB->single();
+            if (!empty($stmt)) {
+                return $stmt;
+            }else {
+                return false;
+            }
+        }
+        
+        public function isUserMatrichNumber($MatricNo){
+            $this->DB->query('SELECT * FROM student__account WHERE Roll__No=:MatricNo');
+            $this->DB->bind(':MatricNo', $MatricNo);
+            $row = $this->DB->single();
+            if (!empty($row)) {
+                return true;
+            }else {
+                return false;
+            }
+        }
+        public function updateStudentLoginTime($id, $Active_login){
+            $this->DB->query("UPDATE `student__account` SET active = :Active_login, Onlinestatus = '1' WHERE student__Id = :id");
+            $this->DB->bind(':id', $id);
+            $this->DB->bind(':Active_login', $Active_login);
+            if($this->DB->execute()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        public function findSpecificStudent($id){
+		$this->DB->query('SELECT student__account.student__Id, student__account.Conid, student__account.Roll__No, student__account.Surname, student__account.othername, student__account.password, student__account.Date__of__birth, 
+		student__account.gender, student__account.email, student__account.featured, student__account.relationship, student__account.telephone, student__account.image, student__account.Onlinestatus, student__account.active,
+		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
+		 FROM student__account, studentapp WHERE student__account.student__Id = :id AND student__account.Conid = studentapp.Conid');
+		$this->DB->bind(':id', $id);
+		$row = $this->DB->single();
+		if(!empty($row)){
+			return $row;
+		}else {
+			return false;
+		}
+	}
+    }   

@@ -113,13 +113,8 @@ ALTER TABLE `EmailBox` ADD `parent` INT(10) NOT NULL DEFAULT '0' AFTER `message`
 CREATE TABLE IF NOT EXISTS `Student__Account`(
     `No` INT(11) PRIMARY KEY AUTO_INCREMENT,
     `student__Id` VARCHAR(220) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Conid` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
     `Roll__No` VARCHAR(100) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Application_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Faculty_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Department_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Program__Type` VARCHAR(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `NIN` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Entrylevel` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `Surname` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `othername` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
     `password` VARCHAR (250) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -134,6 +129,21 @@ CREATE TABLE IF NOT EXISTS `Student__Account`(
     `active` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `Onlinestatus` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS StudentApp(
+    `No` INT(11) PRIMARY KEY AUTO_INCREMENT,
+    `Conid` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Application_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Faculty_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Department_id` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Program__Type` VARCHAR(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `NIN` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Entrylevel` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Class` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+    CONSTRAINT Cl_ClassConnection FOREIGN KEY (AppId)
+    REFERENCES Student__Account(Conid)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE StudentApp ADD UNIQUE(Conid);
 
 CREATE TABLE IF NOT EXISTS HEALTHDETAILS(
     counter INT(11) PRIMARY KEY AUTO_INCREMENT,
@@ -165,7 +175,7 @@ ALTER TABLE AcedemicDetails ADD UNIQUE(ID);
 
 -- CREATING HUMAN RESOURCES TABLE [HR TABLE]
 
-CREATE TABLE IF NOT EXISTS `human_resources`(
+CREATE TABLE IF NOT EXISTS `humanresources`(
     `#` MEDIUMINT(10) PRIMARY KEY AUTO_INCREMENT,
     `Hr__id` VARCHAR(220) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
     `Surname` VARCHAR(60) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -194,10 +204,6 @@ CREATE TABLE IF NOT EXISTS `human_resources`(
     `Registration_Date` DATETIME
 )ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
---  INSERT INTO human_resources TABLE
-
-INSERT INTO `human_resources`(`#`, `Hr__id`, `Surname`, `Middel__name`, `Othername`, `Accesscode`, `Password`, `Email`, `Telephone_No`, `Date_of_Birth`, `Place__of__birth`, `Gender`, `Cellphone_No`, `Relationship_sts`, `Civil_status`, `Citizenship`, `NIN`, `Department`, `Height`, `Weight`, `Blood_Type`, `Address`,  `Profile__Picture`, `Registration_Date`) VALUES ('1', 'Hr0001', 'Mark', 'Alex', 'Lio', 'MUC.STHR3701817', '$2y$10$NtvbJ12gsZzLsa/sIC1Vde4ap1nWl7gEaddovt0MkiYqCpT6Fcoue', 'staff@hotmail.com', '+1234567890', '04-10-1111', 'Oyo state, ibadan', 'Male', '212-455-655', 'Married', 'Null', 'Nigeria', '24075663446', '[HR]', '1.65 m', '76 kg', 'AA', 'House 22, Kudety crescent, Onireke', 'http://localhost/school/public/assets/img/avatar/avatarC.PNG', '2021-03-09 14:17:39');
- 
 -- CREATING STAFF TABLE
 
 CREATE TABLE IF NOT EXISTS `Staff`(
@@ -19747,7 +19753,7 @@ INSERT INTO `Faculties`(`Cat_id`, `FacultyName`, `FacultyHead`, `Created_date`) 
 -- ('1,3','Faculty of Administrator', NULL, '1232-02-12 06:40:21');
 
 ('3', 'Faculty of Basic Medical Science (BMS)', NULL, '1232-02-12 06:40:21'),
-('3', 'Faculty of Veterinary Medicine', NULL, '1232-02-12 06:40:21'),
+-- ('3', 'Faculty of Veterinary Medicine', NULL, '1232-02-12 06:40:21'),
 ('3', 'Faculty of Public Health', NULL, '1232-02-12 06:40:21'),
 ('3', 'Faculty of Social Science', NULL, '1232-02-12 06:40:21'),
 ('3', 'Faculty of Engineering/Env', NULL, '1232-02-12 06:40:21'),
@@ -20367,7 +20373,7 @@ CREATE TABLE IF NOT EXISTS `Program`(
 INSERT INTO `Program` (`No`, `Program__ID`, `Program__name`, `Updated__On`) 
         VALUES('1', '10293', 'Master Degree (Ms)', '1620-04-13 12:11:30'),
               ('2', '10992', 'Bachelor Degree (BSc)', '2010-02-23 09:19:30'),
-              ('3', '10406', 'College Degree (DC)', '1813-10-12 11:03:22');
+              ('3', '10406', 'Bachelor Degree [UD](BSc)', '1813-10-12 11:03:22');
               
 CREATE TABLE IF NOT EXISTS `Mode__of__study`(
   `No` TINYINT(10) AUTO_INCREMENT PRIMARY KEY,
@@ -20459,9 +20465,15 @@ CREATE TABLE `StudentAns` (
 
 CREATE TABLE `Monitor` (
     `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
-    `Meid` text,
+    `examid` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `correctQuest` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `failQuest` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `defaultmark` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `score` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `grade` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
     `studentid` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `monitor` ADD `examstatus` INT(10) NOT NULL DEFAULT '0' AFTER `studentid`;
 
 CREATE TABLE IF NOT EXISTS `exam__timeset` (
     `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
@@ -20490,6 +20502,31 @@ CREATE TABLE IF NOT EXISTS `history` (
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `attendance_list` (
+  `#` int(10) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `id` VARCHAR(100)  NOT NULL,
+  `department` VARCHAR(100)  NOT NULL,
+  `class` VARCHAR(100)  NOT NULL,
+  `semester` VARCHAR(100) NOT NULL,
+  `course` int(30) NOT NULL,
+  `doc` date NOT NULL,
+  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `attendance_record`
+--
+CREATE TABLE IF NOT EXISTS`attendance_record` (
+  `id` int(10) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `attendance_id`VARCHAR(100)  NOT NULL,
+  `student_id` int(30) NOT NULL,
+  `type` tinyint(1) NOT NULL COMMENT '0=absent,1=present,2=late',
+  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 ALTER TABLE `ZoomSchedule` ADD INDEX(`HosterID`);
 ALTER TABLE `Categories` ADD INDEX(`Parent`);
 ALTER TABLE `Categories` ADD UNIQUE (`Category__ID`);
@@ -20505,6 +20542,7 @@ ALTER TABLE `Lecturals` ADD INDEX(`Profile__Picture`);
 ALTER TABLE `Lecturals` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
 ALTER TABLE `Library__tb` ADD INDEX(`Object__ID`);
 ALTER TABLE `Staff` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
-ALTER TABLE `human_resources` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
+ALTER TABLE `humanresources` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
 ALTER TABLE `Student__Account` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`; 
 ALTER TABLE `super__administrator` ADD `create_on` DATETIME NULL DEFAULT NULL AFTER `permission`;
+ALTER TABLE `categories` ADD `Status` INT(10) NOT NULL AFTER `Category__name`;

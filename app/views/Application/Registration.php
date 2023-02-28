@@ -14,7 +14,7 @@ include_once 'include.file/migrate.php';
     <!--- Start Body -->
 <div class="container reg__container">
  <p class="fs-4 fw-bold m-0 mt-4 h3 text-center Reg__header" style="font-size:24px"><?=((isset($_SESSION['api']))?'Student Parent Registration Form': 'Student Registration Form')?></p>
-    <div class="container" style="margin-top:10px;background:#FFF; border-radius: 5px; max-width:990px; margin:0 auto;padding: 25px;" id="App1">
+    <div class="container" style="margin-top:10px;background:#FFF; border-radius: 5px; max-width:1500px; margin:0 auto;padding: 25px;" id="App1">
         <div class="row"> 
         <?php if (isset($_SESSION['api'])) {?> 
             <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> 
@@ -107,11 +107,11 @@ include_once 'include.file/migrate.php';
          <?php } elseif (!isset($_SESSION['api'])) {?>
             <div id="error" class="error error-ico" style="display:none"></div>
             <div id="messagediv" class="success success-ico" style="display:none"></div>
-            <form method="POST" class="form-group" autocomplete="off" id="AppRegistration" action="javascript:void(0)"/>
+            <form method="POST" class="form-group" autocomplete="off" id="AppRegistration" action="javascript:void(0)">
                 <input type="text" id="___NewStudentIdNo" name="student__id" class="form-control" value="<?=$Studentid;?>" style="display:none" />
                 <input type="text" name="RollNo" id="EnrollmentNumber" value="<?=$randomNumber;?>" style="display:none;"/>
                 <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="Application Type">Application Type:</label>
                         <select class="form-control" name="Application__Type" id="Application__Type">
                             <option selected="" value="">--Select--</option>
@@ -120,33 +120,38 @@ include_once 'include.file/migrate.php';
                             <?php endforeach;?>
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label for="Faculty Type">Faculty:</label>
+                        <select name="Faculty__Type" id="Faculty__Type" class="form-control">
+                            <option value=""  selected="">--select--</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
                         <label for="Department Type">Department:</label>
                         <select name="Department__Type" id="Department__Type" class="form-control">
                             <option value=""  selected="">--select--</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="NIN">Program:</label>
-                        <select id="Program" name="Program__Type" value="<?=((isset($_POST['Program__Type']))?$_POST['Program__Type']: '');?>" id="Program__Type" class="form-control" />
+                        <label for="Program">Program:</label>
+                        <select id="Program" name="Program__Type" id="Program__Type" class="form-control" >
                             <option selected="selected" value="">--Select--</option>
-                            <?php foreach ($data['throw'] as $min): ?>
-                            <option value="<?=$min['Program__name']?> "><?=$min['Program__name']?></option>
-                            <?php endforeach;?>
                         </select> 
                     </div>
                     <div class="col-md-4"> 
                         <label for="NIN">NIN:</label>
                         <input name="myInput_DRS" class="form-control" id="nin" type="number" value="<?=((isset($_POST['NIN']))?$_POST['NIN']: '');?>" placeholder="NIN:"  autocomplete="off" />
                     </div>
-                    <div class="col-md-4"> 
-                    <label for="Entry Level">Entry Level:</label>
-                    <select class="form-control" name="Entrylevel" id="EtyLevel" value="<?=((isset($_POST['Entrylevel']))?$_POST['Entrylevel']: '');?>">
-                            <option selected="selected" value="">--Select--</option>
-                            <?php foreach($data['StmtEntrylevel'] as $StmtEntry):?>
-                            <option value="<?=$StmtEntry['Entry__level__Name'];?>"><?=$StmtEntry['Entry__level__Name'];?></option>
-                                <?php endforeach;?>
-                        </select>
+                    <div class="col-md-4 EntryDevparent"> 
+                        <div class="EntryDevchild">
+                            <label for="Entry Level">Entry Level:</label>
+                            <select class="form-control" name="Entrylevel" id="EtyLevel" value="<?=((isset($_POST['Entrylevel']))?$_POST['Entrylevel']: '');?>">
+                                <option selected="selected" value="">--Select--</option>
+                                <?php foreach($data['StmtEntrylevel'] as $StmtEntry):?>
+                                <option value="<?=$StmtEntry['Entry__level__Name'];?>"><?=$StmtEntry['Entry__level__Name'];?></option>
+                                    <?php endforeach;?>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> <br/>
@@ -188,15 +193,6 @@ include_once 'include.file/migrate.php';
                     <div class="col-md-6"> 
                         <lable for="Telephone">Tel*</lable>
                         <input type="tel" class="form-control" id="mobile" name="telephone" value="<?=((isset($_POST['telephone']))?$_POST['telephone']: '');?>" placeholder="+(234) 8032 4552 09"  autocomplete="off" />
-                    </div>
-                    <div class="col-md-12"> 
-                        <label for="Session">Session:</label>
-                        <select list="sessionList" class="form-control" name="session" id="session" value="<?=((isset($_GET['Edit']))?trim(filter_var($Hat)) : trim(filter_var($_POST['session'], FILTER_SANITIZE_STRING)))?>">
-                            <option selected="selected" value="">--Select--</option>
-                            <?php foreach ($data['StmtSession'] as $session): ?>
-                            <option value="<?=$session['session'];?>"><?=$session['session'];?></option>
-                        <?php endforeach;?>
-                        </select>
                     </div>
                     <div class="col-sm-12 col-md-12 col-xs-12  col-gray-dark">
                         <button class="btn btn-primary submit_btn" value="Signup" type="submit" style="width: 50%">Register Now</button>

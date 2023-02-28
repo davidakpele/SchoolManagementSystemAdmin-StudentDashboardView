@@ -898,7 +898,7 @@ public function AddNewStudents(){
     public function Students(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');} 
         @$DC = @$this->userModel->SelectSpecial__ID();
-        $stmt1 = $this->userModel->SqlStudentSelectall();
+        $stmt1 = $this->userModel->StudentSelectall();
         @$DC = @$this->userModel->SelectSpecial__ID();
         @$throwprogram = @$this->userModel->SelectProgram();
         @$throwSession= @$this->userModel->Selectsession();
@@ -1005,7 +1005,7 @@ public function AddNewStudents(){
             $sname=$row->Surname;$Oname=$row->othername;$email=$row->email;
             $ftd=$row->featured;$tel=$row->telephone;$DoB=$row->Date__of__birth;
             $gn= $row->gender;$relatx=$row->relationship;
-            $session = $row->session;$nin=$row->NIN;$photo=$row->image;
+            $nin=$row->NIN;$photo=$row->image;
             $Saved_image = (($photo != '')?$photo : '');
             $data = 
             [
@@ -1015,7 +1015,7 @@ public function AddNewStudents(){
                 'entry'=>$entryLeve,'sname'=>$sname,'Oname'=>$Oname,
                 'Ascode'=> $enrollmentNo,'email'=>$email,'ftd'=>$ftd,
                 'tel'=>$tel,'DoB'=>$DoB,'gn'=>$gn,'relatx'=>$relatx,
-                'nin'=>$nin,'session'=>$session,
+                'nin'=>$nin,
                 'Saved_image'=>$Saved_image,
             ];
             //dnd($data);
@@ -1439,6 +1439,7 @@ public function AddNewStudents(){
             $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Students';
             $controllerName = $controller;
             $id= trim(filter_var((int)$controllerName, FILTER_SANITIZE_NUMBER_INT)); 
+            
             $fetchSingleUser = $this->userModel->ViewStudentRelationalTablewithParent($id);
             if(!$fetchSingleUser == true){
                 echo"<script>alert('Invalid ID Given..! Pleasee You are not authorised to Access this User. Contact Super Admin.');
@@ -2774,7 +2775,7 @@ public function AddNewStudents(){
         $CombinedData = $phpObject->{'CombinedData'};
 
         $newJsonString = json_encode($phpObject);
-
+        
         if ($ClassVal == "") {
             $response['message']="The  field is required.";
             $response['status1'] = false;
@@ -2791,13 +2792,19 @@ public function AddNewStudents(){
             $response['message']="The  field is required.";
             $response['status4'] = false;
         }elseif (!empty($CombinedData) && !empty($ClassVal)) {
+            if ($Classname2 =='FIRST SEMESTER') {
+                $parent = 1;
+            }elseif ($Classname2 =='SECOND SEMESTER') {
+                $parent = 2;
+            }
             $data = 
             [
                 'classid'=>$ClassVal,
                 'title'=>$CombinedData,
+                'parent'=>$parent
             ];
             $countRow=$this->userModel->checksemester($ClassVal);
-            if ($countRow ==2 || $countRow >2) {
+            if ($countRow ==2 || $countRow > 2) {
                 $response['status'] = false;
                 $response['message']= 'This Class Can Not Have More Than 2 Semester..!';
             }else {
@@ -2810,7 +2817,89 @@ public function AddNewStudents(){
         ob_end_clean();
         echo json_encode($response);
     }
+ 
+    public function resetDATA(){
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: *");
+        header("Access-Control-Allow-Headers: *");
+        header("Content-Type: application/json");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        
+        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
+            dnd('Failed');
+        }else {
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
+            $action = $_GET['action'];
 
+            if ($action== 'get_classes') {
+                $getClassSqlModel = $this->userModel->ClassModel();
+                if ($getClassSqlModel) {
+                    $response['data']= $getClassSqlModel;
+                }else {
+                    $response['data']='No Data Found';
+                }
+            }
+            if ($action == 'isSaveEdit') {
+
+                $id = $phpObject->{'id'};
+                $Parent = $phpObject->{'Parent'};
+                $ClassVal = $phpObject->{'ClassVal'};
+                $Classname1 = $phpObject->{'Classname1'};
+                $Classname2 = $phpObject->{'Classname2'};
+                $CombinedData = $phpObject->{'CombinedData'};
+
+                $newJsonString = json_encode($phpObject);
+
+                if ($ClassVal == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                }
+                if ($Classname1 == "") {
+                    $response['message']="The  field is required.";
+                    $response['status2'] = false;
+                }
+                if ($Classname2 == "") {
+                    $response['message']="The  field is required.";
+                    $response['status3'] = false;
+                }
+                if ($CombinedData == "") {
+                    $response['message']="The  field is required.";
+                    $response['status4'] = false;
+                }elseif (!empty($CombinedData) && !empty($ClassVal)) {
+                    if ($Classname2 =='FIRST SEMESTER') {
+                        $dparent = 1;
+                    }elseif ($Classname2 =='SECOND SEMESTER') {
+                        $dparent = 2;
+                    }
+                    $data = 
+                    [
+                        'id'=>(int)$id,
+                        'Parent'=>$dparent,
+                        'classid'=>$ClassVal,
+                        'title'=>$CombinedData,
+                        'parent'=>$parent
+                    ];
+                    $countRow=$this->userModel->checksemester($ClassVal);
+                    if ($countRow ==2 || $countRow > 2) {
+                        $response['status'] = false;
+                        $response['message']= 'This Class Can Not Have More Than 2 Semester..!';
+                    }else {
+                        if($this->userModel->EditSemester($data)) {
+                            $response['status'] = true;
+                            $response['message']= 'A New Semester Has Successfully Added.!';
+                        }
+                    }
+                }
+            }
+
+            ob_end_clean();
+            echo json_encode($response);
+        }
+    }
     public function isSemes($url){
         if(!isLoggedInAdmin()){
         header('location:' . ROOT . 'Administration/Default');
@@ -2819,14 +2908,20 @@ public function AddNewStudents(){
         // Set Controller 
         $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Semester';
         $controllerName = $controller;
+        
         $id= trim(filter_var((int)$controllerName, FILTER_SANITIZE_NUMBER_INT));
-        $fetchdata= $this->userModel->GetSemesterData($id);
-
+        $editId = $id;
+        $semesterSql= $this->userModel->GetSemesterData($id);
+        $id = $semesterSql->ClassID;
+        $class = $this->userModel->getClassData($id);
+      //  dnd($semesterSql);
         $data = 
         [
-
+            'class'=>$class,
+            'id'=>$editId,
+            'semesterdata'=>$semesterSql,
         ];
-            $this->view('Admin/edit/editSemester', $data);
+        $this->view('Admin/edit/editSemester', $data);
         }
     }
 }

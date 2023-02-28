@@ -4,6 +4,6 @@
     </div>
     <div class="pull-left info">
         <p><?=((isLoggedInAdmin())?'Administrator': 'No User');?></p>
-        <small><?=((isset($_SESSION['adminExmail']))?$_SESSION['adminExmail']:'')?></small>
+        <small><?=((isset($_SESSION['adminExmail']))?'Admin':'')?></small>
     </div>
 </div>

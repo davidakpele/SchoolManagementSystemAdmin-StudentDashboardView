@@ -49,6 +49,9 @@
         .error-ico {padding-left:70px;background: url(http://localhost/school/public/assets/bullet_error.png) #FAE8E8 no-repeat 30px center;}
         input:focus {outline: none !important;border:1px solid red;box-shadow: 0 0 5px red;}
     </style>
+    <script>
+        var base_url = '<?=ROOT?>';
+    </script>
 </head>
 <body>
     <div class="header-toggle container">
@@ -59,14 +62,7 @@
     </div>
     <div class="mini-container login-widget"> 
         <div id="RecovererrorMessage" class="error error-ico" style="display:none"></div>
-        <form method="POST" action="javascript:void(0)" class="form-group" id="__RecoverMercyCollegeStudentMatricNo">
-            <div class="PhpHookSecurityAsycHidden">
-                <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTE4MDcwNzMxNA9kFgJmD2QWAgIJDxYCHgRocmVmBQ5pbWFnZXMvZmF2LnBuZ2RkdYzl8Hjtn1iQpAnQ2VIr7SmJgXUuALwWK9Wvj3RVCFg=" />
-            </div>
-            <div class="PhpHookSecurityAsycHidden">
-                <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="" />
-                <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="\wEdAAP007iSoED3ruvRlOgE2aU70L2DLJhpxQ2WXTNAV4E6IuKXTPonOLALxhfCJ/svpfnXFhUSRRFCO2nvUvXw7+LyP1GSkIx9bbfcVNzli3f8hw==" />
-            </div>
+        <form method="POST" action="javascript:void(0)" class="form-group" id="__RecoverMercyCollegeStudentMatricNo" autocomplete="off">
             <div class="element">
                 <label>Matric Number</label>
                 <input name="MatricNoRecoverTextbox" id="MatricNoRecoverTextbox" type="text" value="<?=(isset($_POST['MatricNoRecoverTextbox']))?$_POST['MatricNoRecoverTextbox']: '' ?>" />

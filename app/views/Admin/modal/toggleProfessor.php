@@ -1,13 +1,13 @@
 <?php ob_start(); ?>
     <link href="<?=ASSETS?>RequirementJs/select2.min.css" rel="stylesheet" />
     <script src="<?=ASSETS?>RequirementJs/select2.min.js"></script>
-	<script> 
+	<script>  
     $(document).ready(function ($) {
         $("#Application__Type").change(function () {
             let ___ApplicationType = $("#Application__Type").val().trim();
             const JavascriptHook = { "DataId": ___ApplicationType };
             let StringData = JSON.stringify(JavascriptHook);
-            const Url = '<?=ROOT?>PagesController/Render/'; // the url where we want to POST
+            const Url = '<?=ROOT?>ApisController/RenderFaculty/'; // the url where we want to POST
             $.ajax({
                 type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
                 dataType: 'JSON',//the type of data we are sending is json
@@ -41,9 +41,9 @@
         });
         $("#FacultyID").change(function () {
             let FacultyID = $("#FacultyID").val().trim();
-            const JavascriptHook = { "id": FacultyID };
+            const JavascriptHook = { "DataId": FacultyID };
             let StringData = JSON.stringify(JavascriptHook);
-            const Url = '<?=ROOT?>PagesController/RenderDep/'; // the url where we want to POST
+            const Url = '<?=ROOT?>ApisController/fetchDepartment/'; // the url where we want to POST
             $.ajax({
                 type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
                 dataType: 'JSON',//the type of data we are sending is json
