@@ -1120,7 +1120,6 @@ public function ProcessNewStudentOnline(){
             $clasid=$_SESSION['Classid'];
             $semid=$_SESSION['semsterid'];
             $validateExams = $this->namespacemodel->fetchtimedata($depid, $clasid, $semid);
-            
             if ($validateExams) {
                 foreach ($validateExams as $key) {
                     $eid = $key['eid'];
@@ -1134,6 +1133,7 @@ public function ProcessNewStudentOnline(){
                 'exam'=>$validateExams,
                 'eid'=>((!empty($eid))?$eid:''),
             ];
+
             $this->view('Student/AuthExam', $data);
         }
     }
@@ -1187,12 +1187,6 @@ public function ProcessNewStudentOnline(){
             }else {
                 $FailAnsQ = $wrongAns;
             }
-           
-            // // 
-            // print_r("Number of Correct Answers:".$CorrentAnsresult);
-            // echo "<br/><br/>";
-            // print_r("Number of Wrong Answers:".$wrongAns);
-     
             $id = $_SESSION['student__Id'];
             $Courseid= $_POST['courseid'];
             $appType = $this->namespacemodel->FetchStudentData($id);

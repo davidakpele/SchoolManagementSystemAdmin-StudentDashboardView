@@ -255,7 +255,7 @@
 											
 											<tr border="3">
 												<td colspan="4">
-													<center id="pid"><b>PHOTO</b></center>
+													<span id="pid" style="margin-left:25px"><b>PHOTO</b></span><br/>
 													<img src="<?=($returnview['image']) ? PATHROOT.$returnview['image'] : ASSETS.'img/avatar/emptyProfile.PNG';?>" class="img-responsive img-thumbnail photo_fix" style="width:100px; height:100px">
 												</td>
 											</tr>

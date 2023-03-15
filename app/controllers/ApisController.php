@@ -164,6 +164,40 @@ Class ApisController extends Controller {
             echo json_encode($response); 
         }
     }
+    public function RenderDepartmentList(){
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: *");
+        header("Access-Control-Allow-Headers: *");
+        header("Content-Type: application/json");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        
+        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
+            dnd('Connection Failed');
+        }else{
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response= array();
+            $phpObject = json_decode($jsonString);
+            $FacultyID=$phpObject->{'FacultyID'};
+            $newJsonString = json_encode($phpObject);
+            $id = strip_tags(trim(filter_var((int)$FacultyID, FILTER_VALIDATE_INT)));
+            if(!empty($FacultyID) && (is_numeric($FacultyID))){
+                $returnSql = $this->model->selectDepartment($id);
+                if (!empty($returnSql)) {
+                    $response['Status'] = '2001'; 
+                    $response['result'] = $returnSql;
+                }else {
+                    $response['ErrorMessage']='Sorry This Course doest exists';
+                } 
+            }else { 
+                header('location:' . ROOT . 'DeniedAccess');
+                exit();
+            }
+            ob_end_clean();
+            echo json_encode($response); 
+        }
+    }
     public function RenderFaculty(){
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: *");

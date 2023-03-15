@@ -121,11 +121,11 @@ CREATE TABLE IF NOT EXISTS `Student__Account`(
     `Date__of__birth` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
     `gender` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `email` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `featured` VARCHAR(10) COLLATE utf8mb4_unicode_ci NOT NULL,
     `relationship` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
     `telephone` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
     `image` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
     `session` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `settings` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `active` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `Onlinestatus` VARCHAR (100) COLLATE utf8mb4_unicode_ci NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -139,9 +139,9 @@ CREATE TABLE IF NOT EXISTS StudentApp(
     `Program__Type` VARCHAR(250) COLLATE utf8mb4_unicode_ci NOT NULL,
     `NIN` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
     `Entrylevel` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `Class` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-    CONSTRAINT Cl_ClassConnection FOREIGN KEY (AppId)
-    REFERENCES Student__Account(Conid)
+    `Class` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `semester` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `settings` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 ALTER TABLE StudentApp ADD UNIQUE(Conid);
 
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `RequirementOutLines`(
     `Subtext` text,
     `UTME` text,
     `WASSCE` text,
-    `NECO_SSCE` text,
+    `NECO_SSCE` text, 
     `IGCSE` text,
     `GCSE` text
 );
@@ -19765,6 +19765,8 @@ INSERT INTO `Faculties`(`Cat_id`, `FacultyName`, `FacultyHead`, `Created_date`) 
 ('3', 'Faculty of Law', NULL, '1232-02-12 06:40:21'),
 ('3','Faculty of Technology', NULL, '1232-02-12 06:40:21'),
 ('3','Faculty of Administrator', NULL, '1232-02-12 06:40:21');
+
+
 CREATE TABLE Departments(
 	DepartmentID INT AUTO_INCREMENT PRIMARY KEY,
 	DepartmentName CHAR(100) NOT NULL,
@@ -20478,9 +20480,18 @@ ALTER TABLE `monitor` ADD `examstatus` INT(10) NOT NULL DEFAULT '0' AFTER `stude
 CREATE TABLE IF NOT EXISTS `exam__timeset` (
     `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
     `eid` text NOT NULL,
+    `Department` int(10) NOT NULL,
+    `Classes` text NOT NULL,
+    `Semester` int(10) NOT NULL,
+    `Course` varchar(100) NOT NULL,
     `title` varchar(100) NOT NULL,
-    `total` int(11) NOT NULL,
-    `time` varchar(20) NOT NULL,
+    `duedate` varchar(100) NOT NULL,
+    `hour` varchar(100) NOT NULL,
+    `minute` varchar(100) NOT NULL,
+    `total` int(10) NOT NULL,
+    `rightAnswer_Marks` varchar(40) NOT NULL,
+    `wrongAnswer_Marks` varchar(40) NOT NULL,
+    `status` int(11) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -20528,6 +20539,7 @@ CREATE TABLE IF NOT EXISTS`attendance_record` (
 
 
 ALTER TABLE `ZoomSchedule` ADD INDEX(`HosterID`);
+ALTER TABLE `categories` ADD `Status` INT(10) NOT NULL AFTER `Category__name`;
 ALTER TABLE `Categories` ADD INDEX(`Parent`);
 ALTER TABLE `Categories` ADD UNIQUE (`Category__ID`);
 ALTER TABLE `Faculty__tb` ADD UNIQUE(`Faculty__ID`);
@@ -20535,14 +20547,13 @@ ALTER TABLE `Child__Faculty__tb` ADD INDEX(`Child__faculty__ID`);
 ALTER TABLE `Subject__Grade` ADD INDEX (`Compulsory__ID`);
 ALTER TABLE `Required__Subjects` ADD INDEX (`Subject__Id`);
 ALTER TABLE `Required__Subjects` ADD INDEX (`Compulsory__Sub_Id`);
-ALTER TABLE `Student__Account` ADD INDEX(`Surname`);
-ALTER TABLE `Student__Account` ADD INDEX(`othername`);
-ALTER TABLE `Student__Account` ADD INDEX(`email`);
 ALTER TABLE `Lecturals` ADD INDEX(`Profile__Picture`);
 ALTER TABLE `Lecturals` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
 ALTER TABLE `Library__tb` ADD INDEX(`Object__ID`);
 ALTER TABLE `Staff` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
 ALTER TABLE `humanresources` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`;
 ALTER TABLE `Student__Account` ADD `featured` INT(10) NOT NULL DEFAULT '1' AFTER `Email`; 
+ALTER TABLE `Student__Account` ADD INDEX(`Surname`);
+ALTER TABLE `Student__Account` ADD INDEX(`othername`);
+ALTER TABLE `Student__Account` ADD INDEX(`email`);
 ALTER TABLE `super__administrator` ADD `create_on` DATETIME NULL DEFAULT NULL AFTER `permission`;
-ALTER TABLE `categories` ADD `Status` INT(10) NOT NULL AFTER `Category__name`;

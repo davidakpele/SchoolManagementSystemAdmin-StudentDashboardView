@@ -58,7 +58,7 @@
                 $eid = $row['eid'];
                 $Coursecode = $row['Course'];
                 $totalQuest = $row['total'];
-                $time= $row['time'];
+                $time= $row['hour'].':'.$row['minute'];
                 ?>
                 <tr>
                   <td><?=((isset($c))?$c:'')?></td>

@@ -13,12 +13,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="keywords" content="Mercy College Unversity Student Portal" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <meta name="description" content="Mercy College University Online Examination Student Portal." />
     <!-- Google Font: Source Sans Pro -->
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
      <link href="<?=ASSETS?>assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
-    <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
     <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
       <!-- DataTables -->
     <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -34,7 +34,7 @@
     <!-- summernote -->
     <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/summernote/summernote-bs4.min.css">
      <!-- SweetAlert2 -->
-  <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <link rel="stylesheet" href="<?=ASSETS?>Exam/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
      <!-- jQuery -->
     <script src="<?=ASSETS?>Exam/plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -45,71 +45,105 @@
     <script src="<?=ASSETS?>Exam/plugins/toastr/toastr.min.js"></script>
     <script>
         var _base_url_ = '<?=ROOT?>';
-        var bimro = "<?=$data['examTime']->time?>";
+        var bimro = "<?=date(''.$data['examTime']->hour.':'.$data['examTime']->minute)?>";
     </script>
     <script src="<?=ASSETS?>Exam/js/script.js"></script>
     <style>
-    html,
-    body {height: 100%;width: 100%;}
-    .badge {color: #fff;background-color: #008bc6;font-size: 13px;border-radius: 12px 12px 12px}
-    .badge {display: inline-block;padding: 0.35em 0.65em;font-weight: 700;line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;}
-    #main-header{position:relative;background: rgb(0,0,0)!important;background: radial-gradient(circle, rgba(0,0,0,0.48503151260504207) 22%, rgba(0,0,0,0.39539565826330536) 49%, rgba(0,212,255,0) 100%)!important;height:70vh;}
+        html,
+        body {height: 100%;width: 100%;}
+        #head {padding: 1%;border-bottom: 1px solid #EEE;position: static;top: 0px;left: 0px;z-index: 99;background: #008bc6;margin-bottom: 10px;}
+        .badge {color: #fff;background-color: #008bc6;font-size: 13px;border-radius: 12px 12px 12px}
+        .badge {display: inline-block;padding: 0.35em 0.65em;font-weight: 700;line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;}
+        #main-header{position:relative;background: rgb(0,0,0)!important;background: radial-gradient(circle, rgba(0,0,0,0.48503151260504207) 22%, rgba(0,0,0,0.39539565826330536) 49%, rgba(0,212,255,0) 100%)!important;height:70vh;}
  </style> 
   
   </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" 
-        id="topNavBar" style="background:#008bc6; max-height:50px">
-        <div class="container px-4 px-lg-5 ">
-            <button class="navbar-toggler btn btn-sm" type="button" 
-                    data-toggle="collapse" data-target="#navbarSupportedContent" 
-                    aria-controls="navbarSupportedContent" 
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="<?=ROOT?>Student/Dashboard/">
-                <span>
-                    <img src="<?=ASSETS?>img/product/1.png" 
-                        class="img-responsive center" 
-                        style="max-width:40px;"/>
-                </span>
-            </a>
-            <div class="collapse navbar-collapse" 
-                id="navbarSupportedContent">
-                <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link " aria-current="page" href="./">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="../Examination?Page=Started">Exams</a></li>
-                    <li class="nav-item"><a class="nav-link " href="./?p=about">About Us</a></li>
-                </ul> -->
-                <!-- <div class="d-flex align-items-center">
-                </div> -->
+    <div id="head">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <a href="<?=ROOT?>Student/Dashboard">
+                        <div class="float-left">
+                            <span>
+                                <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:55px;" alt="logo" />
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <!--end col div here -->
+                <br class="clear" />
+            </div><!-- end row here -->
+        </div><!-- close container -->
+    </div>
+    <div class="header-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-header" style="background:#26173b">
+                        <div class="row">
+                            <div class="col-md-4"> 
+                                <!-- <div class="title">
+                                    <div class="h5 card-title" style="color:#fff">Taking <b style="text-decoration:underline"><?= ($data['examTime']->title) ? $data['examTime']->title : '' ;?></b> Exam</div> 
+                                </div> -->
+                            </div>
+                            <div class="col-md-4">
+                                <div class="timestamp text-center" style="color:#cac8cc;">
+                                    <i class="fa fa-clock-o" aria-hidden="true" style="background:#fff"></i>
+                                    <div class="time" style="font-size:20px;"><span id="timer"></span></div>
+                                    <span style="color:#cac8cc; font-size:13px; font-weight:500; text-align:center">TIME LEFT IN THIS ASSIGNMENT SESSION</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="progress" style=" width: 90%; position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: auto;">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                </div>
+                                <div class="container-text" >
+                                    <div class="" id="question1-list">
+                                    <?php
+                                    if(isset($_GET['eid'])):
+                                     $qin = 1;
+                                        if (!empty($data['examcontroller'])):
+                                            foreach ($data['examcontroller'] as $key ):?>
+                                            <div class="question1-item py-4 <?= ($qin != 1) ? "d-none" : '';?>">
+                                            <?= $no = $qin ++; ?>
+                                                <div class="text-center" style="position: absolute;bottom: 0;color:#fff">
+                                                    <b><span id="bincount"><?=(($no == 1)?$no : $no)?><span>
+                                                    /<?=$data['isCount']?> Questions attempted</b>
+                                                </div>
+                                            </div>
+                                            <?php endforeach;?>
+                                        <?php endif;?>
+                                    <?php endif;?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-    <div class="container">
+    </div>
+    <div class="container-fluid">
         <?php if(isset($_GET['eid'])): 
             $this->db = new Database;;?>
         <section class="mt-5 py-3">
-         <div class="h5 card-title" >Taking <b style="text-decoration:underline"><?= ($data['examTime']->Course) ? $data['examTime']->Course : '' ;?></b> Exam</div>
+         
             <div class="container">
                 <form action="<?=ROOT?>Student/ExamResult?no=<?=$data['isCount']?>" method="POST" id="form">
                     <input type="hidden" name="courseid"  value= "<?= ($data['examTime']->Course) ? $data['examTime']->Course : '' ;?>" />
                     <input type="hidden" name="exam_id"  value= "<?= ($data['examTime']->eid) ? $data['examTime']->eid : '' ;?>" />
                     <input type="hidden" name="student_id"  value= "<?= ($_SESSION['student__Id']) ? $_SESSION['student__Id'] : '' ;?>" />
-                    <div class="card card-outline card-navy shadow rounded-0" style="margin-top:70px">
-                        <div class="card-header">
-                        <?php $qi = 1;?>
-                            <center>
-                                <div class="time" style="float:right;font-size:20px;">Examination Time :
-                                    <span id="timer"></span>
-                                </div><br/>
-                            </center>
-                        </div>
+                    <div class="card card-outline card-navy shadow rounded-0">
+                        <div class="card-header"><?php $qi = 1;?></div>
                         <div class="card-body" >
                             <div class="container-fluid">
                                 <div class="" id="question-list">
                                     <?php $this->db = new Database;?>
-                                    <?php  foreach ($data['examcontroller'] as $key ):?>
+                                    <?php  
+                                    if (!empty($data['examcontroller']))
+                                    foreach ($data['examcontroller'] as $key ):?>
                                         <?php 
                                         $qns=$key['question'];
                                         $qid=$key['questionid'];
@@ -137,9 +171,11 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control "> 
-                                                            <label class="font-weight-normal">
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
-                                                                <?=htmlspecialchars($key['opt1'])?>
+                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">
+                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
+                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?>
+                                                                </div>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -147,9 +183,11 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal">
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>">
-                                                                <?=htmlspecialchars($key['opt2'])?>
+                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%;">
+                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">    
+                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>">
+                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?>
+                                                                </div>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -157,9 +195,11 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal">
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
-                                                                <?=htmlspecialchars($key['opt3'])?>
+                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">        
+                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
+                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?>
+                                                                </div>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -167,9 +207,11 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal">
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
-                                                                <?=htmlspecialchars($key['opt4'])?>
+                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">        
+                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
+                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?>
+                                                                </div>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -201,7 +243,50 @@
    <?php endif;?>
 </div> 
 <script>
+    $('document').ready(function (){
+       var iss= document.getElementById('bincount');
+       console.log(iss);
+    })
     $(function(){
+        $('#next').click(function(){
+            var eq = $('#question1-list .question1-item:visible').index()
+            var total = $('#question1-list .question1-item').length
+            var next = eq + 1
+            if(next <= (total-1)){
+                $('#question1-list .question1-item:visible').addClass('d-none')
+                $('#question1-list .question1-item').eq(next).removeClass('d-none')
+                if(eq == 0){
+                    $('#prev').removeClass('d-none')
+                }
+                if(next == (total - 1)){
+                    $('#next').addClass('d-none')
+                    $('#review').removeClass('d-none')
+                }
+            }
+        })
+        $('#prev').click(function(){
+            var eq = $('#question1-list .question1-item:visible').index()
+            var total = $('#question1-list .question1-item').length
+            var prev = eq - 1
+            if(prev <= (total-1)){
+                $('#question1-list .question1-item:visible').addClass('d-none')
+                $('#question1-list .question1-item').eq(prev).removeClass('d-none')
+                if(eq == 0){
+                    $('#prev').removeClass('d-none')
+                }
+                if(prev == 0){
+                    $('#prev').addClass('d-none')
+                }
+                if(prev < (total-1)){
+                    $('#review').addClass('d-none')
+                    $('#next').removeClass('d-none')
+                }
+            }
+        })
+
+
+
+
         $('#next').click(function(){
             var eq = $('#question-list .question-item:visible').index()
             var total = $('#question-list .question-item').length
@@ -287,10 +372,5 @@
     <script src="<?=ASSETS?>Exam/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="<?=ASSETS?>Exam/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
     <script src="<?=ASSETS?>Exam/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <!-- overlayScrollbars -->
-    <!-- <script src="<?=ASSETS?>Exam/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script> -->
-    <!-- AdminLTE App -->
-    <script src="<?=ASSETS?>js/adminlte.js"></script>
-    <div class="daterangepicker ltr show-ranges opensright">
     </body>
     </html>

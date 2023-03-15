@@ -2,6 +2,9 @@
 $(document).ready(function ($) {
     $("#Application__Type").change(function () {
         let ___ApplicationType = $("#Application__Type").val();
+        if (___ApplicationType == "") {
+            return false;
+        }
         const JavascriptHook =
             { "DataId": ___ApplicationType };
         let StringData = JSON.stringify(JavascriptHook);
@@ -10,7 +13,7 @@ $(document).ready(function ($) {
             type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
             dataType: 'JSON',//the type of data we are sending is json
             contentType: "application/json; charset=utf-8",
-            data: StringData,// our data object
+            data: StringData,// our data object 
             url: Url,//the post destination
             processData: false,//false because the preprocessor are not trigger
             encode: true,//turn on json encoding
@@ -32,24 +35,70 @@ $(document).ready(function ($) {
             $('#RequirementDiv').empty();
             // ---
             if (response.Status == 2001) {
-                Respone = response.result;
+                $('#Faculty').empty();
+                $('#Faculty').append("<option value=''>-Select-</option>");
                 $('#Program__Type').empty();
+                $('#Program__Type').append("<option value=''>--Empty--</option>");
+                Respone = response.result;
                 Respone.forEach(function (CallRecieve) {
-                    $('#Program__Type').append('<option value="' + CallRecieve.Child_id + '">' + CallRecieve.Child_name + '</option>')
+                    $('#Faculty').append('<option value="' + CallRecieve.FacultyID + '">' + CallRecieve.FacultyName + '</option>')
                 });
             }
         }).fail((xhr, status, error) => {
             console.log('Oops...', 'Something went wrong with ajax !', 'error');
         });
     });
-});
 
-$(document).ready(function ($) {
-    $("#Program__Type").change(function () {
+    // this code below here trigger when the faculty on EntryRequirements selected
+        $("#Faculty").change(function () {
+            let val1 = $("#Faculty").val();
+            if (val1 =="") {
+                return false;
+            }
+            const JavascriptHook ={ "FacultyID": val1};
+            let StringData = JSON.stringify(JavascriptHook);
+            const Url = base_url+'ApisController/RenderDepartmentList';
+            $.ajax({
+                type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                data: StringData,// our data object
+                url: Url, // the url where we want to POST
+                processData: false,
+                encode: true,
+                crossOrigin: true,
+                async: true,
+                crossDomain: true,
+                headers:
+                    {
+                        'Access-Control-Allow-Methods': '*',
+                        "Access-Control-Allow-Credentials": true,
+                        "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                        "Access-Control-Allow-Origin": "*",
+                        "Control-Allow-Origin": "*",
+                        "cache-control": "no-cache",
+                        'Content-Type': 'application/json'
+                    },
+            }).done(function (response) {
+            $('#RequirementDiv').empty();
+            if (response.Status == 2001) {
+                $('#Program__Type').empty();
+                $('#Program__Type').append("<option value=''>-Select-</option>");
+                Respone = response.result;
+                Respone.forEach(function (result) {
+                    $('#Program__Type').append('<option value="' + result.DepartmentID + '">' + result.DepartmentName + '</option>')
+                });
+                
+            }
+        }).fail((xhr, status, error) => {
+            console.log('Oops...', 'Something went wrong with ajax...!', 'error');
+        });
+    });
+    // this code below here trigger when the department on EntryRequirements selected
+        $("#Program__Type").change(function () {
         let val1 = $("#Program__Type").val();
         let val2 = $("#Application__Type").val();
-        const JavascriptHook =
-            { "RestAPIDataId": val1, "ProgramId": val2,  };
+        const JavascriptHook ={ "RestAPIDataId": val1, "ProgramId": val2,  };
         let StringData = JSON.stringify(JavascriptHook);
         const Url = base_url+'ApisController/RenderProgrammeList';
         $.ajax({
@@ -117,4 +166,8 @@ $(document).ready(function ($) {
             console.log('Oops...', 'Something went wrong with ajax...!', 'error');
         });
     });
+});
+
+$(document).ready(function ($) {
+
 }); 

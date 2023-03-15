@@ -1,6 +1,6 @@
 <?php
     class Apis
-    {
+    { 
 
         /**
          * 
@@ -39,9 +39,18 @@
         }
         public function selectFaculties($___ApplicationType){
             $ids = $___ApplicationType;
-            $this->DB->query("SELECT  Category__ID, Category__name, FacultyID, Cat_id, FacultyName
-            FROM `categories`, `faculties` WHERE  Cat_id=Category__ID AND Cat_id=:ids ");
+            $this->DB->query("SELECT a.*, b.* FROM categories a INNER JOIN faculties b ON b.Cat_id=a.Category__ID WHERE b.Cat_id=a.Category__ID AND b.Cat_id=:ids");
             $this->DB->bind(':ids', $ids);
+            $checkexist = $this->DB->resultSet();
+            if (!empty($checkexist)) {
+                return $checkexist;
+            }else {
+                return false;
+            }
+	    }    
+        public function selectDepartment($id){
+            $this->DB->query("SELECT a.*, b.* FROM departments a INNER JOIN faculties b ON a.FacultyID =b.FacultyID WHERE a.FacultyID =b.FacultyID AND a.FacultyID =:id");
+            $this->DB->bind(':id', $id);
             $checkexist = $this->DB->resultSet();
             if (!empty($checkexist)) {
                 return $checkexist;

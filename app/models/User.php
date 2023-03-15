@@ -1604,6 +1604,7 @@ Class User {
 	public function deleteUserProfessor($id){
 		$ids = implode("','", $id);
 		$this->DB->query("DELETE FROM lecturals WHERE Professor__id IN ('".$ids."')");
+		$ids = [];
 		if (is_array($ids) || !is_array($ids))
 		foreach ($ids as $k => $id)	
 		$this->DB->bind(($k+1), $id);
@@ -1615,7 +1616,8 @@ Class User {
 	}
 	public function deleteUserParent($id){
 		$ids = implode("','", $id);
-		$this->DB->query("DELETE FROM parent__tb WHERE Parent___id IN ('".$ids."')");
+		$this->DB->query("DELETE  a.*, b.*, c.*  FROM parent__tb a INNER JOIN student__account b ON a.child__id =b.student__Id INNER JOIN studentapp c ON c.Conid = b.Conid WHERE a.Parent___id IN ('".$ids."')");
+		$ids = [];
 		if (is_array($ids) || !is_array($ids))
 		foreach ($ids as $k => $id)	
 		$this->DB->bind(($k+1), $id);
@@ -1640,15 +1642,17 @@ Class User {
 	}
 	public function SQLdeletestudent($id){
 		$ids = implode("','", $id);
-		$this->DB->query("DELETE FROM student__account WHERE student__Id IN ('".$ids."')");
+		$this->DB->query("DELETE  a.*, b.*, c.*  FROM student__account a INNER JOIN studentapp b ON b.Conid = a.Conid INNER JOIN parent__tb c ON c.child__id =a.student__Id WHERE a.student__Id IN ('".$ids."')");
+		$ids = [];
 		if (is_array($ids) || !is_array($ids))
-		foreach ($ids as $k => $id)	
-		$this->DB->bind(($k+1), $id);
-		if($this->DB->execute()){
-			return true;
-		}else{
-			return false;
-		} 		
+		 	if ($ids) 
+			foreach ($ids as $k => $id)	
+			$this->DB->bind(($k+1), $id);
+			if($this->DB->execute()){
+				return true;
+			}else{
+				return false;
+			} 		
 	}
 	// =====================================================================
 	//Admin  Delete st method	

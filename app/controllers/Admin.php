@@ -1343,8 +1343,7 @@ public function AddNewStudents(){
         $id = $getData;
         //Return json message to the GUI
         if($this->userModel->SQLdeletestudent($id)){
-            
-            $response['status'] = 2090;
+            $response['status'] = 200;
             $response['message']= 'Successfully deleted.';
         }
         //ob_end_clean();
@@ -1684,16 +1683,16 @@ public function AddNewStudents(){
             
         } 
     }
-    // Declearing AppointmentModal toggle
-    public function toggleProfessor(){
+     // Declearing AppointmentModal toggle
+    public function ProfessorAppointment(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         $id = trim(filter_var($_POST['SSD'], FILTER_SANITIZE_STRING));
-        $pthrow = $this->userModel->ReturnInvalidData($id);
-        if($pthrow){
-            $existUserID = $pthrow->ID;
-            $existFacultyid =$pthrow->Faculty__ref__id;
-            $d= $pthrow->Designation;
-            $appis = $pthrow->Cat_id;
+        $checkIFappointed = $this->userModel->ReturnInvalidData($id);
+        if(!empty($checkIFappointed) && $checkIFappointed != false){
+            $existUserID = $checkIFappointed->ID;
+            $existFacultyid =$checkIFappointed->Faculty__ref__id;
+            $designation= $checkIFappointed->Designation;
+            $appis = $checkIFappointed->Cat_id;
             $f = $this->userModel->ReturnFaculty($existFacultyid);
             $apid = $this->userModel->ReturnApplication($appis);
             if ($f) {
@@ -1709,11 +1708,11 @@ public function AddNewStudents(){
                     
                 }
             }
-            $existDepartmentId= $pthrow->Base;
+            $existDepartmentId= $checkIFappointed->Base;
             $searchForValue = ',';
                 if (strpos($existDepartmentId, $searchForValue) !== false) {
                 // Here is Multiple department 
-                    $existDesignation = $pthrow->Designation;
+                    $existDesignation = $checkIFappointed->Designation;
                     $fetchdata = $this->userModel->ReadOnly($existDepartmentId);
                 }else {
                     $fetchdata = $this->userModel->ReadOnly($existDepartmentId);
@@ -1739,15 +1738,15 @@ public function AddNewStudents(){
             'catid'=>((!empty($cnid)?$cnid: '')),
             'ftyname'=>((!empty($n)?$n: '')),
             'ftyid'=>((!empty($nid)?$nid: '')),
-            'designation'=>((!empty($d)?$d: '')),
-            'checkingexistence'=>$pthrow,
+            'designation'=>((!empty($designation)?$designation: '')),
+            'checkingexistence'=>$checkIFappointed,
             'User_idError'=>'',
             'sname'=>$xname,
             'e'=>$e,
             'DisplayCateogries'=>$DC
         ];
         
-        $this->view('Admin/modal/toggleProfessor', $data);
+        $this->view('Admin/modal/ProfessorAppointment', $data);
     }
     public function Emailtoggle(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}

@@ -582,7 +582,7 @@
         function ___SubmitAppointment(SSD) {
             let data = {"SSD": SSD};
             jQuery.ajax({
-                url: base_url+'Admin/toggleProfessor',
+                url: base_url+'Admin/ProfessorAppointment',
                 method: "POST",
                 data: data,
                 crossDomain: true,
