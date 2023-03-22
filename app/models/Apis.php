@@ -39,7 +39,7 @@
         }
         public function selectFaculties($___ApplicationType){
             $ids = $___ApplicationType;
-            $this->DB->query("SELECT a.*, b.* FROM categories a INNER JOIN faculties b ON b.Cat_id=a.Category__ID WHERE b.Cat_id=a.Category__ID AND b.Cat_id=:ids");
+            $this->DB->query("SELECT a.*, b.* FROM categories a INNER JOIN sublist b ON b.Cat_id=a.Category__ID WHERE b.Cat_id=a.Category__ID AND b.Cat_id=:ids");
             $this->DB->bind(':ids', $ids);
             $checkexist = $this->DB->resultSet();
             if (!empty($checkexist)) {

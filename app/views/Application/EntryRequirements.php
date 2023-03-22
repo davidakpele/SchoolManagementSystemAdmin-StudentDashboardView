@@ -94,14 +94,6 @@
                             </div>
                         </div>
                         <div class="pane form-group">
-                            <label class="col-sm-12 col-md-3 col-lg-3 make-full">Faculty :</label>
-                            <div class="col-sm-12 col-md-9 col-lg-9 select-drop-down">
-                                <select name="Faculty" id="Faculty" class="form-control select2" style="width:75%;">
-                                    <option value="" selected="" disabled="">--Empty--</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="pane form-group">
                             <label class="col-sm-12 col-md-3 col-lg-3 make-full">Programme :</label>
                             <div class="col-sm-12 col-md-9 col-lg-9 select-drop-down">
                                 <select name="Program__Type" id="Program__Type" class="form-control" style="width:75%;">
