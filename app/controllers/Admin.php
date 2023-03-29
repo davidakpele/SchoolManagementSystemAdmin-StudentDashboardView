@@ -62,63 +62,71 @@ public function isAddNewProf(){
         && isset($_POST['Weight']) && isset($_POST['BlT']) && isset($_POST['Religion']) && isset($_POST['QTF'])
         && isset($_POST['Address'])){
         // validate file
-        $photo = $_FILES['file'];
-        $name = $photo['name'];
-        $response['status'] = 200;
-        $response['message'] = 'Yes';
-        $nameArray = explode('.', $name);
-        $fileName = $nameArray[0];
-        $fileExt = $nameArray[1];
-        $mime = explode('/', $photo['type']);
-        $mimeType = $mime[0];
-        $mimeExt = $mime[1];
-        $tmpLoc = $photo['tmp_name'];   
-        $fileSize = $photo['size']; 
-        // $allowed = array('jpg', 'jpeg', 'png');
-        $uploadName = md5(microtime()).'.'.$fileExt;
-        $uploadPath = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-        $dbpath     = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-        $folder = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
-        //die($_POST['id']);
-        if ($fileSize > 90000000000000) {
-            $response['status'] = 300;
-            $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
-        }elseif ($fileSize < 90000000000000 ) {
-            if(!file_exists($folder)){
-                mkdir($folder,077,true);
+        $isCheckEmail = $_POST['Email'];
+        $isFetchEmailexist = $this->userModel->findProfessorByEmail($isCheckEmail);
+        if($isFetchEmailexist) {
+            $response['status'] = 401;
+            $response['message']= '<b>ERROR:</b> Email Is Already Taken By Another User.';
+        }else {
+            $photo = $_FILES['file'];
+            $name = $photo['name'];
+            $response['status'] = 200;
+            $response['message'] = 'Yes';
+            $nameArray = explode('.', $name);
+            $fileName = $nameArray[0];
+            $fileExt = $nameArray[1];
+            $mime = explode('/', $photo['type']);
+            $mimeType = $mime[0];
+            $mimeExt = $mime[1];
+            $tmpLoc = $photo['tmp_name'];   
+            $fileSize = $photo['size']; 
+            // $allowed = array('jpg', 'jpeg', 'png');
+            $uploadName = md5(microtime()).'.'.$fileExt;
+            $uploadPath = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+            $dbpath     = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+            $folder = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+            //die($_POST['id']);
+            if ($fileSize > 90000000000000) {
+                $response['status'] = 300;
+                $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
+            }elseif ($fileSize < 90000000000000 ) {
+                if(!file_exists($folder)){
+                    mkdir($folder,077,true);
+                }
+                //upload file
+                move_uploaded_file($tmpLoc,$dbpath);
+                $data = 
+                [
+                    'Profile__Picture'=>$uploadPath,
+                    'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
+                    'Middle__name'=>trim(filter_var($_POST['middlename'], FILTER_SANITIZE_STRING)),
+                    'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),
+                    'Accesscode'=>trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
+                    'Password'=>trim(filter_var($_POST['Password'], FILTER_SANITIZE_STRING)),
+                    'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
+                    'Telephone_No'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
+                    'Date_of_Birth'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
+                    'featured'=>'1',
+                    'Place__of__birth'=>trim(filter_var($_POST['POB'], FILTER_SANITIZE_STRING)),
+                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
+                    'Relationship_sts'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
+                    'Citizenship'=>trim(filter_var($_POST['CIZ'], FILTER_SANITIZE_STRING)),
+                    'NIN'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
+                    'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
+                    'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
+                    'Blood_Type'=>trim(filter_var($_POST['BlT'], FILTER_SANITIZE_STRING)),
+                    'Religion'=>trim(filter_var($_POST['Religion'], FILTER_SANITIZE_STRING)),
+                    'Qualification'=>trim(filter_var($_POST['QTF'], FILTER_SANITIZE_STRING)),
+                    'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
+                    'Professor__id'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
+                ];
+                $data['Password'] = password_hash($data['Password'], PASSWORD_ARGON2ID); 
+            if($this->userModel->AddProfessor($data)){
+                    $response['status'] = 200;
+                    $response['message'] = 'New Profesor Has Successfully Added..!';
+                } 
             }
 
-            $data = 
-            [
-                'Profile__Picture'=>$uploadPath,
-                'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
-                'Middle__name'=>trim(filter_var($_POST['middlename'], FILTER_SANITIZE_STRING)),
-                'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),
-                'Accesscode'=>trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
-                'Password'=>trim(filter_var($_POST['Password'], FILTER_SANITIZE_STRING)),
-                'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
-                'Telephone_No'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
-                'Date_of_Birth'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
-                'featured'=>'1',
-                'Place__of__birth'=>trim(filter_var($_POST['POB'], FILTER_SANITIZE_STRING)),
-                'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
-                'Relationship_sts'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
-                'Citizenship'=>trim(filter_var($_POST['CIZ'], FILTER_SANITIZE_STRING)),
-                'NIN'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
-                'Height'=>trim(filter_var($_POST['Height'], FILTER_SANITIZE_STRING)),
-                'Weight'=>trim(filter_var($_POST['Weight'], FILTER_SANITIZE_STRING)),
-                'Blood_Type'=>trim(filter_var($_POST['BlT'], FILTER_SANITIZE_STRING)),
-                'Religion'=>trim(filter_var($_POST['Religion'], FILTER_SANITIZE_STRING)),
-                'Qualification'=>trim(filter_var($_POST['QTF'], FILTER_SANITIZE_STRING)),
-                'Address'=>trim(filter_var($_POST['Address'], FILTER_SANITIZE_STRING)),
-                'Professor__id'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
-            ];
-            $data['Password'] = password_hash($data['Password'], PASSWORD_ARGON2ID); 
-            move_uploaded_file($tmpLoc,$dbpath);
-           if($this->userModel->AddProfessor($data)){
-                $response['status'] = 200;
-                $response['message'] = 'New Profesor Has Successfully Added..!';
-            } 
         }
     }
     echo json_encode($response);
@@ -383,9 +391,9 @@ public function AddNewStudents(){
     }
     public function isSaveEdit(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-    $response = array();
-    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    $id = $_POST['id'];
+        $response = array();
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        $id = $_POST['id'];
 
         if (isset($_FILES['file']['name']) != '' || isset($_FILES['file']['name']) == '' && isset($_POST['id']) && isset($_POST['surname']) && isset($_POST['middlename']) 
         && isset($_POST['lastname']) && isset($_POST['Accesscode']) && isset($_POST['Email']) && isset($_POST['Mobile'])
@@ -409,9 +417,9 @@ public function AddNewStudents(){
             $fileSize = $photo['size']; 
             // $allowed = array('jpg', 'jpeg', 'png');
             $uploadName = md5(microtime()).'.'.$fileExt;
-            $uploadPath = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-            $dbpath     = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-            $folder = ROOT.'/Media/Professors/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+            $uploadPath = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+            $dbpath     = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+            $folder = 'Lecturar/assets/images/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
             //die($_POST['id']);
             if ($fileSize > 90000000000000) {
                 $response['status'] = 300;
@@ -419,6 +427,19 @@ public function AddNewStudents(){
             }elseif ($fileSize < 90000000000000 ) {
                 if(!file_exists($folder)){
                     mkdir($folder,077,true);
+                }
+                // this code check if on the student id folder has old photo, if yes, delete every old photo and upload new profile photo.
+                foreach(glob($folder . '/*') as $file){
+                    // check if is a file and not sub-directory
+                    if(is_file($file)){
+                          // check if file older than 90 days
+                        if((time() - filemtime($file)) > (60 * 60 * 24 * 90)){
+                            unlink($file);
+                        }else {
+                            // delete file
+                            unlink($file);
+                        }
+                    }
                 }
                 move_uploaded_file($tmpLoc,$dbpath);
             }

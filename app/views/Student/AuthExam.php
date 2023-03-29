@@ -1,5 +1,28 @@
 <?php $this->view("include/Sinclude/header",$data); ?>
   <!-- //header-ends -->
+  <style>
+    .table{
+       style="overflow-x:auto;"
+    }
+    tbody{
+      background-color: transparent;
+    color: #5A544E;
+    font-size: 14px;
+    padding: 5px 5px 5px 10px;
+    border: 1px solid #fff;
+    }
+    .exam-list{    
+      background-color: #F5AA19;
+      color: #fff;
+      font-weight:100;
+      text-transform: uppercase;
+      padding: 5px 5px 5px 10px;
+      border: 1px solid #ccc;
+      border-top: 0px;
+      text-align: center;
+      height:10px;
+    }
+  </style>
   <!-- main content start -->
 <div class="main-content" style="background: #e9ecef;">
 <div id="Divloader" style="display:none">
@@ -12,7 +35,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb my-breadcrumb">
         <li class="breadcrumb-item"><a href="<?=ROOT?>Student/Dashboard/Default">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Change Password</li>
+        <li class="breadcrumb-item active" aria-current="page">My Exam</li>
       </ol>
     </nav>
       <div class="welcome-msg pt-3 pb-4 text-center">
@@ -20,29 +43,31 @@
         <?=$_SESSION['globalname']?> (Available Exams)
         </span>
       </div>
-    <div class="container" id="formcontainer" style="margin-top:10px;background:#FFF; border-radius: 5px; max-width:1000px; margin:0 auto;padding: 25px;" id="App1">
+    <div class="container" id="formcontainer" style="margin-top:10px;background:#FFF; border-radius: 5px; margin:0 auto;padding: 25px;" id="App1">
         <div id="successmessagediv" class="success-ico" style="display:none"></div>
         <div id="error" class="error-ico errormsg" style="display:none;padding-left:20px"></div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="title">
+              <img src="<?=ASSETS?>Exam/Exam_Screen_Icon.png" alt="title" srcset="<?=ASSETS?>Exam/Exam_Screen_Icon.png" style="width:250px">
+              <p class="pull-right" style="margin-top:70px; color:#e74c3c;font-size: 15px;font-weight:inherit">Exam can be taken on schedule date and time ONLY.</p>
+            </div>
+          </div>
+        </div>
+        
         <form method="POST" class="form-group" autocomplete="off" action="javascript:void(0)" id="changeStudentPassword">
-           <table
-				class="table js-basic-example dataTable table-striped table-bordered table-hover"
-				id="myTable" >
-				<thead>
-					<tr style="background:#21495c">
-						<th colspan="8">
-							<strong>Student Examination Port View</strong>
-							<strong class="text-center" style="float:center; color:#fff;"> Mercy College</strong>
-						</th>
-					</tr>
-					<tr style="background:#ceede8;">
-            <td><b>S.N.</b></td>
-            <td><b>Course</b></td>
-            <td><b>Total Question</b></td>
-            <td><b>Time</b></td>
-            <td></td>
-					</tr>
-				</thead>
-				<tbody>
+           <table class="table table-bordered" >
+              <thead>
+                <tr class="exam-list">
+                  <td>No.</td>
+                  <td>Exam</td>
+                  <td>Total Question</td>
+                  <td>Duration</td>
+                  <td>START DATE & TIME	</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
 					<tr>
             <?php 
             $c =0;
@@ -65,6 +90,7 @@
                   <td><?=((isset($Coursecode))?$Coursecode: '')?></td>
                   <td><?=((isset($totalQuest))?$totalQuest: '')?></td>
                   <td><?=((isset($time))?date("h:i A", strtotime($time)): '')?></td>
+                  <td><?=((isset($time))?pretty_date(($row['duedate'])): '')?></td>
                   <td>
                       <?php 
                         $this->Router->query("SELECT * FROM monitor WHERE examid =:examid AND studentid=:id AND examstatus=1");
@@ -80,7 +106,7 @@
                                 <button type="reset" class="btn btn-success btn-sm">Taken Already</button>
                                 <a href="check_result?action=result&eid=<?php echo $examid;?>&user=<?=$_SESSION['student__Id']?>" class="btn btn-secondary btn-sm">View Result</a>
                                 <?php else: ?>
-                                <a href="Examination?q=start&step=2&eid=<?=$eid?>&n=1&t=<?=$totalQuest?>" class="btn btn-success text-center" style="background:#2db44a;">
+                                <a href="Examination?q=start&step=2&eid=<?=$eid?>&n=1&t=<?=$totalQuest?>" class="btn btn-xs btn-success text-center" style="background:#2db44a;">
                                   <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;
                                   <span class="title1"><b>Commence Exam</b>
                                   </span>

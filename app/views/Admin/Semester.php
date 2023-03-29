@@ -20,9 +20,6 @@
             color: #dd4b39;
         }
     </style>
-    <script>
-        let base_url = '<?=ROOT?>';
-    </script>
 </head>
 <!-- Must Load First -->
 <script src="<?=ASSETS?>admin/assets/bower_components/jquery/jquery-3.3.1.min.js"></script>
@@ -73,47 +70,26 @@
 	</div>
     <div class="box-body">
 		<div class="mt-2 mb-4">
-            <a data-toggle="modal" href="#matkulId" style="text-decoration:none"><button type="button" class="btn btn-sm bg-blue btn-flat"><i class="fa fa-plus"></i> 
-                Add New Semester</button></a>
+            <a data-toggle="modal" href="#matkulId" style="text-decoration:none"><button type="button" class="btn btn-sm bg-blue btn-flat"><i class="fa fa-plus"></i> Add Data</button></a>
+            <button type="button" onclick="reload_ajax()" class="btn btn-sm bg-maroon btn-flat btn-default"><i class="fa fa-refresh"></i> Reload</button>
 			<div class="pull-right insiderBox" id="iz" style="display:none">
 				<button id="delete__Btn" title="Delete This Professor" class="btn btn-sm btn-danger btn-flat" type="button"><i class="fa fa-trash"></i> Delete</button>
                 <button disabled="disabled" class="btn btn-sm" style="background-color: #000000; border-radius:25px"><span class="pull-left" id="deletebadge" style="color: #fff;">Selected</span></button>
             </div>
 		</div>
-          <form action="" method="post" id="idm">
-			<table class="w-100 table js-basic-example dataTable table-striped table-bordered table-hover" id="myTable" >
-				<thead>
-                <tr>
-                    <th>s/n</th>
-                    <th><input type="checkbox" id="chk_all" value=""/></th>
-                    <th>Semester</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-				<tbody>
-					<?php $i = 0?>
-					<?php
-						if ($data['semester'])
-						foreach ($data['semester'] as $cresult): ?>
-						<?php 
-                        $id = $cresult['SemesterID'];
-                        if ($cresult > 0) $i ++;?>
-						<tr>
-							<td><?=$i?></td>
-                            <th><input type="checkbox" id="dataX" class="checkboxid" name="checkuser[]" value="<?=$id?>" /></th>
-                            <td><?=$cresult['Title']?></td>
-                            <td>
-                                <div class="flex" style="display:flex">
-                                    <div class="text-center">
-                                        <a class="btn btn-sm btn-primary" href="<?=ROOT?>Admin/isSemes/<?=$id?>"><i class="fa fa-pencil"></i></a>&nbsp;
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="hapus(<?=$id?>)"><i class="fa fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-					<?php endforeach?>
-				</tbody>
-			</table>
+         <form action="javascript:void(0)" id="bulk" method="post" accept-charset="utf-8">
+            <input type="hidden" name="csrf_test_name" value="718c6a403a9e59fc45064a8d4e06a9ba" />
+            <table id="kelas" class="w-100 table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Class</th>
+                        <th class="text-center">
+                            <input type="checkbox" id="select_all">
+                        </th>
+                    </tr>
+                </thead>
+            </table>
 		</form>
 	</div>
 </div>
@@ -171,15 +147,56 @@
         </div>
     </div>
 </div>
-
 <!-- /.content -->
 </div>
-            
+<script src="<?=ASSETS?>js/data.js"></script>			
+<script src="<?=ASSETS?>js/semester.js"></script>			
+</section>
+<!-- Custom JS -->
+		
 <?php include_once 'components/Footer.php'; ?>
 <!-- Custom JS -->
-<script type="text/javascript" src="<?=ASSETS?>js/semester.js"></script>
-<script>
-   
-</script>
+<!-- <script type="text/javascript" src="<?=ASSETS?>js/semester.js"></script> -->
+<script type="text/javascript">
+            $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
+                return {
+                    "iStart": oSettings._iDisplayStart,
+                    "iEnd": oSettings.fnDisplayEnd(),
+                    "iLength": oSettings._iDisplayLength,
+                    "iTotal": oSettings.fnRecordsTotal(),
+                    "iFilteredTotal": oSettings.fnRecordsDisplay(),
+                    "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+                    "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+                };
+            };
+
+            function ajaxcsrf() {
+                var csrfname = 'csrf_test_name';
+                var csrfhash = '90fe7e42026da44cd6d796f704bf6cd6';
+                var csrf = {};
+                csrf[csrfname] = csrfhash;
+                $.ajaxSetup({
+                    "data": csrf
+                });
+            }
+
+            function reload_ajax() {
+                table.ajax.reload(null, false);
+            }
+
+            $(document).ready(function() {
+                $('.summernote').summernote({
+                    toolbar: [
+                        // [groupName, [list of button]]
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']]
+                    ]
+                });
+            });
+        </script>
 </body>
 </html>

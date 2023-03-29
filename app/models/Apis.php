@@ -37,7 +37,7 @@
                 return false;
             }
         }
-        public function selectFaculties($___ApplicationType){
+        public function selectSublistRequirementView($___ApplicationType){
             $ids = $___ApplicationType;
             $this->DB->query("SELECT a.*, b.* FROM categories a INNER JOIN sublist b ON b.Cat_id=a.Category__ID WHERE b.Cat_id=a.Category__ID AND b.Cat_id=:ids");
             $this->DB->bind(':ids', $ids);
@@ -48,6 +48,18 @@
                 return false;
             }
 	    }    
+        public function selectFaculties($___ApplicationType){
+            $ids = $___ApplicationType;
+            $this->DB->query("SELECT  Category__ID, Category__name, FacultyID, Cat_id, FacultyName
+            FROM `categories`, `faculties` WHERE  Cat_id=Category__ID AND Cat_id=:ids ");
+            $this->DB->bind(':ids', $ids);
+            $checkexist = $this->DB->resultSet();
+            if (!empty($checkexist)) {
+                return $checkexist;
+            }else {
+                return false;
+            }
+	    }   
         public function selectDepartment($id){
             $this->DB->query("SELECT a.*, b.* FROM departments a INNER JOIN faculties b ON a.FacultyID =b.FacultyID WHERE a.FacultyID =b.FacultyID AND a.FacultyID =:id");
             $this->DB->bind(':id', $id);
@@ -111,6 +123,63 @@
                 return true;
             }else{
                 return false;
+            }
+        }
+
+        public function getSearchData($search){
+            $this->DB->query("SELECT * FROM `semester` WHERE Title LIKE '%$search%'");
+            $stmt = $this->DB->resultSet();
+            $recordnum = $this->DB->rowCount();
+            $data = array();
+            if (!empty($stmt)){
+                foreach ($stmt as &$data) {
+                    $data['bulk_select']='<div class="text-center"><input type="checkbox" id="singlechecked" class="checkboxid" name="checked[]" value="'.$data['SemesterID'].'"/></div>'; 
+                }
+                foreach ($stmt as $row) {
+                    $data['data'][]= $row;
+                    $data['recordsFiltered']=$recordnum;
+                    $data['recordsTotal']=$recordnum;
+                    $data['draw']=2;
+                }
+                if (!empty($data['data'])) {
+                    return $data;
+                }else {
+                    return $data;
+                }
+            }else {
+                $data['data']= [];
+                $data['recordsFiltered']=0;
+                $data['recordsTotal']=0;
+                $data['draw']=2;
+            }
+           return $data;
+        }
+        public function getDataKelas(){ 
+            $this->DB->query("SELECT * FROM semester ORDER BY Title ASC");
+            $stmt = $this->DB->resultSet();
+            $recordnum = $this->DB->rowCount();
+            $data = array();
+            if (!empty($stmt)){
+                foreach ($stmt as &$data) {
+                    $data['bulk_select']='<div class="text-center"><input type="checkbox" id="singlechecked" class="checkboxid" name="checked[]" value="'.$data['SemesterID'].'"/></div>'; 
+                }
+                foreach ($stmt as $row) {
+                    $data['data'][]= $row;
+                    $data['recordsFiltered']=$recordnum;
+                    $data['recordsTotal']=$recordnum;
+                    $data['draw']=2;
+                }
+                if (!empty($data['data'])) {
+                    return $data;
+                }else {
+                    return $data;
+                }
+                
+            }else {
+                $data['data']= [];
+                $data['recordsFiltered']=0;
+                $data['recordsTotal']=0;
+                $data['draw']=2;
             }
         }
     }

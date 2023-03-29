@@ -16,10 +16,6 @@
 	.success-ico {padding-left: 60px;background: url(<?=ASSETS?>bullet_add.png) #E4FFDE no-repeat 30px center;}
 	.errContainer{margin: 0 auto;}
 </style>
-<script type="text/javascript">
-	let base_url = '<?=ROOT?>';
-</script>
-
 <body class="hold-transition skin-yellow sidebar-mini">
 	<div class="wrapper">
 		<header class="main-header">

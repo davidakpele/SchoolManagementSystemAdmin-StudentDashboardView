@@ -51,6 +51,7 @@
     <style>
         html,
         body {height: 100%;width: 100%;}
+        input[radio]{height: 20px; width: 20px; vertical-align:middle; -webkit-transform:scale(1.5); transform:scale(1.5)}
         #head {padding: 1%;border-bottom: 1px solid #EEE;position: static;top: 0px;left: 0px;z-index: 99;background: #008bc6;margin-bottom: 10px;}
         .badge {color: #fff;background-color: #008bc6;font-size: 13px;border-radius: 12px 12px 12px}
         .badge {display: inline-block;padding: 0.35em 0.65em;font-weight: 700;line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;}
@@ -82,11 +83,6 @@
                 <div class="col-12">
                     <div class="bg-header" style="background:#26173b">
                         <div class="row">
-                            <div class="col-md-4"> 
-                                <!-- <div class="title">
-                                    <div class="h5 card-title" style="color:#fff">Taking <b style="text-decoration:underline"><?= ($data['examTime']->title) ? $data['examTime']->title : '' ;?></b> Exam</div> 
-                                </div> -->
-                            </div>
                             <div class="col-md-4">
                                 <div class="timestamp text-center" style="color:#cac8cc;">
                                     <i class="fa fa-clock-o" aria-hidden="true" style="background:#fff"></i>
@@ -95,9 +91,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="progress" style=" width: 90%; position: absolute;top:0;bottom: 0;left: 0;right: 0;margin: auto;">
-                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
-                                </div>
+
                                 <div class="container-text" >
                                     <div class="" id="question1-list">
                                     <?php
@@ -129,7 +123,6 @@
         <?php if(isset($_GET['eid'])): 
             $this->db = new Database;;?>
         <section class="mt-5 py-3">
-         
             <div class="container">
                 <form action="<?=ROOT?>Student/ExamResult?no=<?=$data['isCount']?>" method="POST" id="form">
                     <input type="hidden" name="courseid"  value= "<?= ($data['examTime']->Course) ? $data['examTime']->Course : '' ;?>" />
@@ -171,10 +164,14 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control "> 
-                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">
-                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
-                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?>
+                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="row">
+                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
+                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
+                                                                    </div>
+                                                                    <div class="col-md-10 col-10">
+                                                                        <div class="sel" style="font-size:18px;margin:0 auto">&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?></div>
+                                                                    </div>
                                                                 </div>
                                                             </label>
                                                         </div>
@@ -183,10 +180,14 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%;">
-                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">    
-                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>">
-                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?>
+                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="row">
+                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px; background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
+                                                                        <input style="margin:0 auto; position:absolute; top: 30%; min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>" >
+                                                                    </div>
+                                                                    <div class="col-md-10 col-10">
+                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?></div>
+                                                                    </div>
                                                                 </div>
                                                             </label>
                                                         </div>
@@ -195,10 +196,14 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">        
-                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
-                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?>
+                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="row">
+                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
+                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
+                                                                    </div>
+                                                                    <div class="col-md-10 col-10">
+                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?></div>
+                                                                    </div>
                                                                 </div>
                                                             </label>
                                                         </div>
@@ -207,10 +212,14 @@
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
                                                         <div class="custom-control">
-                                                            <label class="font-weight-normal" style="right: 0;margin: auto;background-color: rgba(0, 0, 0, 0.03);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="sel" style="margin-left:5px;margin-top:10px;margin-bottom:10px; font-size:18px; display:flex">        
-                                                                    <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
-                                                                    &nbsp;&nbsp;|&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?>
+                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
+                                                                <div class="row">
+                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
+                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
+                                                                    </div>
+                                                                    <div class="col-md-10 col-10">
+                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?></div>
+                                                                    </div>
                                                                 </div>
                                                             </label>
                                                         </div>

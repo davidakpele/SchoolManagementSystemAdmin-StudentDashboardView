@@ -140,7 +140,7 @@ include_once 'include.file/migrate.php';
                     </div>
                     <div class="col-md-4"> 
                         <label for="NIN">NIN:</label>
-                        <input name="myInput_DRS" class="form-control" id="nin" type="number" value="<?=((isset($_POST['NIN']))?$_POST['NIN']: '');?>" placeholder="NIN:"  autocomplete="off" />
+                        <input name="myInput_DRS" class="form-control" id="nin" maxlength="11"  min="0" max="1000000000009999" step="1" onKeyPress="if(this.value.length==11) return false;" type="number" value="<?=((isset($_POST['NIN']))?$_POST['NIN']: '');?>" placeholder="NIN:"  autocomplete="off" />
                     </div>
                     <div class="col-md-4 EntryDevparent"> 
                         <div class="EntryDevchild">

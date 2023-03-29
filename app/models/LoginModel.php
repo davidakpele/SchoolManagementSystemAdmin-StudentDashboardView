@@ -19,7 +19,7 @@
         }
 
         public function examTime($depid,$clasid,$semid){
-            $this->Router->query("SELECT * FROM exam__timeset WHERE Department=:depid AND Classes=:clasid AND Semester=:semid AND status=0");
+            $this->Router->query("SELECT * FROM e_timeset WHERE Department=:depid AND Classes=:clasid AND Semester=:semid AND status=0");
             $this->Router->bind(':depid', $depid);
             $this->Router->bind(':clasid', $clasid);
             $this->Router->bind(':semid', $semid);
@@ -40,7 +40,7 @@
              */
             $comma_separated = implode("','", $ids);
             $comma_separated = "'".$comma_separated."'";
-            $this->Router->query("SELECT * FROM exam__timeset WHERE Department=1 AND Classes=3 AND Semester=1 AND status=0 AND eid NOT IN (".$comma_separated.") ");
+            $this->Router->query("SELECT * FROM e_timeset WHERE Department=1 AND Classes=3 AND Semester=1 AND status=0 AND eid NOT IN (".$comma_separated.") ");
             $checkexist = $this->Router->resultSet();
             if (!empty($checkexist)) {
                 return $checkexist;
@@ -49,7 +49,7 @@
             }
         }
         public function fetchtimedata($depid, $clasid, $semid){
-            $this->Router->query('SELECT * FROM exam__timeset WHERE Department=:depid AND Classes =:clasid AND Semester=:semid AND status=1');
+            $this->Router->query('SELECT * FROM e_timeset WHERE Department=:depid AND Classes =:clasid AND Semester=:semid AND status=1');
             $this->Router->bind(':depid', $depid);
             $this->Router->bind(':clasid', $clasid);
             $this->Router->bind(':semid', $semid);
@@ -73,7 +73,7 @@
         }
 
         public function isexamTime($eid){
-            $this->Router->query('SELECT * FROM exam__timeset WHERE eid=:eid');
+            $this->Router->query('SELECT * FROM e_timeset WHERE eid=:eid');
             $this->Router->bind(':eid', $eid);
             $num = $this->Router->single();
             if(!empty($num)) {
@@ -112,7 +112,7 @@
         }
 
         public function lastlogAccountant($Active_login, $activeusernin, $activeuserAccesscode){
-            $this->Router->query("SELECT NIN, Accesscode FROM (SELECT NIN, Accesscode as Accesscode FROM human_resources 
+            $this->Router->query("SELECT NIN, Accesscode FROM (SELECT NIN, Accesscode as Accesscode FROM staff 
                     UNION ALL
                     SELECT NIN, Accesscode FROM lecturals) x 
                     WHERE Accesscode = :activeuserAccesscode AND NIN = :activeusernin ");
@@ -120,12 +120,16 @@
             $this->Router->bind(':activeuserAccesscode', $activeuserAccesscode);
             $this->Router->bind(':activeusernin', $activeusernin);
             $runAccountant = $this->Router->single();
-            return $runAccountant;
+            if(!empty($runAccountant)){
+                return $runAccountant;
+            }else{
+                return false;
+            }
         }
             
 
         public function setExamDepo($question, $answer, $wrong1,  $wrong2, $wrong3, $wrong4, $AnswersButtonType, $configId){
-            $this->Router->query("INSERT INTO `examination__center`(`Courseid`, `question`, `answer`, `option 1`, `option 2`, `option 3`, `option 4`, `Ansbutton`)VALUES(:configId, :question, :answer, :wrong1, :wrong2, :wrong3, :wrong4, :AnswersButtonType)");
+            $this->Router->query("INSERT INTO `e_center`(`Courseid`, `question`, `answer`, `option 1`, `option 2`, `option 3`, `option 4`, `Ansbutton`)VALUES(:configId, :question, :answer, :wrong1, :wrong2, :wrong3, :wrong4, :AnswersButtonType)");
             $this->Router->bind(':question', $question);
             $this->Router->bind(':answer', $answer);
             $this->Router->bind(':wrong1', $wrong1);
@@ -142,7 +146,7 @@
         }
 
         public function updateExamstatus($eid){ 
-            $this->Router->query('UPDATE exam__timeset SET status=1 WHERE eid=:eid');
+            $this->Router->query('UPDATE e_timeset SET status=1 WHERE eid=:eid');
             $this->Router->bind(':eid', $eid);
             if($this->Router->execute()){
                 return true;
@@ -157,7 +161,7 @@
         }
 
         public function FetchStudentData($id){
-            $this->Router->query('SELECT * FROM student__account WHERE student__Id = :id');
+            $this->Router->query('SELECT * FROM student WHERE student__Id = :id');
             $this->Router->bind(':id', $id);
             $row = $this->Router->single();
             if(!empty($row)){
@@ -198,6 +202,7 @@
             $fty__stmt = $this->Router->single();
             return $fty__stmt;
         }
+        
         public function scheduleZoomMeeting($HosterId, $HostLink, $ZTopic, $Timeframe, $duration, $ZID, $Zpassword){
             $this->Router->query('INSERT INTO `ZoomSchedule` (HosterID, Zoom__Topic, Scheduled__TIME, Duration, Zoom_ID, Zoom__link, Zoom__Password, time)VALUES(:HosterId, :ZTopic, :Timeframe, :duration, :ZID, :HostLink, :Zpassword, NOW()) ');
             $this->Router->bind(':HosterId', $HosterId);
@@ -271,7 +276,7 @@
         }
 
         public function fetchstudent($departmentid){
-            $this->Router->query("SELECT student__Id, Roll__No, Application__Type, Department__Type,  Program__Type, NIN, Entrylevel, Surname,  othername, Date__of__birth, gender,  email, featured, relationship, telephone, session FROM student__account WHERE Department__Type = :departmentid");
+            $this->Router->query("SELECT student__Id, Roll__No, Application__Type, Department__Type,  Program__Type, NIN, Entrylevel, Surname,  othername, Date__of__birth, gender,  email, featured, relationship, telephone, session FROM student WHERE Department__Type = :departmentid");
             $this->Router->bind(':departmentid', $departmentid);
             $sql = $this->Router->resultSet();
             if($sql == true){
@@ -335,7 +340,7 @@
         }
 
         public function getSearchUser($id){
-            $this->Router->query("SELECT * FROM student__account WHERE student__Id=:id");
+            $this->Router->query("SELECT * FROM student WHERE student__Id=:id");
             $this->Router->bind(':id', $id);
             $stmt = $this->Router->single();
              if(!empty($stmt)){

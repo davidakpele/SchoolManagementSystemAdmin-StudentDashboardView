@@ -1366,10 +1366,13 @@ public function ProcessNewStudentOnline(){
             ];
         $this->view('Student/StudentEmail', $data);
     }
+
+
     public function GenerateIDCard(){
 
         $this->view('Student/GenerateIDCard');
     }
+
     public function noticeboard(){
         if (isLoggedInLectural() ) {
             $nin =  $_SESSION['UsenrNin'];
@@ -1429,7 +1432,7 @@ public function ProcessNewStudentOnline(){
             return bin2hex(openssl_random_pseudo_bytes($length));
         }
     }
-    function Salt(){
+    public function Salt(){
         return substr(strtr(base64_encode(hex2bin($this->RandomToken(32))), '+', '.'), 0, 44);
     }
     public function HStudents(){
@@ -1512,61 +1515,63 @@ public function ProcessNewStudentOnline(){
     }
    
     public function StudentProfile(){
-       $id= $_SESSION['student__Id'];
-       $ft = $this->userModel->Viewstd($id);
-       if ($ft) {
-            $email= $ft->email;
-            $img= $ft->image; 
-       }
-        $data =
-        [
-            'page_title'=>$_SESSION['globalname'].' Profile',
-            'studentEmail'=>$email,
-            'photo'=>$img
-        ];
-       
-        $this->view('Student/StudentProfile', $data);
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $ft = $this->userModel->Viewstd($id);
+            if ($ft) {
+                    $email= $ft->email;
+                    $img= $ft->image; 
+            }
+                $data =
+                [
+                    'page_title'=>$_SESSION['globalname'].' Profile',
+                    'studentEmail'=>$email,
+                    'photo'=>$img
+                ];
+                $this->view('Student/StudentProfile', $data);
+            }
     }
     
     public function EStudent(){
-        $id= $_SESSION['student__Id'];
-        $ft = $this->userModel->Viewstd($id);
-       if ($ft) {
-            $Sname = $ft->Surname;
-            $Oname = $ft->othername;
-            $Dob = $ft->Date__of__birth;
-            $gender= $ft->gender;
-            $email= $ft->email;
-            $rel= $ft->relationship;
-            $tel= $ft->telephone;
-            $img= $ft->image;
-            $settings= $ft->settings;
-       }
-        $data =
-        [
-            'page_title'=>'Edit '.$_SESSION['globalname'].' Profile',
-            'fname'=>$Sname,
-            'SurnameError'=> '',
-            'lname'=>$Oname,
-            'lastnameError'=> '',
-            'Dob'=>$Dob,
-            'DobError'=> '',
-            'gender'=>$gender,
-            'genderError'=> '',
-            'email'=>$email,
-            'emailError'=> '',
-            'emailSettings'=>'', 
-            'SettingsError'=> '',
-            'relationship'=>$rel,
-            'relError'=> '',
-            'telephone'=>$tel,
-            'telError'=> '',
-            'photo'=>$img,
-            'photoError'=> '',
-            'settings'=> $settings,
-        ];
-       
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $ft = $this->userModel->Viewstd($id);
+            if ($ft) {
+                    $Sname = $ft->Surname;
+                    $Oname = $ft->othername;
+                    $Dob = $ft->Date__of__birth;
+                    $gender= $ft->gender;
+                    $email= $ft->email;
+                    $rel= $ft->relationship;
+                    $tel= $ft->telephone;
+                    $img= $ft->image;
+                    $settings= $ft->settings;
+            }
+            $data =
+            [
+                'page_title'=>'Edit '.$_SESSION['globalname'].' Profile',
+                'fname'=>$Sname,
+                'SurnameError'=> '',
+                'lname'=>$Oname,
+                'lastnameError'=> '',
+                'Dob'=>$Dob,
+                'DobError'=> '',
+                'gender'=>$gender,
+                'genderError'=> '',
+                'email'=>$email,
+                'emailError'=> '',
+                'emailSettings'=>'', 
+                'SettingsError'=> '',
+                'relationship'=>$rel,
+                'relError'=> '',
+                'telephone'=>$tel,
+                'telError'=> '',
+                'photo'=>$img,
+                'photoError'=> '',
+                'settings'=> $settings,
+            ];
         $this->view('Student/EStudent',$data);
+        }
     }
 
     // Edit Student
@@ -1593,9 +1598,9 @@ public function ProcessNewStudentOnline(){
                 $fileSize = $photo['size']; 
                 // $allowed = array('jpg', 'jpeg', 'png');
                 $uploadName = md5(microtime()).'.'.$fileExt;
-                $uploadPath =  'StudentFolder/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-                $dbpath     =  'StudentFolder/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-                $folder =  'StudentFolder/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING));
+                $uploadPath =  'Students/assets/images/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+                $dbpath     =  'Students/assets/images/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+                $folder =  'Students/assets/images/'.trim(filter_var($_SESSION['student__Id'], FILTER_SANITIZE_STRING));
                 if ($fileSize > 90000000000000) {
                     $response['status'] = 300;
                     $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
@@ -1603,6 +1608,16 @@ public function ProcessNewStudentOnline(){
                     
                     if(!file_exists($folder)){
                         mkdir($folder,077,true);
+                    }
+                    // this code check if on the student id folder has old photo, if yes, delete every old photo and upload new profile photo.
+                    foreach(glob($folder . '/*') as $file){
+                        // check if file older than 90 days
+                        if((time() - filemtime($file)) > (60 * 60 * 24 * 90)){
+                            unlink($file);
+                        }else {
+                            // delete file
+                            unlink($file);
+                        }
                     }
                     move_uploaded_file($tmpLoc,$dbpath);
                     $data = 
@@ -1719,10 +1734,7 @@ public function ProcessNewStudentOnline(){
 
         $this->view('Student/EventBox');
     }
-    // =======================================================
-    // THIS IS SESSION AREA. CREATING SESSIONS
-    // =======================================================
- 
+   
     // Creating Session for Admin
     public function createUserSession($data){
         @$last_login = date("Y-m-d H:i:s");
@@ -1889,7 +1901,6 @@ public function ProcessNewStudentOnline(){
 	public function LogoutLectural(){
         if (session_status() == PHP_SESSION_ACTIVE) {
             if (isLoggedInLectural() && !isLoggedDashboardController() && !iscsrf()) {
-                 dnd('1');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
@@ -1898,7 +1909,6 @@ public function ProcessNewStudentOnline(){
                 unset($_SESSION['DashboardID']);
                 header('location:' . ROOT . 'Management/Log/');
             }elseif (isLoggedDashboardController()) {
-                 dnd('2');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
@@ -1907,7 +1917,6 @@ public function ProcessNewStudentOnline(){
                 unset($_SESSION['DashboardID']);
                 header('location:' . ROOT . 'Management/Log/');
             }elseif (iscsrf()) {
-                dnd('3');
                 unset($_SESSION['ProfessorID']);
                 unset($_SESSION['Fullname']);
                 unset($_SESSION['Accesscode']);
@@ -1962,27 +1971,27 @@ public function LogoutStudent(){
         @$dataAPi['duration'] =60;
         @$dataAPi['type'] =2;
         @$dataAPi['password'] = '';
-                try{
-                    @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-                    $data=
-                        [
-                            'page_title'=>'Zoom Conference Call',
-                            'Meetingid'=>((isset($response->id))?$response->id: ''),
-                            'uuid'=>((null !== (@$response->uuid))?@$response->uuid:''),
-                            'host_id'=>((null !== (@$response->host_id))?@$response->host_id:''),
-                            'start_url'=>((null !== (@$response->start_url))?@$response->start_url:''),
-                            'join_url'=>((null !== (@$response->join_url))?@$response->join_url:''),
-                            'password'=>((null !== (@$response->password))?@$response->password:''),
-                            'encrypted_password'=>((null !== (@$response->encrypted_password))?@$response->encrypted_password:''),
-                            'created_at'=>((null !== (@$response->created_at))?@$response->created_at:''),
-                            'timezone'=>((null !== (@$response->timezone))?@$response->timezone:''),
-                            'duration'=>((null !== (@$response->duration))?@$response->duration:''),
-                            'start_time'=>@((null !== ($response->start_time))?$response->start_time:''),
-                            'status'=>((null !== (@$response->status))?@$response->status:''),
-                        ];
-                }catch(Exception $ex){
-                    echo @$ex;
-                }
+        try{
+            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+            $data=
+                [
+                    'page_title'=>'Zoom Conference Call',
+                    'Meetingid'=>((isset($response->id))?$response->id: ''),
+                    'uuid'=>((null !== (@$response->uuid))?@$response->uuid:''),
+                    'host_id'=>((null !== (@$response->host_id))?@$response->host_id:''),
+                    'start_url'=>((null !== (@$response->start_url))?@$response->start_url:''),
+                    'join_url'=>((null !== (@$response->join_url))?@$response->join_url:''),
+                    'password'=>((null !== (@$response->password))?@$response->password:''),
+                    'encrypted_password'=>((null !== (@$response->encrypted_password))?@$response->encrypted_password:''),
+                    'created_at'=>((null !== (@$response->created_at))?@$response->created_at:''),
+                    'timezone'=>((null !== (@$response->timezone))?@$response->timezone:''),
+                    'duration'=>((null !== (@$response->duration))?@$response->duration:''),
+                    'start_time'=>@((null !== ($response->start_time))?$response->start_time:''),
+                    'status'=>((null !== (@$response->status))?@$response->status:''),
+                ];
+        }catch(Exception $ex){
+            echo @$ex;
+        }
          $this->view('Application/HZoom', $data);
     }
     public function SetZoom(){
@@ -2013,27 +2022,29 @@ public function LogoutStudent(){
         if ($Setmin > 50 || $Sethr >01) {
             $Messageresponse['message']= "You duration can not be more than 1hr. else subscribe for premier";
         }else {
-            @$zoom_meeting = new zoom();
-            @$dataAPi = array();
-            @$dataAPi['topic'] = $Topic;
-            // @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
-            @$dataAPi['start_time'] = $startTime;
-            @$dataAPi['duration'] =$Setmin;
-            @$dataAPi['type']=2;
-            @$dataAPi['timezone']=$timeZone;
-            @$dataAPi['password'] = $securitykey;
-            $newJsonString = json_encode($phpObject);
-             if($newJsonString){
-                try{
-                        @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-                        $Messageresponse['status'] =  3;
-                        $Messageresponse['Successmessage'] = 'Successfully Scheduled.';
-                    }catch(Exception $ex){
-                        echo @$ex;
-                    }
+            if ($zoom_meeting = new zoom()) {
+                @$dataAPi = array();
+                @$dataAPi['topic'] = $Topic;
+                @$dataAPi['start_time'] = $startTime;
+                @$dataAPi['duration'] =$Setmin;
+                @$dataAPi['type']=2;
+                @$dataAPi['timezone']=$timeZone;
+                @$dataAPi['password'] = $securitykey;
+                $newJsonString = json_encode($phpObject);
+                if($newJsonString){
+                    try{
+                            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+                            $Messageresponse['status'] =  200;
+                        }catch(Exception $ex){
+                            echo @$ex;
+                        }
+                }else {
+                    $Messageresponse['message']= 'Connection Fail.!';
+                }
             }else {
-                $Messageresponse['message']= 'FAIL';
+                $Messageresponse['message']= 'Check your Internet connection';
             }
+            
         }
         ob_end_clean();
         echo json_encode($Messageresponse);

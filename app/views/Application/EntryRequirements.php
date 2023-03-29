@@ -50,21 +50,10 @@
             <div class="row">
                 <div class="col-12">
                     <a href="<?=ROOT?>">
-                        <div class="float-left">
-                            <span>
-                                <img src="<?=ASSETS?>img/product/1.png" class="img-responsive center"
-                                    style="max-width:55px;" alt="logo" />
-                            </span>
-                        </div>
+                        <div class="float-left"><span><img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:55px;" alt="logo" /> </span></div>
                     </a>
                 </div>
                 <!--end col div here -->
-                <div class="float-right">
-                    <div class="horizontal-list">
-                        <ul>
-                        </ul>
-                    </div>
-                </div>
                 <br class="clear" />
             </div>
             <!-- end row here -->
@@ -85,11 +74,9 @@
                                     style="width:75%;">
                                     <option selected="" disabled value="">--Select--</option>
                                     <?php foreach ($data['DisplayCateogries'] as $stmt): ?>
-
                                     <option id="<?=$stmt['Category__ID']?>" value="<?=$stmt['Category__ID']?>">
                                         <?=$stmt['Category__name']?> </option>
                                     <?php endforeach;?>
-
                                 </select>
                             </div>
                         </div>
@@ -105,7 +92,7 @@
                             <div id="RequirementDiv"></div>
                         </div>
                     </div>
-            </div>
+                </div>
             </form>
         </div>
     </div>

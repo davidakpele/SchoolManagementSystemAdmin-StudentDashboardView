@@ -57,37 +57,6 @@ $(document).ready(($)=>{
 			$("#Email").focus();
 			return false;
 		}
-		$.ajax({
-				type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
-				dataType: 'JSON',
-				contentType: "application/json; charset=utf-8",
-				data: JSON.stringify({ Email: Email}),// our data object
-				url: base_url+"Admin/isProfessorEmailExist",// the url where we want to POST
-				processData: false,
-				encode: true,
-				crossOrigin: true,
-				async: true,
-				crossDomain: true,
-				headers: {
-							'Access-Control-Allow-Methods': '*',
-							"Access-Control-Allow-Credentials": true,
-							"Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-							"Access-Control-Allow-Origin": "*",
-							"Control-Allow-Origin": "*",
-							"cache-control": "no-cache",
-							'Content-Type': 'application/json'
-						},
-				}).then((response) => {
-					if(response.status == 200){
-						$(".statusMsg").fadeIn().html("<span style='margin-left:30px'>&nbsp;&nbsp; "+response.message+"</span>");
-						$("#Email").focus();
-						return false;
-					}else{
-						return;
-					}
-				}).fail((xhr, error) => {
-						$("#error").fadeIn().text("Sorry..! you can't continue this Application. we are unable to verify you Data.");
-				});
 		let Telephone_No =$('#Telephone_No').val();
 		if (Telephone_No.trim() == "") {
 			$(".statusMsg").fadeIn().html("<span style='margin-left:30px'>&nbsp;&nbsp; Please Enter The Professor Telephone Number.</span> ");
@@ -202,7 +171,7 @@ $(document).ready(($)=>{
 		formdata.append('QTF',Qualification);
 		formdata.append('Address',Address);
 		formdata.append('file',files[0]);
-		$.ajax({
+		$.ajax({ 
             type: 'POST',// define the type of HTTP verb we want to use (POST for our form)
             data: formdata,// our data object
             url: base_url+"Admin/isAddNewProf",// the url where we want to POST
@@ -211,7 +180,13 @@ $(document).ready(($)=>{
             contentType: false,
             processData: false,
              success: function(response) {
-			    var data_array = $.parseJSON(response);
+				 var data_array = $.parseJSON(response);
+				 if (data_array.status == 401) {
+				 	$(".statusMsg").fadeIn().html("<span style='margin-left:30px'>&nbsp;&nbsp; " + data_array.message + "</span>");
+				 	$("#Email").focus();
+				 	return false;
+				 }
+				 console.log(response);
                 //access your data like this:
                 var plub = data_array['status'];
                 let messg = data_array['message'];

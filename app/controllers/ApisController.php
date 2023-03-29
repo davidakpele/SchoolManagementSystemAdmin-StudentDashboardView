@@ -80,7 +80,7 @@ Class ApisController extends Controller {
             $___ApplicationType = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
             if(!empty($___ApplicationType) && (is_numeric($___ApplicationType))){
                 if ($___ApplicationType ==   1 || $___ApplicationType == 2 || $___ApplicationType ==   3) {
-                    $crf= $this->model->selectFaculties($___ApplicationType);
+                    $crf= $this->model->selectSublistRequirementView($___ApplicationType);
                     if ($crf) {
                         $response['Status'] = '2001'; 
                         $response['result'] = $crf;
@@ -337,4 +337,20 @@ Class ApisController extends Controller {
             echo json_encode($response); 
         }
     }
+    public function output_json($data, $encode = true)
+	{
+		if ($encode) $data = json_encode($data);
+		    echo json_encode($data);
+	}
+    public function data()
+	{
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
+        $search = $_POST['search']['value'];
+        if (!empty($search) || $search !="") {
+            $this->output_json($this->model->getSearchData($search), false);
+        }else {
+            $this->output_json($this->model->getDataKelas(), false);
+        }
+        
+	}
 }
