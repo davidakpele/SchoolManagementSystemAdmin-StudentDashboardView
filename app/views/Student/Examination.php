@@ -45,19 +45,10 @@
     <script src="<?=ASSETS?>Exam/plugins/toastr/toastr.min.js"></script>
     <script>
         var _base_url_ = '<?=ROOT?>';
-        var bimro = "<?=date(''.$data['examTime']->hour.':'.$data['examTime']->minute)?>";
+        var timestamp='<?=(!empty($data['examTime']->duration)?$data['examTime']->duration:'')?>';
     </script>
     <script src="<?=ASSETS?>Exam/js/script.js"></script>
-    <style>
-        html,
-        body {height: 100%;width: 100%;}
-        input[radio]{height: 20px; width: 20px; vertical-align:middle; -webkit-transform:scale(1.5); transform:scale(1.5)}
-        #head {padding: 1%;border-bottom: 1px solid #EEE;position: static;top: 0px;left: 0px;z-index: 99;background: #008bc6;margin-bottom: 10px;}
-        .badge {color: #fff;background-color: #008bc6;font-size: 13px;border-radius: 12px 12px 12px}
-        .badge {display: inline-block;padding: 0.35em 0.65em;font-weight: 700;line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;}
-        #main-header{position:relative;background: rgb(0,0,0)!important;background: radial-gradient(circle, rgba(0,0,0,0.48503151260504207) 22%, rgba(0,0,0,0.39539565826330536) 49%, rgba(0,212,255,0) 100%)!important;height:70vh;}
- </style> 
-  
+    <link rel="stylesheet" href="<?=ASSETS?>students/css/examiStyle.css">
   </head>
 <body>
     <div id="head">
@@ -86,16 +77,21 @@
                             <div class="col-md-4">
                                 <div class="timestamp text-center" style="color:#cac8cc;">
                                     <i class="fa fa-clock-o" aria-hidden="true" style="background:#fff"></i>
-                                    <div class="time" style="font-size:20px;"><span id="timer"></span></div>
+                                    <div class="time" style="font-size:20px;">
+                                        <span><strong id="timer"></strong></span>
+                                    </div>
                                     <span style="color:#cac8cc; font-size:13px; font-weight:500; text-align:center">TIME LEFT IN THIS ASSIGNMENT SESSION</span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-
                                 <div class="container-text" >
                                     <div class="" id="question1-list">
                                     <?php
-                                    if(isset($_GET['eid'])):
+                                    $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                                    $parts = explode('/', $url);
+                                    $new_url = $parts[0].'/'.$parts[1].'/'.$parts[2].'/'.$parts[3].'/'.$parts[4].'/'.$parts[5].'/'.$parts[6];
+                                    $eid=strip_tags(trim((string)filter_var($parts[6], FILTER_SANITIZE_STRING), true));
+                                    if(isset($eid)):
                                      $qin = 1;
                                         if (!empty($data['examcontroller'])):
                                             foreach ($data['examcontroller'] as $key ):?>
@@ -120,7 +116,7 @@
         </div>
     </div>
     <div class="container-fluid">
-        <?php if(isset($_GET['eid'])): 
+        <?php if(isset($eid)): 
             $this->db = new Database;;?>
         <section class="mt-5 py-3">
             <div class="container">
@@ -151,7 +147,7 @@
                                                 <div class="question_text"><p><?=@$key['question'];?></p></div>
                                             </div>
                                             <div class="col-auto">
-                                                <span class="text-muted"><b>[15pts.]</b></span>
+                                                <span class="text-muted"><b>[<?=@$key['point'];?>pts]</b></span>
                                             </div>
                                             <div class="col-auto">
                                                 <span class="text-muted"><b><?=(($no == 1)?$no : $no)?>/<?=$data['isCount']?></b></span>
@@ -160,67 +156,48 @@
                                         </div>
                                          <!-- OPTIONS -->
                                        <div class="mx-3">
-                                            <div class="row">
+                                            <div class="row mb-2">
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
-                                                        <div class="custom-control "> 
-                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="row">
-                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
-                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
-                                                                    </div>
-                                                                    <div class="col-md-10 col-10">
-                                                                        <div class="sel" style="font-size:18px;margin:0 auto">&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?></div>
-                                                                    </div>
-                                                                </div>
+                                                        <div class="custom-control quiz-input position-relative"> 
+                                                            <label class="font-weight-normal">
+                                                                <span class="quiz-option-number">A</span>
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
+                                                                <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
-                                                        <div class="custom-control">
-                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="row">
-                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px; background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
-                                                                        <input style="margin:0 auto; position:absolute; top: 30%; min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>" >
-                                                                    </div>
-                                                                    <div class="col-md-10 col-10">
-                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?></div>
-                                                                    </div>
-                                                                </div>
+                                                        <div class="custom-control quiz-input">
+                                                            <label class="font-weight-normal">
+                                                                <span class="quiz-option-number">B</span>
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
-                                                        <div class="custom-control">
-                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="row">
-                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
-                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
-                                                                    </div>
-                                                                    <div class="col-md-10 col-10">
-                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?></div>
-                                                                    </div>
-                                                                </div>
+                                                        <div class="custom-control quiz-input">
+                                                            <label class="font-weight-normal">
+                                                                <span class="quiz-option-number">C</span>
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                                     <div class="form-group mb-3">
-                                                        <div class="custom-control">
-                                                            <label class="font-weight-normal" style="background-color: rgba(0, 0, 0, 0.02);border:1px solid rgba(0, 0, 0, 0.03); border-radius:5px; width:100%; height:100%; ">
-                                                                <div class="row">
-                                                                    <div class="col-md-1 col-1" style="position:relative;margin-left:5px;background-color: rgba(0, 0, 0, 0.20);border:1px solid rgba(0, 0, 0, 0.25);">
-                                                                        <input style="margin:0 auto; position:absolute; top: 30%;  min-width: 10px;  -webkit-transform:scale(1.5); transform:scale(1.5);" type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
-                                                                    </div>
-                                                                    <div class="col-md-10 col-10">
-                                                                        <div class="sel" style="font-size:18px; display:flex">&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?></div>
-                                                                    </div>
-                                                                </div>
+                                                        <div class="custom-control quiz-input">
+                                                            <label class="font-weight-normal">
+                                                                <span class="quiz-option-number">D</span>
+                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -236,12 +213,12 @@
                         <div class="card-footer">
                             <div class="d-flex justify-contron-between w-100">
                                 <div class="col-6">
-                                    <button class="btn btn-primary btn-sm btn-flat d-none" type="button" id="prev">Back</button>
+                                    <button class="btn btn-sm btn-flat d-none" type="button" id="prev" style="width:140px">Back</button>
                                 </div>
                                 <div class="col-6 text-right">
-                                    <button class="btn btn-primary btn-sm btn-flat" type="button" id="next">Next</button>
-                                    <button class="btn btn-primary btn-sm btn-flat d-none" type="button" id="review">Review</button>
-                                    <button class="btn btn-primary btn-sm btn-flat d-none" name="click" id="submit">Submit</button>
+                                    <button class="btn btn-sm btn-flat" type="button" id="next" style="width:140px">Next</button>
+                                    <button class="btn btn-sm btn-flat d-none" type="button" id="review"  style="width:140px">Review</button>
+                                    <button class="btn btn-sm btn-flat d-none smb" name="click" id="submit"  style="width:150px">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -252,9 +229,10 @@
    <?php endif;?>
 </div> 
 <script>
+   
     $('document').ready(function (){
-       var iss= document.getElementById('bincount');
-       console.log(iss);
+        var iss= document.getElementById('bincount');
+       
     })
     $(function(){
         $('#next').click(function(){
@@ -337,25 +315,47 @@
             $('#question-list .question-item').removeClass('d-none')
         })
     })
-   window.onload =  startTimer();
-    // timer set
-        document.getElementById('timer').innerHTML = bimro;
-        //03 + ":" + 00 ;
-        function startTimer() {
+        tm=window.setInterval('disp()',1000);
+        var pi= document.getElementById('timer').innerHTML=timestamp;
+        disp();
+        function disp() {
+
             var presentTime = document.getElementById('timer').innerHTML;
             var timeArray = presentTime.split(/[:]+/);
-            var m = timeArray[0];
-            var s = checkSecond((timeArray[1] - 1));
-            if(s==59){m=m-1}
-            if(m==0 && s==0){document.getElementById("form").submit.click();}
-            document.getElementById('timer').innerHTML = m + ":" + s;
-            setTimeout(startTimer, 1000);
-        }
-        function checkSecond(sec) {
-            if (sec < 10 && sec >= 0) {sec = "0" + sec}; // add zero in front of numbers < 10
-            if (sec < 0) {sec = "59"};
-            return sec;
-            if(sec == 0 && m == 0){ alert('stop it')};
+            var h = timeArray[0];
+            var m = timeArray[1];
+            var s = timeArray[2] - 1;
+            if (s < 10 && s >= 0) {
+                s = "0" + s;
+            } // add zero in front of numbers < 10
+            if (s < 0) {
+                s = "59";
+            }
+            if(m==59){
+                h=h-1
+            }
+            if(s==59){
+                m=m-1
+            }
+            if (m ==0 && h !=0) {
+                h=h-1  
+            }else{
+                if (h==0) {
+                    h='00';
+                }
+                if (m==0) {
+                   m='00'; 
+                }
+                if(s==0){
+                    s='00';
+                }
+                if (s==0 && m==0 && h==0) {
+                    console.log('Stop');
+                    window.clearInterval(tm);
+                     document.getElementById("form").submit.click();
+                }
+            }
+            document.getElementById('timer').innerHTML = h + ":"+ m + ":" + s;
         }
 </script>
    <script src="<?=ASSETS?>Exam/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

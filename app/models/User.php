@@ -773,19 +773,6 @@ Class User {
 			return false;
 		}
 	}
-
-	public function isCreateHealthData($data){
-		$this->DB->query('INSERT INTO healthdetails (ID, Blood_Group, Height, Weight)VALUES(:id, :Blood_Type, :height, :Weight)');
-		$this->DB->bind(':id', $data['id']);
-		$this->DB->bind(':Blood_Type', $data['Blood_Type']);
-		$this->DB->bind(':height', $data['height']);
-		$this->DB->bind(':Weight', $data['Weight']);
-		if($this->DB->execute()){
-			return true;
-		}else {
-			return false;
-		}
-	}
 	public function AddFactModel($Factname, $Appid){
 		$Parent = 0;
 		$this->DB->query('INSERT INTO faculties (Cat_id, FacultyName, Parent, Created_date)VALUES(:Appid, :Factname, :Parent, NOW())');
@@ -1731,17 +1718,7 @@ Class User {
 			return false;
 		}   
 	}
-	// Fetch Admin All Email 
-	public function SqlFetchAdminEmails(){
-		$this->DB->query("SELECT Admin__id, EmailID, SenderID, SenderName, SenderMail, RecipientEmail, RecipientName, 
-		Subject, message, Time, parent FROM `users`, `emailbox` WHERE Admin__id = SenderID AND parent = 0");
-		 $row = $this->DB->resultSet();
-		if($row > 0){
-			return $row;
-		}else {
-			return false;
-		}   
-	}
+
 	// ==================================================================
 	// Delete STUDENT FROM THE SCHOOL SYSTEM BY THE ADMIN
 	// ==================================================================

@@ -21094,6 +21094,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
     `opt3` text NOT NULL,
     `opt4` text NOT NULL,
     `ansid` text NOT NULL,
+    `point` varchar(11) NOT NULL,
     `sn` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -21130,12 +21131,12 @@ CREATE TABLE IF NOT EXISTS `e_timeset` (
     `Semester` int(10) NOT NULL,
     `Course` varchar(100) NOT NULL,
     `title` varchar(100) NOT NULL,
+    `startTime` varchar(40) NOT NULL,
+    `endTime` varchar(40) NOT NULL,
     `duedate` varchar(100) NOT NULL,
     `hour` varchar(100) NOT NULL,
     `minute` varchar(100) NOT NULL,
     `total` int(10) NOT NULL,
-    `rightAnswer_Marks` varchar(40) NOT NULL,
-    `wrongAnswer_Marks` varchar(40) NOT NULL,
     `status` int(11) NOT NULL,
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

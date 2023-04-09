@@ -130,8 +130,8 @@
 											<button style="content:"\a";white-space: pre;" type="button" onclick="EmailComposerBox(<?=$SSD?>)" class="btn btn-primary btn-xs" id="myBtn" title="Compose Email & Send" data-toggle="modal" data-target="#modalForm">Send Email <i class="fa fa-envelope-square"></i></button>
 										</td>
 										<td class="left">
-											<?php if($presult['Profile__Picture'] != ''):  ?>
-												<img src="<?=PATHROOT.$presult['Profile__Picture']?>" class="rounded img-thumbnail" alt="<?=$presult['Surname'].' '.$presult['Othername']?>" style="width:40px; height:40.7px">
+											<?php if($presult['photo'] != ''):  ?>
+												<img src="<?=PATHROOT.$presult['photo']?>" class="rounded img-thumbnail" alt="<?=$presult['Surname'].' '.$presult['Othername']?>" style="width:40px; height:40.7px">
 											<?php else : ?>
 												<img src="<?=ASSETS?>img/avatar/emptyProfile.png" class="rounded img-thumbnail" alt="<?=$presult['Surname'].' '.$presult['Othername']?>" style="width:40px; height:40.7px">
 											<?php endif; ?>

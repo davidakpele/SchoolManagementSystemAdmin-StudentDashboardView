@@ -93,15 +93,15 @@
                 return false;
             }
         }
-        public function isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $GradeResponse, $id){
+        public function isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $ansmsg, $id){
             $this->Router->query('INSERT INTO monitor(examid, correctQuest, failQuest, defaultmark, score, grade, studentid, examstatus)
-                                VALUES(:eid, :getConAns, :FailAnsQ, :defaultmark, :finallyGrade, :GradeResponse, :id, 1)');
+                                VALUES(:eid, :getConAns, :FailAnsQ, :defaultmark, :finallyGrade, :ansmsg, :id, 1)');
             $this->Router->bind(':eid', $eid);
             $this->Router->bind(':getConAns', $getConAns);
             $this->Router->bind(':FailAnsQ', $FailAnsQ);
             $this->Router->bind(':defaultmark', $defaultmark);
             $this->Router->bind(':finallyGrade', $finallyGrade);
-            $this->Router->bind(':GradeResponse', $GradeResponse);
+            $this->Router->bind(':ansmsg', $ansmsg);
             $this->Router->bind(':id', $id);
             $num = $this->Router->execute();
             if(!empty($num)) {
@@ -128,32 +128,8 @@
         }
             
 
-        public function setExamDepo($question, $answer, $wrong1,  $wrong2, $wrong3, $wrong4, $AnswersButtonType, $configId){
-            $this->Router->query("INSERT INTO `e_center`(`Courseid`, `question`, `answer`, `option 1`, `option 2`, `option 3`, `option 4`, `Ansbutton`)VALUES(:configId, :question, :answer, :wrong1, :wrong2, :wrong3, :wrong4, :AnswersButtonType)");
-            $this->Router->bind(':question', $question);
-            $this->Router->bind(':answer', $answer);
-            $this->Router->bind(':wrong1', $wrong1);
-            $this->Router->bind(':wrong2', $wrong2);
-            $this->Router->bind(':wrong3', $wrong3);
-            $this->Router->bind(':wrong4', $wrong4);
-            $this->Router->bind(':AnswersButtonType', $AnswersButtonType);
-            $this->Router->bind(':configId', $configId);
-            if($this->Router->execute()){
-                return true;
-            }else {
-                return false;
-            }
-        }
+        
 
-        public function updateExamstatus($eid){ 
-            $this->Router->query('UPDATE e_timeset SET status=1 WHERE eid=:eid');
-            $this->Router->bind(':eid', $eid);
-            if($this->Router->execute()){
-                return true;
-            }else{
-                return false;
-            }
-        }
         public function StudentRecords(){
             $this->Router->query('SELECT ReceivedAns,qid,ansid,ans FROM studentans, answer');
             $Statement = $this->Router->resultSet();
@@ -325,7 +301,7 @@
              if(!empty($stmt)){
                 return $stmt;
             }else {
-                return false;
+                return $stmt;
             }
         }
         public function isCheckExam($eid){

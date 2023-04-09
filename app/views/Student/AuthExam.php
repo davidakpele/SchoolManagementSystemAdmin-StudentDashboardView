@@ -1,27 +1,9 @@
 <?php $this->view("include/Sinclude/header",$data); ?>
   <!-- //header-ends -->
   <style>
-    .table{
-       style="overflow-x:auto;"
-    }
-    tbody{
-      background-color: transparent;
-    color: #5A544E;
-    font-size: 14px;
-    padding: 5px 5px 5px 10px;
-    border: 1px solid #fff;
-    }
-    .exam-list{    
-      background-color: #F5AA19;
-      color: #fff;
-      font-weight:100;
-      text-transform: uppercase;
-      padding: 5px 5px 5px 10px;
-      border: 1px solid #ccc;
-      border-top: 0px;
-      text-align: center;
-      height:10px;
-    }
+    .table{ style="overflow-x:auto;"}
+    tbody{background-color: transparent;color: #5A544E;font-size: 14px;padding: 5px 5px 5px 10px;border: 1px solid #fff;}
+    .exam-list{    background-color: #F5AA19;color: #fff;font-weight:100;text-transform: uppercase;padding: 5px 5px 5px 10px;border: 1px solid #ccc;border-top: 0px;text-align: center;height:10px;}
   </style>
   <!-- main content start -->
 <div class="main-content" style="background: #e9ecef;">
@@ -64,7 +46,6 @@
                   <td>Total Question</td>
                   <td>Duration</td>
                   <td>START DATE & TIME	</td>
-                  <td></td>
                 </tr>
               </thead>
               <tbody>
@@ -83,40 +64,20 @@
                 $eid = $row['eid'];
                 $Coursecode = $row['Course'];
                 $totalQuest = $row['total'];
-                $time= $row['hour'].':'.$row['minute'];
+                $datetime1 = $row['duration'];
+                $od = explode(":", $datetime1);
+                $hours = (($od[0]=='00') ? '' : $od[0]. ' hr');
+                $minutes = (($od[1]=='00') ? '' : $od[1]. ' min');
+                $seconds = (($od[2]=='00') ? '' : $od[2]. ' sec');
                 ?>
                 <tr>
                   <td><?=((isset($c))?$c:'')?></td>
-                  <td><?=((isset($Coursecode))?$Coursecode: '')?></td>
+                  <td><a href="<?=ROOT?>Student/exam/<?=(isset($examid))?$examid:''?>"><?=((isset($Coursecode))?$Coursecode: '')?></a></td>
                   <td><?=((isset($totalQuest))?$totalQuest: '')?></td>
-                  <td><?=((isset($time))?date("h:i A", strtotime($time)): '')?></td>
-                  <td><?=((isset($time))?pretty_date(($row['duedate'])): '')?></td>
-                  <td>
-                      <?php 
-                        $this->Router->query("SELECT * FROM monitor WHERE examid =:examid AND studentid=:id AND examstatus=1");
-                        $this->Router->bind(':examid', $examid);
-                        $this->Router->bind(':id', $id);
-                        $stmt = $this->Router->resultSet();
-                        ?>
-                        <?php foreach ($stmt as $e){
-                            $array = $e['examid'];
-                            }
-                          ?>
-                            <?php if ($array == $eid):?>
-                                <button type="reset" class="btn btn-success btn-sm">Taken Already</button>
-                                <a href="check_result?action=result&eid=<?php echo $examid;?>&user=<?=$_SESSION['student__Id']?>" class="btn btn-secondary btn-sm">View Result</a>
-                                <?php else: ?>
-                                <a href="Examination?q=start&step=2&eid=<?=$eid?>&n=1&t=<?=$totalQuest?>" class="btn btn-xs btn-success text-center" style="background:#2db44a;">
-                                  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;
-                                  <span class="title1"><b>Commence Exam</b>
-                                  </span>
-                                </a>
-                              <?php endif;?>
-                            <?php endforeach;?>
-                       
-                      </td>
-                      </tr>
-                
+                  <td><?=(($hours=='')?'':$hours.' - ').(($minutes=='')?'':$minutes.' - ').(($seconds=='')?'':$seconds)?></td>
+                  <td><?=((isset($datetime1))?pretty_date(($row['duedate'])): '')?></td>
+                  <?php endforeach;?>
+                </tr>
                 <?php endif;?>
               </div>
               </tr>

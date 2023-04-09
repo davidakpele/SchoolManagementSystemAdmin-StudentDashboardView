@@ -204,12 +204,10 @@ public function AddNewStudents(){
     public function Professors(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');} 
         $stmt = $this->userModel->lectural();
-        $emailstmt = $this->userModel->SqlFetchAdminEmails();
         $data = 
         [
             'page_title' => 'PROFESSOR TABLE',
             'All'=> $stmt,
-            'emailstmt'=>$emailstmt,
         ];
         if(isset($_GET['featured'])){
 			// Sanitize POST data
@@ -242,7 +240,7 @@ public function AddNewStudents(){
                 $tel=$row->Telephone_No;$DoB=$row->Date_of_Birth;$PoD=$row->Place__of__birth;
                 $gn= $row->Gender;$Religion = $row->Religion;$relatx=$row->Relationship_sts;
                 $Cst=$row->Civil_status;$Ctz= $row->Citizenship;$nin=$row->NIN;$Hat=$row->Height;
-                $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->Profile__Picture;
+                $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->photo;
                 $Add=$row->Address;
                 $Saved_image = (($photo != '')?$photo : '');
                 // Assign each one to data array so we can pass in data to our page.
@@ -279,7 +277,7 @@ public function AddNewStudents(){
                // header('location:' . ROOT. 'Admin/Professors/');
             }
             if($fetchSingleUser == true){
-                $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->Profile__Picture;$Add=$fetchSingleUser->Address;
+                $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->photo;$Add=$fetchSingleUser->Address;
                 $patch = $fname .' '.$lname;
                 $data = 
                 [
@@ -347,7 +345,7 @@ public function AddNewStudents(){
             $tel=$row->Telephone_No;$DoB=$row->Date_of_Birth;$PoD=$row->Place__of__birth;
             $gn= $row->Gender;$Religion = $row->Religion;$relatx=$row->Relationship_sts;
             $Ctz= $row->Citizenship;$nin=$row->NIN;$Hat=$row->Height;
-            $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->Profile__Picture;
+            $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->photo;
             $Add=$row->Address;
             $Saved_image = (($photo != '')?$photo : '');
             // Assign each one to data array so we can pass in data to our page.
@@ -446,7 +444,7 @@ public function AddNewStudents(){
         }
         $row =$this->userModel->loadingProfData($id);
         if ($row ==true) {
-            $defaultImg  = $row->Profile__Picture;
+            $defaultImg  = $row->photo;
         }
        
 
@@ -512,7 +510,7 @@ public function AddNewStudents(){
             $id = trim(filter_var((int)$SSD));
             $fetchSingleUser = $this->userModel->loadingProfData($id);
                 if($fetchSingleUser == true){
-                    $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->Profile__Picture;$Add=$fetchSingleUser->Address;
+                    $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->photo;$Add=$fetchSingleUser->Address;
                     $patch = $fname .' '.$lname;
                     $data = 
                     [
@@ -541,7 +539,7 @@ public function AddNewStudents(){
         if(!$post == true){
             header('location:' . ROOT. 'Admin/Professors');
         }
-        $photo = $post->Profile__Picture;
+        $photo = $post->photo;
         $link = 'Professor/'.$Edit__id;
         $image_url = PATHROOT.$photo;
         if($post == true){
@@ -924,16 +922,15 @@ public function AddNewStudents(){
         @$throwprogram = @$this->userModel->SelectProgram();
         @$throwSession= @$this->userModel->Selectsession();
         @$throwEntrylevel = @$this->userModel->SelectEntryLevel();
-        $emailstmt = $this->userModel->SqlFetchAdminEmails();
-        $data = [
-                    'page_title' => 'Students',
-                    'select' => $stmt1,
-                    'DisplayCateogries' => $DC,
-                    'throw' => $throwprogram, 
-                    'StmtEntrylevel' => $throwEntrylevel,
-                    'StmtSession' => $throwSession, 
-                    'emailstmt'=>$emailstmt,
-                ];
+        $data = 
+        [
+            'page_title' => 'Students',
+            'select' => $stmt1,
+            'DisplayCateogries' => $DC,
+            'throw' => $throwprogram, 
+            'StmtEntrylevel' => $throwEntrylevel,
+            'StmtSession' => $throwSession, 
+        ];
          if(isset($_GET['delete_image']) && isset($_GET['Edit'])){
             // $Edit__id = trim(filter_var($_GET['Edit'], FILTER_SANITIZE_STRING));
             $Edit__id = $_GET['Edit'];
@@ -1908,12 +1905,10 @@ public function AddNewStudents(){
 
     public function Library(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $emailstmt = $this->userModel->SqlFetchAdminEmails();
         @$DC = @$this->userModel->SelectSpecial__ID();
         $data = 
         [
             'DisplayCateogries' => $DC,
-            'emailstmt'=>$emailstmt,
             'page_title'=>'Admin :: Library',
         ];
        

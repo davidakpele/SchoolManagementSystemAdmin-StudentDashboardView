@@ -707,288 +707,6 @@ public function ProcessNewStudentOnline(){
         @$this->view('Application/Confirm', @$data); 
     }
 
-    // ====================================================
-    // Accountant Dashboard
-    //
-    // ====================================================
-    public function AccountantDashboard(){
-        if(!isLoggedInAccountant()){
-             header('location:' . ROOT . 'Management/Log/');
-        }
-        @$data = ['page_title'=>'Accountant Dashboard'];
-        @$this->view('Management/AccountantDashboard/index', @$data);
-    }
-    public function ExamTime(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-
-        $Time = $phpObject->{'TimeSet'};
-        $basseRoll = $_SESSION['MaxBass'];
-        if ($this->namespacemodel->SetExamTimer( $basseRoll, $Time)) {
-            $response['status'] = '200OK';
-            $response['Successmessage'] = 'Successfully Set.';
-        }else {
-            $response['message'] = 'Sorry.. Something went wrong.';
-        }
-       
-        ob_end_clean();
-        echo json_encode($response);
-    } 
-    public function Exam(){
-        if(!isLoggedInLectural()){
-            header('location:' . ROOT . 'Management/Log/');
-        }else {
-            $Courseid=$_SESSION['MaxBass'];
-            @$i = @$this->namespacemodel->calluserfun($Courseid);
-          @$data = 
-            [
-                'page_title'=>'Examination Dashboard Settings', 
-                'examTable'=>@$i,
-                'correct_answer'=> '',
-                'correct_answerError'=>'',
-                'question'=> '',
-                'questionError'=>'',
-                'wrong_answer1'=> '',
-                'wrong_answer1Error'=>'',
-                'wrong_answer2'=> '',
-                'wrong_answer2Error'=>'',
-                'wrong_answer3'=> '',
-                'wrong_answer3Error'=>'',
-                'AnswersButtonType'=> '',
-                'AnswersButtonTypeError'=>''
-            ];
-            if(isset($_GET['Add'])){
-                //Generate a random string.
-                //$token = openssl_random_pseudo_bytes(30);
-                //Convert the binary data into hexadecimal representation.
-                //$token = bin2hex($token);
-                //Print it out for example purposes.
-                if(isset($_POST['SetNewExamination'])){
-                     @$data = 
-                        [
-                            'page_title'=>'Examination Dashboard Settings',
-                            'correct_answer'=> trim(strip_tags($_POST['correct_answer'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'correct_answerError'=>'',
-                            'question'=> trim(strip_tags($_POST['question'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'questionError'=>'',
-                            'wrong_answer1'=> trim(strip_tags($_POST['wrong_answer1'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'wrong_answer1Error'=>'',
-                            'wrong_answer2'=> trim(strip_tags($_POST['wrong_answer2'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'wrong_answer2Error'=>'',
-                            'wrong_answer3'=> trim(strip_tags($_POST['wrong_answer3'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'wrong_answer3Error'=>'',
-                            'wrong_answer4'=> trim(strip_tags($_POST['wrong_answer4'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'wrong_answer4Error'=>'',
-                            'AnswersButtonType'=> trim(strip_tags($_POST['AnswersButtonType'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401)),
-                            'AnswersButtonTypeError'=>'',
-                        ];
-                    if(empty(@$data['question'])){
-                        @$data['questionError'] = 'Please Enter The Question';
-                    }
-                    if(empty(@$data['correct_answer'])){
-                        @$data['correct_answerError'] = 'Please Enter The Correct Answer';
-                    }
-                    if(empty(@$data['wrong_answer1'])){
-                        @$data['wrong_answer1Error'] = 'Please Enter Option One';
-                    }
-                    if(empty(@$data['wrong_answer2'])){
-                        @$data['wrong_answer2Error'] = 'Please Enter Option two';
-                    }
-                    if(empty(@$data['wrong_answer3'])){
-                        @$data['wrong_answer3Error'] = 'Please Enter Option three';
-                    }
-                    if(empty(@$data['wrong_answer4'])){
-                        @$data['wrong_answer4Error'] = 'Please Enter Option four';
-                    }
-                    if(empty(@$data['AnswersButtonType'])){
-                        @$data['AnswersButtonTypeError'] = 'How Do you Want The Question To Be selected.?';
-                    }
-                    if(empty(@$data['questionError']) 
-                        && empty(@$data['correct_answerError'])
-                        && empty(@$data['wrong_answer1Error'])
-                        && empty(@$data['wrong_answer2Error'])
-                        && empty(@$data['wrong_answer3Error'])
-                        && empty(@$data['wrong_answer4Error'])
-                        && empty(@$data['AnswersButtonTypeError'])){
-                        @$configId=  stripslashes((int)$_SESSION['MaxBass']);
-                        @$question = @$data['question'];
-                        @$answer = @$data['correct_answer'];
-                        @$wrong1 = @$data['wrong_answer1'];
-                        @$wrong2 = @$data['wrong_answer2'];
-                        @$wrong3 = @$data['wrong_answer3'];
-                        @$wrong4 = @$data['wrong_answer4'];
-                        @$AnswersButtonType = @$data['AnswersButtonType'];
-                        if (@$this->namespacemodel->setExamDepo($question, $answer, $wrong1,  $wrong2, $wrong3, $wrong4, $AnswersButtonType, $configId)) {
-                            header('location:' . ROOT. 'Management/Exam?Add=1');
-                        }else {
-                            echo "<script>alert('Fail to insert')</script>";
-                        }
-                    }
-                }
-            }
-            @$this->view('Management/LecturalDashboard/Exam', @$data);
-        }
-        
-    }
-
-    // ====================================================
-    // Accountant Profile 
-    // ====================================================
-
-    public function AccountantProfile(){
-        if(!isLoggedInAccountant()){
-            header('location:' . ROOT . 'Management/Log/');
-        }
-        @$data = ['page_title' => 'Accountant Profile'];
-      @$this->view('Management/AccountantDashboard/AccountantProfile', @$data);
-    }
-
-    // =====================================================
-    // Accountant Setting::Information Page Method
-    // =====================================================
-
-    public function AccountantInformations(){
-        if(!isLoggedInAccountant()){
-            header('location:' . ROOT . 'Management/Log/');
-        }
-        $qut = $_SESSION['Accesscode'];
-        $v = @$this->userModel->AccountantSetting($qut);
-        @$data =
-         [
-             'page_title'=> 'Accountant Informations',
-             'runStatment'=> $v
-        ];
-        @$this->view('Management/AccountantDashboard/AccountantInformations', @$data);
-    }
-    
-    // =====================================================
-    // =====================================================
-    // Accountant Method to change password
-    // =====================================================
-
-    public function ChangePassword(){
-        if(!isLoggedInAccountant()){
-            header('location:' . ROOT . 'Management/Log/');
-        }
-        @$data = 
-        [   'Accesscode',
-            'password' => '',
-            'Newpassword'=>'',
-            'Confirmpassword'=>'',
-            // PAGE TITLE
-            'page_title'=>'Accountant Access To Change Password',
-            // Validations Errors
-            'AccesscodeError',
-            'passwordError'=> '',
-            'NewpasswordError'=> '',
-            'ConfirmpasswordError'=> '',
-        ];
-      	if($_SERVER['REQUEST_METHOD'] == 'POST'){
-			// Processing form validation
-			// Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            @$data = 
-            
-        [   'Accesscode'=> trim(filter_var($_POST['Accesscode'], FILTER_SANITIZE_STRING)),
-            'password' => trim(filter_var($_POST['password'], FILTER_SANITIZE_STRING)),
-            'Newpassword' => trim(filter_var($_POST['Newpassword'], FILTER_SANITIZE_STRING)),
-            'Confirmpassword'=> trim(filter_var($_POST['Confirmpassword'], FILTER_SANITIZE_STRING)),
-            // PAGE TITLE
-            'page_title'=>'Accountant Access To Change Password',
-            // Validations Errors
-            'AccesscodeError',
-            'passwordError'=> '',
-            'NewpasswordError'=> '',
-            'ConfirmpasswordError'=> '',
-        ];
-
-             if(empty(@$data['Accesscode'])){
-                @$data['AccesscodeError'] = 'Required.';
-            }
-            if(empty(@$data['password'])){
-                @$data['passwordError'] = 'Required.';
-            }
-            if(empty(@$data['Newpassword'])){
-                @$data['NewpasswordError'] = 'Please Enter Your New Pasword.';
-            }
-            if(empty(@$data['Confirmpassword'])){
-                @$data['ConfirmpasswordError'] = 'Please Confirm Your New Password..';
-            }elseif(!empty(@$data['Newpassword']) && !empty(@$data['Confirmpassword'] && @$data['Newpassword'] != @$data['Confirmpassword'])){
-                @$data['ConfirmpasswordError'] = 'Both password does match.';
-            }
-            if(empty(@$data['AccesscodeError'])&& empty(@$data['passwordError']) && empty(@$data['NewpasswordError'])&& empty(@$data['ConfirmpasswordError']))
-            {
-                //hashing professor password
-                // The following algorithms are currently supported when using this function:
-                // PASSWORD_DEFAULT --60 lenght
-                // PASSWORD_BCRYPT -- 60 lenght
-                // PASSWORD_ARGON2I
-                // PASSWORD_ARGON2ID --97 length
-            @$data['Newpassword'] = password_hash(@$data['Newpassword'], PASSWORD_ARGON2ID);
-            @$ChangepasswordVar = @$this->userModel->UpdateAccountantPassword(@$data['Accesscode'], @$data['password'], @$data['Newpassword']);
-            if($ChangepasswordVar){
-                header('location: ' . ROOT . 'Management/AccountantDashboard/index'); 
-            }else{
-                    die('Something went wrong');
-                }
-            }
-        }
-        @$this->view('Management/AccountantDashboard/ChangePassword', @$data);
-    }
-    // =====================================================
-     // Hr Dashboard
-    // =====================================================
-
-    public function LecturalDashboard(){
-          if (isLoggedInLectural() ) {
-            $nin =  $_SESSION['UsenrNin'];
-            $check = $this->userModel->mimi($nin);
-             if($check) {
-                 $array = $check->Base;
-                /**
-                 * Now we've give our department base a variable 'Array'
-                 * We can now check if the department a perfessor signed is more that one
-                 * Php gave us a built in function for that 'strpos'
-                 * So basically this function check if Department or Base has a comma seperator
-                 * Like: 19182012,232342342,2432423
-                 * This case it means professor is been assigne to 3 set of department and the login process will be different
-                 * if it just 89237238239 without a comma then that function sees it as one department which is correct and the login process is straight to Dashboard
-                 * if it more than one department, the Professor will been login but into a Pre- dashboard which he can select the dashboard he/she want to manage
-                 */
-                $searchForValue = ',';
-                 if (strpos($array, $searchForValue) !== false) {
-                    // Here is Multiple department 
-                    $rs = $this->namespacemodel->ArrayFlag($array);
-                    //$vs = $this->namespacemodel->categoryfetch();
-                 }else{
-                    $_SESSION['csrf'] = $this->RandomToken();
-                    $_SESSION['saltcsrf'] = $this->Salt();
-                    $_SESSION['base'] = $array;
-                }
-             }
-            @$data = 
-                [
-                    'page_title'=>'Managament :: Dashboard Control Center',
-                    'base'=>$rs
-                ];
-                @$this->view('Management/LecturalDashboard/index', @$data);
-        }else {
-            if (session_status() == PHP_SESSION_ACTIVE) {
-                header('location:' . ROOT . 'Management/Log/');
-            }
-        }
-                
-           
-    }
-
     // =====================================================
     // Creating Student dashboard method  Index page
     // =====================================================
@@ -1016,14 +734,14 @@ public function ProcessNewStudentOnline(){
         $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
         $CourseName = $FetchDepartment->Child_name;
         @$data = 
-                [
-                    'page_title' => 'Dashboard',
-                    'DisplaySuccefulsession'=> @$statement1,
-                    'CountStudent'=> @$statement2,
-                    'examName'=>$CourseName,
-                    'Id'=>$Courseid,
-                    'photo'=>$img
-                ];
+        [
+            'page_title' => 'Dashboard',
+            'DisplaySuccefulsession'=> @$statement1,
+            'CountStudent'=> @$statement2,
+            'examName'=>$CourseName,
+            'Id'=>$Courseid,
+            'photo'=>$img
+        ];
         @$this->view('Student/Examcenter', @$data);
     }
 
@@ -1074,40 +792,49 @@ public function ProcessNewStudentOnline(){
         $this->view("Student/ExamModal", $data);
     }
     
-    public function Examination(){
+    public function Examination($url){
         if(!isLoggedInStudent()){
            echo "<script>
                     alert('Sorry..! You have no permission to this page,not until you login with the right credentials');
                     window.location.assign('".ROOT."Student/Login/');
                 </script>";
         }else{ 
-            if(@$_GET['q']== 'start' && @$_GET['step']== 2) {
-                $eid=@$_GET['eid'];
-                $sn=@$_GET['n'];
-                $total=@$_GET['t'];
-                // dnd($_GET);
-                $isSelectExam= $this->namespacemodel->getExam($eid);
-                $CountExam = $this->namespacemodel->isCounter($eid);
-                $GetExamTime= $this->namespacemodel->isexamTime($eid);
-                if ($GetExamTime == false) {
-                    echo "<script>
-                        alert('Sorry..This exam doesn\'t exists in our portal.');
-                        window.location.replace('".ROOT."Student/Dashboard/');
-                    </script>";
+            $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $parts = explode('/', $url);
+            $new_url = $parts[0].'/'.$parts[1].'/'.$parts[2].'/'.$parts[3].'/'.$parts[4].'/'.$parts[5].'/'.$parts[6];
+            $eid=strip_tags(trim((string)filter_var($parts[6], FILTER_SANITIZE_STRING), true));
+            $isSelectExam= $this->namespacemodel->getExam($eid);
+            $CountExam = $this->namespacemodel->isCounter($eid);
+            $GetExamTime= $this->namespacemodel->isexamTime($eid);
+            $id = $_SESSION['student__Id'];
+            if ($GetExamTime == false) {
+                echo "<script>
+                    alert('Sorry..This exam doesn\'t exists in our portal.');
+                    window.location.replace('".ROOT."Student/Dashboard/');
+                </script>";
+            }else{
+                $beforeSave = $this->namespacemodel->beforeSave($eid,$id);
+                if (!empty($beforeSave)) {
+                    $msg = ". ";
+                    echo '<script>alert("You\'ve Already Written This Particular Exam, You Can\'t Re-write This Exam unless You Got The Admin Permission.");
+                        window.location.replace("'.ROOT.'Dashboard/AuthExamination");
+                    </script>';
+                }else {
+                    try{
+                        $data =
+                            [
+                                'page_title'=>'Student Examination Board',
+                                'examcontroller'=>$isSelectExam,
+                                'examTime'=>$GetExamTime,
+                                'isCount'=>$CountExam,
+                            ];
+                            //dnd($data);
+                        $this->view("Student/Examination", $data);
+                    }catch(ViewPageException $e){
+                        throw new Exception("Error Processing Request", 1);
+                    }
                 }
-                try{
-                    $data =
-                        [
-                            'page_title'=>'Student Examination Board',
-                            'examcontroller'=>$isSelectExam,
-                            'examTime'=>$GetExamTime,
-                            'isCount'=>$CountExam,
-                        ];
-                    $this->view("Student/Examination", $data);
-                }catch(ViewPageException $e){
-                    throw new Exception("Error Processing Request", 1);
-                }
-            }  
+            }
         }  
     }
 
@@ -1144,12 +871,14 @@ public function ProcessNewStudentOnline(){
                     window.location.assign('".ROOT."Student/Login/');
                 </script>";
         }else{
+            //dnd($_POST);
             $eid = $_POST['exam_id'];
             $id = $_SESSION['student__Id'];
             $isSelectExam= $this->namespacemodel->isCheckExam($eid);
             $count = 0;
             $arr = [];
             $ci = [];
+            $isAnswers=[];
             $CorrentAns= array();
             $FailAns = array();
             $ansResult= false;
@@ -1159,24 +888,34 @@ public function ProcessNewStudentOnline(){
                 $arr = $k['questionid'];
                 $ansid = $k['ansid'];
                 $count++;
-                foreach ($_POST[$count] as $key => $value) {
-                    if ($_POST[$count]) {
-                        $ci = $key;
-                        $userAnswers = $value;
+                if (isset($_POST[$count])) {
+                   foreach ($_POST[$count] as $key => $value) {
+                        if ($_POST[$count]) {
+                            $ci = $key;
+                            $userAnswers = $value;
+                        }
                     }
-                }
-                $isAnswers= $this->namespacemodel->isCheckExamAnsers($ci, $userAnswers);
-                if ($isAnswers == false) {
+                    $isAnswers= $this->namespacemodel->isCheckExamAnsers($ci, $userAnswers);
+                   
+                 
+                    if ($isAnswers == false) {
+                        $FailAns[]= 'true';
+                        $wrongAns = count($FailAns);
+                    }elseif ($isAnswers == true) {
+                        $CorrentAns[]= 'true';
+                        $CorrentAnsresult= count($CorrentAns);
+                    }
+                }else {
                     $FailAns[]= 'true';
-                    $wrongAns = count($FailAns);
-                }elseif ($isAnswers == true) {
-                    $CorrentAns[]= 'true';
-                    $CorrentAnsresult= count($CorrentAns);
+                    $CorrentAnsresult= '0';
                 }
-            }
+                
+            } 
+
             // to avoid error of empty value
             $wrongAns = (!empty($wrongAns)) ? $wrongAns : '';
-            $CorrentAnsresult = (!empty($CorrentAnsresult)) ? $CorrentAnsresult : '' ;
+            $CorrentAnsresult = (!empty($CorrentAnsresult)) ? $CorrentAnsresult : '0' ;
+           
             if ($CorrentAnsresult =='') {
                 $getConAns = 0;
             }else {
@@ -1204,60 +943,69 @@ public function ProcessNewStudentOnline(){
             $i=1;
             $userid = $_SESSION['student__Id'];
             
-        
             $FetchDepartment= $this->namespacemodel->FetchStudentDepartmentName($Courseid);
             $CourseName = $FetchDepartment->CourseTitle;
             
-               $baseScore = (!empty($CorrentAnsresult)) ? $CorrentAnsresult*16.6 : '' ;
-               $GradeResponse = '';
-               if($CorrentAnsresult ==0){
+            $baseScore = (!empty($CorrentAnsresult)) ? $CorrentAnsresult*16.6 : '' ;
+            $GradeResponse = '';
+            if($CorrentAnsresult ==0){
+                $ansmsg= 'Fail';
                 $GradeResponse = '<span style="line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;">(<b style="color:red;">Fail</b>) Re-run Course</span>';
-                }elseif($CorrentAnsresult !=0 && $baseScore <= 39){
-                    $GradeResponse= "V.Poor";
+            }elseif($CorrentAnsresult !=0 && $baseScore <= 39){
+                $GradeResponse= "V.Poor";
+                $ansmsg= 'V.Poor';
+                $finallyGrade = $baseScore;
+            }elseif($CorrentAnsresult !=0 && $baseScore <= 49){
+                    $GradeResponse= "Pass";
+                    $ansmsg= 'Pass';
                     $finallyGrade = $baseScore;
-                }elseif($CorrentAnsresult !=0 && $baseScore <= 49){
-                        $GradeResponse= "Pass";
-                        $finallyGrade = $baseScore;
-                }elseif($CorrentAnsresult !=0 && $baseScore <= 59){
-                    $GradeResponse= "Good";
-                    $finallyGrade = $baseScore;
-                }elseif($CorrentAnsresult !=0 && $baseScore <=69){
-                    $GradeResponse= "Credit";
-                    $finallyGrade = $baseScore;
-                }elseif($CorrentAnsresult !=0 && $baseScore <= 100){
-                    $GradeResponse= "Distinction";
-                    $finallyGrade = $baseScore;
-                }elseif ($CorrentAnsresult !=0 && $baseScore > 100) {
-                    $GradeResponse= "Distinction";
-                    $finallyGrade = 100;
-                }if(!isset($finallyGrade)){
-                    $finallyGrade = 'O';
-                    $scores = '0';
+            }elseif($CorrentAnsresult !=0 && $baseScore <= 59){
+                $GradeResponse= "Good";
+                $ansmsg= 'Good';
+                $finallyGrade = $baseScore;
+            }elseif($CorrentAnsresult !=0 && $baseScore <=69){
+                $GradeResponse= "Credit";
+                $ansmsg= 'Credit';
+                $finallyGrade = $baseScore;
+            }elseif($CorrentAnsresult !=0 && $baseScore <= 100){
+                $GradeResponse= "Distinction";
+                $ansmsg= 'Distinction';
+                $finallyGrade = $baseScore;
+            }elseif ($CorrentAnsresult !=0 && $baseScore > 100) {
+                $GradeResponse= "Distinction";
+                $ansmsg= 'Distinction';
+                $finallyGrade = 100;
+            }if(!isset($finallyGrade)){
+                $finallyGrade = 'O';
+                $scores = '0';
+            }
+            $beforeSave = $this->namespacemodel->beforeSave($eid,$id);
+            if (!empty($beforeSave)) {
+                $msg = ". ";
+                echo '<script>alert("You\'ve Already Written This Particular Exam, You Can\'t Re-write This Exam unless You Got The Admin Permission.");
+                    window.location.replace("'.ROOT.'Dashboard/AuthExamination");
+                </script>';
+            }else {
+                // echo"<pre>";
+                // print_r($finallyGrade); 
+                // echo"</pre>";
+                // dnd('');
+                $save= $this->namespacemodel->isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $ansmsg, $id);
+                if ($save) {
+                $data = 
+                    [                     
+                        'page_title'=>'Examination Result',
+                        'ActualScore'=>'<b>'.@$CorrentAnsresult.'</b> Out Of <b>('.$_GET['no'].')</b>',
+                        'DisplayResult'=>'<b>'. $finallyGrade .'</b>%',
+                        'StdIdentity'=>$id,
+                        'FailScore'=>'<b>'.$wrongAns.'</b>',
+                        'Category'=>$Catname1,
+                        'GradeResponse'=>$GradeResponse,
+                        'DepartmentName'=>$CourseName
+                    ];
                 }
-                $beforeSave = $this->namespacemodel->beforeSave($eid,$id);
-                if (!empty($beforeSave)) {
-                    $msg = ". ";
-                    echo '<script>alert("You\'ve Already Written This Particular Exam, You Can\'t Re-write This Exam unless You Got The Admin Permission.");
-                        window.location.replace("'.ROOT.'Dashboard/AuthExamination");
-                    </script>';
-
-                }else {
-                    $save= $this->namespacemodel->isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $GradeResponse, $id);
-                    if ($save) {
-                    $data = 
-                        [                     
-                            'page_title'=>'Examination Result',
-                            'ActualScore'=>'<b>'.@$CorrentAnsresult.'</b> Out Of <b>('.$_GET['no'].')</b>',
-                            'DisplayResult'=>'<b>'. $finallyGrade .'</b>%',
-                            'StdIdentity'=>$id,
-                            'FailScore'=>'<b>'.$wrongAns.'</b>',
-                            'Category'=>$Catname1,
-                            'GradeResponse'=>$GradeResponse,
-                            'DepartmentName'=>$CourseName
-                        ];
-                    }
-                    $this->view("Student/ExamResult", $data);
-                }
+                $this->view("Student/ExamResult", $data);
+            }
         }
     }
   
@@ -1271,153 +1019,6 @@ public function ProcessNewStudentOnline(){
         $this->view('Management/LecturalDashboard/Settings', $data);
     }
 
-    public function StudentRecord(){
-        $this->view('Student/StudentRecord');
-    }
-
-    public function materials(){
-        $this->view('Student/materials');
-
-    }
-    public function BlogNews(){
-        if(!isLoggedInStudent())
-        {
-           echo "<script>
-                    window.location.assign('".ROOT."Student/Login/');
-                </script>";
-        }
-        // Validate Comment from students
-        //Generate a random string. 
-        $token = openssl_random_pseudo_bytes(12);
-        //Convert the binary data into hexadecimal representation.
-        $token = bin2hex($token);
-        $posttime = strtotime(date("Y-m-d h:i:sa"));
-        $response= array(); 
-        if (isset($_POST['BlogPostId']) && isset($_POST['FeedPost'])) {
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            $USERiD = $_SESSION['student__Id'];
-            $data =
-            [
-                'BlogPostId'=>trim(filter_var(strip_tags($_POST['BlogPostId'], FILTER_SANITIZE_STRING))),
-                'FeedPost'=>trim(filter_var(strip_tags($_POST['FeedPost'], FILTER_SANITIZE_STRING))),
-                'UserId'=>$USERiD,
-                'timePosted'=>$posttime 
-            ];
-            if(!empty($data['BlogPostId']) && !empty($data['FeedPost']) && !empty($data['UserId']) && !empty($data['timePosted'])){
-               if($this->namespacemodel->createBlogPost($data)){
-                    header('location:' . ROOT . 'Student/BlogNews'); 
-               };
-                
-            }
-        }
-        if(isset($_POST['_Ctoken']) && isset($_POST['CommentPostUserId']) && isset($_POST['Postid']) && isset($_POST['UserComment'])){
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            $posttime = strtotime(date("Y-m-d h:i:sa"));
-            $data =
-            [   
-                'c_token'=>trim(filter_var(strip_tags($_POST['_Ctoken'], FILTER_SANITIZE_STRING))),
-                'CommentUSERID'=>trim(filter_var(strip_tags($_POST['CommentPostUserId'], FILTER_SANITIZE_STRING))),
-                'Postid'=>trim(filter_var(strip_tags($_POST['Postid'], FILTER_SANITIZE_STRING))),
-                'Comment'=>trim(filter_var(strip_tags($_POST['UserComment'], FILTER_SANITIZE_STRING))),
-                'timePosted'=>$posttime 
-            ];
-            /**
-             * Here You can handle your error validation here.. 
-             * To check if any field is empty or invaid strings provided by the user then throw a the array response variable we've declared up dre.
-             * 
-             * BUT NOTHING because i just choose not to or myabe in my javascript.
-             * 
-             * Check if all that are  not empty
-             */ 
-            if(!empty($data['c_token']) 
-            && !empty($data['CommentUSERID']) 
-            && !empty($data['Postid'])  
-            && !empty($data['Comment'])
-            && !empty($data['timePosted'])  ){
-                if($this->namespacemodel->isStudentComment($data))
-                {
-                    header('location:' . ROOT . 'Student/BlogNews');
-                }else {
-                    echo "<script>alert('Bad');</script>";
-                }
-            }
-        }
-        $lengthPostid = 12;
-        $randvalues= 'XxZzTYKPQsJRVLN1234567890';
-        $numberLength = strlen($randvalues);
-        $randbase = '';
-        for ($i = 0; $i < $lengthPostid; $i++) {
-        $randbase .= $randvalues[rand(0, $numberLength - 1)];
-        }
-
-        $data = 
-            [
-                'title'=>'Student Community Center', 
-                'token'=>$token,
-                'BlogPostid'=>$randbase,
-            ];
-        $this->view('Student/BlogNews', $data);
-    }
-    public function StudentEmail(){
-        $data = 
-            [
-                'title'=>'Student Email Center Dashboard Manager'
-            ];
-        $this->view('Student/StudentEmail', $data);
-    }
-
-
-    public function GenerateIDCard(){
-
-        $this->view('Student/GenerateIDCard');
-    }
-
-    public function noticeboard(){
-        if (isLoggedInLectural() ) {
-            $nin =  $_SESSION['UsenrNin'];
-            $check = $this->userModel->mimi($nin);
-             if($check) {
-                 $array = $check->Base;
-                /**
-                 * Now we've give our department base a variable 'Array'
-                 * We can now check if the department a perfessor signed is more that one
-                 * Php gave us a built in function for that 'strpos'
-                 * So basically this function check if Department or Base has a comma seperator
-                 * Like: 19182012,232342342,2432423
-                 * This case it means professor is been assigne to 3 set of department and the login process will be different
-                 * if it just 89237238239 without a comma then that function sees it as one department which is correct and the login process is straight to Dashboard
-                 * if it more than one department, the Professor will been login but into a Pre- dashboard which he can select the dashboard he/she want to manage
-                 */
-                $searchForValue = ',';
-                 if (strpos($array, $searchForValue) !== false) {
-                    // Here is Multiple department 
-                    $rs = $this->namespacemodel->ArrayFlag($array);
-                    //$vs = $this->namespacemodel->categoryfetch();
-                 }else{
-                    //  Single Department Validation
-                    $_SESSION['csrf'] = $this->RandomToken();
-                    $_SESSION['saltcsrf'] = $this->Salt();
-                    $_SESSION['base'] = $array;
-                }
-                if(iscsrf()){
-                    //echo "<script>alert(1);</script>";
-                }elseif (isLoggedDashboardController()) {
-                   //echo "<script>alert(2);</script>";
-                }
-             }
-            @$data = 
-                [
-                    'page_title'=>'Managament :: Dashboard Control Center',
-                    'base'=>$rs
-                ];
-                $this->view('Management/LecturalDashboard/noticeboard', $data);
-        }else {
-            if (session_status() == PHP_SESSION_ACTIVE) {
-                header('location:' . ROOT . 'Management/Log/');
-            }
-        }
-    }
     function RandomToken($length = 32){
         if(!isset($length) || intval($length) <= 8 ){
             $length = 32;
@@ -1480,10 +1081,6 @@ public function ProcessNewStudentOnline(){
         
     }
 
-    public function HParents(){
-        $this->view('Management/LecturalDashboard/HParents');
-    }
-   
     public function Inbox(){
         if (isset($_GET['tab'])) {
             $id = $_GET['tab'];
@@ -1730,11 +1327,7 @@ public function ProcessNewStudentOnline(){
         echo json_encode($response);
     }
     
-    public function EventBox(){
-
-        $this->view('Student/EventBox');
-    }
-   
+  
     // Creating Session for Admin
     public function createUserSession($data){
         @$last_login = date("Y-m-d H:i:s");
@@ -1766,13 +1359,6 @@ public function ProcessNewStudentOnline(){
             }
     }
 
-    // =========================================================
-    // Creating session for student 
-    // =========================================================
-
-    public function createParentSession($FinalLogin){
-        dnd($FinalLogin);
-    }
    
     // =========================================================
     // Creating session for Lectural on management section
@@ -1802,31 +1388,7 @@ public function ProcessNewStudentOnline(){
         }  
     }
 
-    // ========================================================
-     // Creating session for HR on management section
-    // ========================================================
 
-    public function ManagementHuman_resourcesSession($basename, $activeuserid, $activeusernin, $activeuserRole, $activeuserDirectoryID, $activeuserAccesscode, $activeuserphoto){
-        @$Active_login = date("Y-m-d H:i:s");
-        @$Route = @$this->namespacemodel->lastlogAccountant($Active_login, $activeusernin, $activeuserAccesscode);
-        if($Route ==true){
-            $_SESSION['HRID'] = $activeuserid;
-            $_SESSION['Accesscode'] = $activeuserAccesscode;
-            $_SESSION['Profile__Picture']= $activeuserphoto;
-            $_SESSION['Department_name']= $basename;
-            $_SESSION['start'] = time(); 
-            // Taking now logged in time.
-            // Ending a session in 30 minutes from the starting time.
-            $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
-          echo "<script>
-                    window.location.replace('". ROOT ."Management/LecturalDashboard/index');
-                </script>";
-            return true;
-        }else { 
-            return false;
-        }
-        
-    }
 
     // ======================================================
     // Creating session for staff on management section
@@ -1852,30 +1414,6 @@ public function ProcessNewStudentOnline(){
     }
 
     
-    // =========================================================
-    // Creating session for Accountant on management section
-    // =========================================================
-
-    public function ManagementAccountantSession($basename, $activeuserid, $activeusernin, $activeuserRole, $activeuserDirectoryID, $activeuserAccesscode, $activeuserphoto){
-        @$Active_login = date("Y-m-d H:i:s");
-        @$Route = @$this->namespacemodel->lastlogAccountant($Active_login, $activeusernin, $activeuserAccesscode);
-        if($Route){
-            $_SESSION['AccountantID'] = $activeuserid;
-            $_SESSION['Accesscode'] = $activeuserAccesscode;
-            $_SESSION['Profile__Picture']= $activeuserphoto;
-            $_SESSION['Department_name']= $basename;
-            $_SESSION['start'] = time(); // Taking now logged in time.
-            // Ending a session in 30 minutes from the starting time.
-            $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
-            echo "<script>
-                    window.location.replace('". ROOT ."Management/LecturalDashboard/index');
-                </script>";
-            return true;
-        }else {
-            return false;
-        }
-    }
-
     public function SessionDashboard($baseID){
         $_SESSION['DashboardID'] = $baseID;
         if ($_SESSION['DashboardID']) {
@@ -1962,94 +1500,6 @@ public function LogoutStudent(){
         }	
     }  
 
- 
-    public function HZoom(){
-        @$zoom_meeting = new zoom();
-        @$dataAPi = array();
-        @$dataAPi['topic'] = 'David is inviting you to zoom meeting';
-        @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
-        @$dataAPi['duration'] =60;
-        @$dataAPi['type'] =2;
-        @$dataAPi['password'] = '';
-        try{
-            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-            $data=
-                [
-                    'page_title'=>'Zoom Conference Call',
-                    'Meetingid'=>((isset($response->id))?$response->id: ''),
-                    'uuid'=>((null !== (@$response->uuid))?@$response->uuid:''),
-                    'host_id'=>((null !== (@$response->host_id))?@$response->host_id:''),
-                    'start_url'=>((null !== (@$response->start_url))?@$response->start_url:''),
-                    'join_url'=>((null !== (@$response->join_url))?@$response->join_url:''),
-                    'password'=>((null !== (@$response->password))?@$response->password:''),
-                    'encrypted_password'=>((null !== (@$response->encrypted_password))?@$response->encrypted_password:''),
-                    'created_at'=>((null !== (@$response->created_at))?@$response->created_at:''),
-                    'timezone'=>((null !== (@$response->timezone))?@$response->timezone:''),
-                    'duration'=>((null !== (@$response->duration))?@$response->duration:''),
-                    'start_time'=>@((null !== ($response->start_time))?$response->start_time:''),
-                    'status'=>((null !== (@$response->status))?@$response->status:''),
-                ];
-        }catch(Exception $ex){
-            echo @$ex;
-        }
-         $this->view('Application/HZoom', $data);
-    }
-    public function SetZoom(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $Messageresponse = array();
-        $phpObject = json_decode($jsonString);
-        
-        $FromTime=$phpObject->{'FromTime'};
-        $totime=$phpObject->{'totime'};
-        $Topic=$phpObject->{'inputToPIC'};
-        $meetingId=$phpObject->{'meetingId'};
-        $securitykey=$phpObject->{'securitykey'};
-        $startTime=$phpObject->{'startTime'};
-        $timeZone=$phpObject->{'timeZone'};
-        $mx =new DateTime($startTime);
-        $date1 =  strtotime($FromTime);
-        $date2 =  strtotime($totime);
-
-        $diff = ($date2 - $date1);
-        $Setmin = date("i", $diff);
-        $Sethr = date("h", $diff);
-        if ($Setmin > 50 || $Sethr >01) {
-            $Messageresponse['message']= "You duration can not be more than 1hr. else subscribe for premier";
-        }else {
-            if ($zoom_meeting = new zoom()) {
-                @$dataAPi = array();
-                @$dataAPi['topic'] = $Topic;
-                @$dataAPi['start_time'] = $startTime;
-                @$dataAPi['duration'] =$Setmin;
-                @$dataAPi['type']=2;
-                @$dataAPi['timezone']=$timeZone;
-                @$dataAPi['password'] = $securitykey;
-                $newJsonString = json_encode($phpObject);
-                if($newJsonString){
-                    try{
-                            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-                            $Messageresponse['status'] =  200;
-                        }catch(Exception $ex){
-                            echo @$ex;
-                        }
-                }else {
-                    $Messageresponse['message']= 'Connection Fail.!';
-                }
-            }else {
-                $Messageresponse['message']= 'Check your Internet connection';
-            }
-            
-        }
-        ob_end_clean();
-        echo json_encode($Messageresponse);
-    }
-
     public function Studentgrade(){
         $id= $_SESSION['student__Id'];
         $ft = $this->userModel->Viewstd($id);
@@ -2125,54 +1575,7 @@ public function LogoutStudent(){
         }
         echo json_encode($response);
     }
-    public function MedicalReport(){
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        //You can either use this or json_decode function
-        $phpObject = json_decode($jsonString);
-        $id =  $phpObject->{'id'};
-        $Blood_Type =  $phpObject->{'Blood_Type'};
-        $height =  $phpObject->{'height'};
-        $Weight =  $phpObject->{'Weight'};
-
-        if ($Blood_Type == "") {
-            $response['message']="The  field is required.";
-            $response['status1'] = false;
-        }
-         if ($height == "") {
-            $response['message']="The  field is required.";
-            $response['status2'] = false;
-        }
-         if ($Weight == "") {
-            $response['message']="The  field is required.";
-            $response['status3'] = false;
-        }
-        elseif (!empty($id) && !empty($Blood_Type) && !empty($height) && !empty($Weight) ) {
-            $data = 
-            [
-                'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
-                'Blood_Type'=>trim(filter_var($Blood_Type, FILTER_SANITIZE_STRING)),
-                'height'=>trim(filter_var($height, FILTER_SANITIZE_STRING)),
-                'Weight'=>trim(filter_var($Weight, FILTER_SANITIZE_STRING)),
-            ];
-           if ($this->userModel->isCreateHealthData($data)) {
-                $response['message']= '<b>Congratulation</b> Your School Application Has Successfully Completed Configurations. <b>You can now Login.</b>';
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-
+    
     public function AuthUser(){
         if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
             if (isset($_GET['Search'])) {
@@ -2216,20 +1619,32 @@ public function LogoutStudent(){
         }
     }
 
-    public function ParentDashboard(){
-        $this->view("Parents/ParentDashboard");
-    }
-    public function event(){
+    public function exam($url){
         if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
-            $data =
-            [
-                'page_title'=>'MCU::Calendar',
-            ];
-            $this->view("Student/__event", $data);
+            $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $parts = explode('/', $url);
+            $new_url = $parts[0].'/'.$parts[1].'/'.$parts[2].'/'.$parts[3].'/'.$parts[4].'/'.$parts[5].'/'.$parts[6];
+            $id = $_SESSION['student__Id']; 
+            $eid=strip_tags(trim((string)filter_var($parts[6], FILTER_SANITIZE_STRING), true));
+            if ($this->namespacemodel->beforeSave($eid,$id)) {
+                $msg = ". ";
+                echo '<script>alert("You\'ve Already Written This Particular Exam, You Can\'t Re-write This Exam unless You Got The Admin Permission.");
+                    window.location.replace("'.ROOT.'Dashboard/AuthExamination");
+                </script>';
+            }else {
+                $CountExam = $this->namespacemodel->isCounter($eid);
+                $GetExamTime= $this->namespacemodel->isexamTime($eid);
+                $data=
+                [
+                    'page_title'=>'Exam',
+                    'id'=>$eid,
+                    'iscount'=>$CountExam,
+                    'timestamp'=>$GetExamTime,
+                ];
+            
+                $this->view('Student/exam', $data);
+            }
         }
-    }
-    public function __allEvent(){
-
     }
 }
 

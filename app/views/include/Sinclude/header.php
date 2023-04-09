@@ -53,7 +53,7 @@
         </li>
         <li><a href="<?=ROOT?>Student/Dashboard/?redirect=0"><i class="fa fa-home"></i> <span>Site Home</span></a></li>
         <li><a href="<?=ROOT?>Student/event"><i class="fa fa-table"></i> <span>Calendar</span></a></li>
-        <li><a href="<?=ROOT?>Student/file"><i class="fa fa-file"></i> <span>Private files</span></a></li>
+        <li><a href="<?=ROOT?>Student/AuthExamination"><i class="fa fa-file"></i> <span>Private files</span></a></li>
         <li class="menu-list">
           <a href="javascript:void(0)"><i class="fa fa-graduation-cap"></i>
             <span>Elements <i class="lnr lnr-chevron-right"></i></span></a>

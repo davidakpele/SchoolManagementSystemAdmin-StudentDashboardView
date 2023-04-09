@@ -249,7 +249,7 @@
           <div class="card-text content mt-2">
            No files available
             <div class="footer"><br/>
-            <a href="#">Manage private files...</a>
+            <a href="<?=ROOT?>Student/AuthExamination">Manage private files...</a>
             </div>
           </div>
         </div>
