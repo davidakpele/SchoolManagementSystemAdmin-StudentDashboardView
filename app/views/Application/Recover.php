@@ -70,15 +70,14 @@
             <div class="element">
                 <input type="submit" value="Reset Password"  class="btn btn-xs" onclick="RecoverMaticNo()">
             </div><br />
-        <div class="element">
-            <div class="float-left"></div>
-             <div class="float-right res_link">
-                <a href="<?=ROOT?>Student/Login" class="ulink">Login Portal</a> | 
-                <a href="<?=ROOT?>Application/RetrieveMatricNo" class="ulink">Retrieve Matric No.</a> |  
-                <a href="<?=ROOT?>Parents/ParentsViewStartPage" class="ulink">Parents' Corner</a>
+            <div class="element">
+                <div class="float-left"></div>
+                <div class="float-right res_link">
+                    <a href="<?=ROOT?>Student/Login" class="ulink">Login Portal</a> | 
+                    <a href="<?=ROOT?>Application/RetrieveMatricNo" class="ulink">Retrieve Matric No.</a>
+                </div>
+                <br class="clear" />
             </div>
-            <br class="clear" />
-        </div>
         </form>
     </div>
   <div class="clearfix">

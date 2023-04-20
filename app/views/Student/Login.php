@@ -91,8 +91,7 @@
                     </div>
                     <div class="float-right res_link">
                         <a href="<?=ROOT?>Application/RetrieveMatricNo" class="ulink">Retrieve Matric No.</a> |  
-                        <a href="<?=ROOT?>Application/Recover" class="ulink">Forgot your password?</a> | 
-                        <a href="<?=ROOT?>Parents/ParentsViewStartPage" class="ulink">Parents' Corner</a>
+                        <a href="<?=ROOT?>Application/Recover" class="ulink">Forgot your password?</a> 
                     </div>
                 <br class="clear" />
                 </div>

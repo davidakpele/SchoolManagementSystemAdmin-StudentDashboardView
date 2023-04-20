@@ -615,7 +615,7 @@ Class User {
 	// ============================================================
 
 	public function DTProfressorPhotoURL($Edit__id){
-		$this->DB->query("UPDATE lecturals SET Profile__Picture = '' WHERE Professor__id = :Edit__id");
+		$this->DB->query("UPDATE lecturals SET photo= '' WHERE Professor__id = :Edit__id");
 		$this->DB->bind(':Edit__id', $Edit__id);
 		if($this->DB->execute()){
 			return true;
@@ -893,7 +893,7 @@ Class User {
 	// ============================================================
 
 	public function AddProfessor($data){
-		$this->DB->query('INSERT INTO lecturals(Professor__id, Surname, Middle__name, Othername, Accesscode, Password, Email, featured, Telephone_No, Date_of_Birth, Place__of__birth, Gender, Relationship_sts, Citizenship, NIN, Height, Weight, Blood_Type, Religion, Address, Qualification, Profile__Picture) VALUES (:Professor__id, :Surname, :Middle__name, :Othername, :Accesscode, :Password,  :Email, :featured, :Telephone_No, :Date_of_Birth, :Place__of__birth, :Gender, :Relationship_sts, :Citizenship, :NIN, :Height, :Weight, :Blood_Type, :Religion, :Address, :Qualification,  :Profile__Picture)');
+		$this->DB->query('INSERT INTO lecturals(Professor__id, Surname, Middle__name, Othername, Accesscode, Password, Email, featured, Telephone_No, Date_of_Birth, Place__of__birth, Gender, Relationship_sts, Citizenship, NIN, Height, Weight, Blood_Type, Religion, Address, Qualification, photo) VALUES (:Professor__id, :Surname, :Middle__name, :Othername, :Accesscode, :Password,  :Email, :featured, :Telephone_No, :Date_of_Birth, :Place__of__birth, :Gender, :Relationship_sts, :Citizenship, :NIN, :Height, :Weight, :Blood_Type, :Religion, :Address, :Qualification,  :Profile__Picture)');
 		$this->DB->bind(':Professor__id', $data['Professor__id']);
 		$this->DB->bind(':Surname', $data['Surname']);
 		$this->DB->bind(':Middle__name', $data['Middle__name']);
@@ -1009,7 +1009,7 @@ Class User {
     // ============================================================
 
 	public function LoginAccountant($Accesscode){
-		$this->DB->query("SELECT Surname, Othername, Email, featured, NIN, Accesscode, Profile__Picture, Password FROM (SELECT Surname, Othername, Email, featured, NIN, Profile__Picture, Password, Accesscode as Accesscode FROM human_resources UNION ALL SELECT Surname, Othername,  Email, featured, NIN, Profile__Picture, Password, Accesscode  FROM lecturals) x WHERE Accesscode = :Accesscode ");
+		$this->DB->query("SELECT Surname, Othername, Email, featured, NIN, Accesscode, photo, Password FROM (SELECT Surname, Othername, Email, featured, NIN, photo, Password, Accesscode as Accesscode FROM staff UNION ALL SELECT Surname, Othername,  Email, featured, NIN, photo, Password, Accesscode  FROM lecturals) x WHERE Accesscode = :Accesscode ");
         //Bind the values 
 		$this->DB->bind(':Accesscode', $Accesscode);
 		$runAccountant = $this->DB->single();
@@ -1396,7 +1396,7 @@ Class User {
 	// =========================================================================
  
 	public function EditProfessor($data){
-		$this->DB->query('UPDATE lecturals SET Surname = :Surname, Middle__name =:Middle__name, Othername= :Othername, Accesscode =:Accesscode, Email =:Email, Telephone_No =:Telephone_No, Date_of_Birth=:Date_of_Birth, Place__of__birth=:Place__of__birth, Gender=:Gender, Relationship_sts=:Relationship_sts, Citizenship=:Citizenship, NIN=:NIN, Height=:Height, Weight=:Weight,Blood_Type=:Blood_Type, Religion=:Religion, Qualification=:Qualification, Address=:Address,Profile__Picture = :Profile__Picture WHERE Professor__id = :Professor__id');
+		$this->DB->query('UPDATE lecturals SET Surname = :Surname, Middle__name =:Middle__name, Othername= :Othername, Accesscode =:Accesscode, Email =:Email, Telephone_No =:Telephone_No, Date_of_Birth=:Date_of_Birth, Place__of__birth=:Place__of__birth, Gender=:Gender, Relationship_sts=:Relationship_sts, Citizenship=:Citizenship, NIN=:NIN, Height=:Height, Weight=:Weight,Blood_Type=:Blood_Type, Religion=:Religion, Qualification=:Qualification, Address=:Address,photo = :Profile__Picture WHERE Professor__id = :Professor__id');
 		$this->DB->bind(':Professor__id', $data['Professor__id']);
 		$this->DB->bind(':Surname', $data['Surname']);
 		$this->DB->bind(':Middle__name', $data['Middle__name']);
@@ -1517,17 +1517,6 @@ Class User {
 		}
 	}
 
-	// Fetching admin data from the database from email composer
-	public function SQLProfessorEmailData($ProfessorID){
-		$this->DB->query("SELECT * FROM lecturals WHERE Professor__id = :ProfessorID");
-		$this->DB->bind(':ProfessorID', $ProfessorID);
-		$stmt = $this->DB->single();
-		if ($stmt) {
-			return $stmt;
-		}else {
-			return false;
-		}
-	}
 
 	// Fetching professor data from the database from email composer 
 	public function SqlFetchProfessEmails($mim){

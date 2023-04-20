@@ -1723,42 +1723,9 @@ public function AddNewStudents(){
         
         $this->view('Admin/modal/ProfessorAppointment', $data);
     }
-    public function Emailtoggle(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $SenderEmail =  $_SESSION['adminEmail'] ;
-        $n1 = $_SESSION['adminSurname'];
-        $n2 = $_SESSION['adminothername'];
-        $SenderId = $_SESSION['Admin__id'];
-        $SenderName = $n1 . " " .$n2;
-        $token = openssl_random_pseudo_bytes(50);
-        //Convert the binary data into hexadecimal representation.
-        $token = bin2hex($token);
-         if (isset($_POST['SSD'])) {
-            $ProfessorID = strip_tags(trim(filter_var((int)$_POST['SSD'], FILTER_SANITIZE_STRING)));
-            $stmt = $this->userModel->SQLProfessorEmailData($ProfessorID);
-            if ($stmt) {
-               $RecipicientName =$stmt->Surname.' '.$stmt->Othername;
-               $ToSendMail =$stmt->Email;
-               $RecipicientID =$stmt->Professor__id;
-            }
-         }else {
-             die();
-         }
-        $data =
-        [
-            
-            'ToSendMail'=>$ToSendMail,
-            'RecipicientName'=>$RecipicientName,
-            'RecipicientID'=>$RecipicientID,
-            'SenderiD'=>$SenderId,
-            'SenderEmail'=>$SenderEmail,
-            'SenderName'=>$SenderName,
-            'EmailID'=>$token,
-            'targetID'=>$ProfessorID,
-        ];
-        $this->view('Admin/modal/Emailtoggle', $data);
+    public function color(){
+        $this->view('Admin/modal/ColorSettings');
     }
-
     public function UpdateAppointment(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         header("Access-Control-Allow-Origin: *");

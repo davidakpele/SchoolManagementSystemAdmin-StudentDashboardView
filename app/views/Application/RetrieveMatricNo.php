@@ -109,8 +109,7 @@
             <div class="float-left"></div>
             <div class="float-right res_link">
                 <a href="<?=ROOT?>Student/Login" class="ulink">Login Portal</a> |  
-                <a href="<?=ROOT?>Application/Recover" class="ulink">Forgot your password?</a> | 
-                <a href="<?=ROOT?>Parents/ParentsViewStartPage" class="ulink">Parents' Corner</a></div>
+                <a href="<?=ROOT?>Application/Recover" class="ulink">Forgot your password?</a> 
             <br class="clear" />
         </div>
         </form>

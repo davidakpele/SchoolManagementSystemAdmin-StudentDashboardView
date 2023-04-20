@@ -95,7 +95,7 @@
 										<th>User Permit</th>
 										<th>AccessCode</th>
 										<th>Name</th>
-										<th>Email</th>
+										<th>Gender</th>
 										<th>Image</th>
 										<th>Actions</th>
 									</tr>
@@ -121,9 +121,7 @@
 										</td>
 										<td class="left"><?=$presult['Accesscode']?></td>
 										<td><?=$presult['Surname'].' '. $presult['Othername']?></td>
-										<td>
-											<button style="content:"\a";white-space: pre;" type="button" onclick="EmailComposerBox(<?=$SSD?>)" class="btn btn-primary btn-xs" id="myBtn" title="Compose Email & Send" data-toggle="modal" data-target="#modalForm">Send Email <i class="fa fa-envelope-square"></i></button>
-										</td>
+										<td><?=$presult['Gender'];?></td>
 										<td class="left">
 											<?php if($presult['photo'] != ''):  ?>
 												<img src="<?=PATHROOT.$presult['photo']?>" class="rounded img-thumbnail" alt="<?=$presult['Surname'].' '.$presult['Othername']?>" style="width:40px; height:40.7px">
@@ -134,7 +132,7 @@
 										<td >
 											<a href="<?=ROOT?>Admin/edit/<?=$SSD?>" class="btn btn-sm btn-primary btn-flat" title="Edit Professor Profile">Edit&nbsp;<i class="fa fa-edit"></i></a>&nbsp;&nbsp;
 											<button type="button" class="btn btn-success btn-sm btn-flat" onclick="___SubmitAppointment(<?=$SSD;?>)" title="Appoint Professor To Certain Department">Appoint&nbsp;<i class="fa fa-calendar"></i></button>
-											<button type="button" class="btn btn-sm btn-danger" onClick="juioDT(<?=$SSD?>);"title="Delete a Professor"><i class="fa fa-trash"></i></button>
+											<button type="button" class="btn btn-sm btn-danger" onClick="juioDT(<?=$SSD?>);"title="Delete a Professor">Delete<i class="fa fa-trash"></i></button>
 										</td>
 									</tr>
 									<?php endforeach?>

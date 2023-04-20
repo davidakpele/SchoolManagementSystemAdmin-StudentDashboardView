@@ -547,38 +547,6 @@
             });
         });
 
-        function EmailComposerBox(SSD) {
-            let data = {
-                "SSD": SSD
-            };
-            jQuery.ajax({
-                url: base_url+'Admin/Emailtoggle',
-                method: "POST",
-                data: data,
-                crossDomain: true,
-                dataType: 'html',
-                crossOrigin: true,
-                async: true,
-                cache: false,
-                processData: true,
-                headers: {
-                    'Access-Control-Allow-Methods': '*',
-                    "Access-Control-Allow-Credentials": true,
-                    "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                    "Access-Control-Allow-Origin": "*",
-                    "Control-Allow-Origin": "*",
-                    "cache-control": "no-cache"
-                },
-                success: (data) => {
-                    $('body').append(data);
-                    $('#EmailComposermodalForm').modal('show');
-                },
-                error: () => {
-                    alert("Something went wrong..!");
-                }
-            });
-        }
-
         function ___SubmitAppointment(SSD) {
             let data = {"SSD": SSD};
             jQuery.ajax({
