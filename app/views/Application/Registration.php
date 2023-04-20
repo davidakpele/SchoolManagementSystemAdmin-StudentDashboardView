@@ -1,6 +1,4 @@
-<?php $this->view("include/LogandReg",$data);
-include_once 'include.file/migrate.php';
-?>
+<?php $this->view("include/LogandReg",$data);?>
  <body>
     <div id="head">
         <div class="container">
@@ -13,103 +11,12 @@ include_once 'include.file/migrate.php';
     </div>
     <!--- Start Body -->
 <div class="container reg__container">
- <p class="fs-4 fw-bold m-0 mt-4 h3 text-center Reg__header" style="font-size:24px"><?=((isset($_SESSION['api']))?'Student Parent Registration Form': 'Student Registration Form')?></p>
+ <p class="fs-4 fw-bold m-0 mt-4 h3 text-center Reg__header" style="font-size:24px">Student Registration Form</p>
     <div class="container" style="margin-top:10px;background:#FFF; border-radius: 5px; max-width:1500px; margin:0 auto;padding: 25px;" id="App1">
         <div class="row"> 
-        <?php if (isset($_SESSION['api'])) {?> 
-            <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> 
-                <p>Do you have Both Parent? </p>
-                <p style="text-transform: uppercase;font-style: italic;font-weight:bold;">Only one of your parents details is requested. </p>
-                <select class="form-control">
-                    <option selected="selected" readonly>Select Parent</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                </select>
-                <div id="messagediv" class="success success-ico" style="display:none"></div>
-                <div id="error" class="error error-ico" style="display:none"></div>
-                <div id="check" class="Father box">
-                    <form method="POST" class="form-group" autocomplete="off" id="Fatherinfo" action="javascript:void(0)"/>
-                        <input type="text" id="fid" name="Pid" class="form-control" value="<?=$data['pid']?>" style="display:none" />
-                        <input type="text" id="ChildId" value="<?=((isset($_SESSION['userID']))?$_SESSION['userID']:'')?>" style="display:none;"/>
-                        <input type="text" name="gender" id="gender" value="Male" style="display:none;"/>
-                        <div class="col-md-6">
-                            <label for="Father__first__name">Father's First Name:</label>
-                            <input type="text" class="form-control" id="Father__first__name" value="" placeholder="Father's Surname"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__last__name">Father's Last Name:</label>
-                            <input type="text" class="form-control" id="Father__last__name" value="" placeholder="Father's Othername"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__last__name">Father's Email Addres:</label>
-                            <input type="email" class="form-control" id="Father__email__address" value="" placeholder="Dad@gmail.com"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__tel">Father's Mobile Nunber:</label>
-                            <input type="tel" class="form-control" id="mobile" value="" placeholder=""/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__DOB">Father's Date of Birth:</label>
-                            <input type="date" class="form-control" id="Father__DOB" value=""/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__address">Father's House Addres:</label>
-                            <input type="text" class="form-control" id="Father__address" value="" placeholder="plot 58, House 20"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Father__profile__photo">Father's Photo:</label>
-                            <input type="file" class="form-control" id="Father__profile__photo" />
-                        </div>
-                         <div class="col-sm-12 col-md-12 col-xs-12  col-gray-dark">
-                            <button class="btn btn-primary submit_btn" value="Submit" type="submit">Submit Father(s) Details</button>
-                        </div>
-                    </form>
-                </div>
-                <div id="check" class="Mother box">
-                    <form method="POST" class="form-group" autocomplete="off" id="Motherinfo" action="javascript:void(0)"/>
-                       <input type="text" id="mid" class="form-control" value="<?=$data['pid']?>" style="display:none" />
-                        <input type="text" id="ChildId" value="<?=((isset($_SESSION['userID']))?$_SESSION['userID']:'')?>" style="display:none;"/>
-                        <input type="text" name="gender" id="mgender" value="Female" style="display:none;"/>
-                        <div class="col-md-6">
-                            <label for="Mother__first__name">Mother's First Name:</label>
-                            <input type="text" class="form-control" id="Mother__first__name" value="" placeholder="Mother's Surname"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__last__name">Mother's Last Name:</label>
-                            <input type="text" class="form-control" id="Mother__last__name" value="" placeholder="Mother's Othername"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__email__address">Mother's Email Addres:</label>
-                            <input type="email" class="form-control" id="Mother__email__address" value="" placeholder="Dad@gmail.com"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__tel">Mother's Mobile Nunber:</label>
-                            <input type="tel" class="form-control" id="mobile_no" value="" placeholder=""/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__DOB">Mother's Date of Birth:</label>
-                            <input type="date" class="form-control" id="Mother__DOB" value=""/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__address">Mother's House Addres:</label>
-                            <input type="text" class="form-control" id="Mother__address" value="" placeholder="plot 58, House 20"/>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Mother__profile__photo">Mother's Photo:</label>
-                            <input type="file" class="form-control" id="Mother__profile__photo" />
-                        </div>
-                         <div class="col-sm-12 col-md-12 col-xs-12  col-gray-dark">
-                            <button class="btn btn-primary submit_btn" value="Submit" type="submit" >Submit Mother(s) Details</button>
-                        </div>
-                    </form>
-                </div>         
-            </div>
-         <?php } elseif (!isset($_SESSION['api'])) {?>
             <div id="error" class="error error-ico" style="display:none"></div>
             <div id="messagediv" class="success success-ico" style="display:none"></div>
             <form method="POST" class="form-group" autocomplete="off" id="AppRegistration" action="javascript:void(0)">
-                <input type="text" id="___NewStudentIdNo" name="student__id" class="form-control" value="<?=$Studentid;?>" style="display:none" />
-                <input type="text" name="RollNo" id="EnrollmentNumber" value="<?=$randomNumber;?>" style="display:none;"/>
                 <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0 "> 
                     <div class="col-md-4">
                         <label for="Application Type">Application Type:</label>
@@ -199,7 +106,6 @@ include_once 'include.file/migrate.php';
                     </div>
                 </div>
             </form>
-        <?php }?>
         </div>
     </div>
 </div>

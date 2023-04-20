@@ -10,84 +10,164 @@ function validInput(e) {
     return false;
   }
   return true;
-}
+} 
 //please dont mess with the code here
 $(document).ready(function($) {
-    $("#Application__Type").change(function () {
-        let ___ApplicationType = $("#Application__Type").val();
-        const JavascriptHook = {
-            "DataId": ___ApplicationType
-        };
-        let StringData = JSON.stringify(JavascriptHook);
-        const Url = base_url+'PageController/Render'; // the url where we want to POST
-        $.ajax({
-            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            dataType: 'JSON', //the type of data we are sending is json
-            contentType: "application/json; charset=utf-8",
-            data: StringData, // our data object
-            url: Url, //the post destination
-            processData: false, //false because the preprocessor are not trigger
-            encode: true, //turn on json encoding
-            crossOrigin: true, // true because we are sending data with ajax as json format to php
-            async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
-            crossDomain: true, //just in case we host the site
-            headers: {
-                'Access-Control-Allow-Methods': '*',
-                "Access-Control-Allow-Credentials": true,
-                "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                "Access-Control-Allow-Origin": "*",
-                "Control-Allow-Origin": "*",
-                "cache-control": "no-cache",
-                'Content-Type': 'application/json'
-            },
-        }).done(function(response) {
+     $("#Application__Type").change(function () {
+         let ___ApplicationType = $("#Application__Type").val();
+         if (___ApplicationType == "") {
+             $('#Faculty__Type').empty();
+             $('#Department__Type').empty();
+             $('#Program').empty();
+             $('#StartClass').empty();
+             return false;
+         }
+         xl1 = [{
+                 'parentChild': '100 Level'
+             },
+             {
+                 'parentChild': '200 Level (DIRECT ENTRY)'
+             },
+         ];
+
+         var entryplug = '<div class="EntryDevchild"><label for="Entry Level">Entry Level:</label><select class="form-control" name="Entrylevel" id="EtyLevel" ></select></div>';
+         if (___ApplicationType == 1) {
+             $(".EntryDevchild").remove();
+             $(".EntryDevparent").append(entryplug);
+             $('#EtyLevel').empty();
+             classid = '1';
+             xl1.forEach(function (element) {
+                 $('#EtyLevel').append('<option value="' + element.parentChild + '">' + element.parentChild + '</option>')
+             });
+         } else if (___ApplicationType == 3) {
+             $(".EntryDevchild").remove();
+             $(".EntryDevparent").append(entryplug);
+             $('#EtyLevel').empty();
+             classid = '1';
+             xl1.forEach(function (element) {
+                 $('#EtyLevel').append('<option value="' + element.parentChild + '">' + element.parentChild + '</option>')
+             });
+         } else {
+             classid = '';
+             $(".EntryDevchild").remove();
+             $("#EtyLevel").val('');
+         }
+         const JavascriptHook = {
+             "DataId": ___ApplicationType
+         };
+         let StringData = JSON.stringify(JavascriptHook);
+         const p_url = base_url + 'ApisController/RenderProgram';
+         const c_url = base_url + 'ApisController/RenderClass';
+         const Url = base_url + 'ApisController/RenderFaculty';
+         // the url where we want to POST
+         $.ajax({
+             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+             dataType: 'JSON', //the type of data we are sending is json
+             contentType: "application/json; charset=utf-8",
+             data: StringData, // our data object
+             url: Url, //the post destination
+             processData: false, //false because the preprocessor are not trigger
+             encode: true, //turn on json encoding
+             crossOrigin: true, // true because we are sending data with ajax as json format to php
+             async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
+             crossDomain: true, //just in case we host the site
+             headers: {
+                 'Access-Control-Allow-Methods': '*',
+                 "Access-Control-Allow-Credentials": true,
+                 "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                 "Access-Control-Allow-Origin": "*",
+                 "Control-Allow-Origin": "*",
+                 "cache-control": "no-cache",
+                 'Content-Type': 'application/json'
+             },
+         }).done(function (response) {
             Responed = response.result;
             $('#Faculty__Type').empty();
-            Responed.forEach(function(CallRecieve) {
-                $('#Faculty__Type').append('<option value="' + CallRecieve.FacultyID + '">' + CallRecieve.FacultyName + '</option>')
-            });
-        }).fail((xhr, status, error) => {
-            console.log('Oops...', 'Something went wrong with ajax !', 'error');
-        });
-    });
+            $('#Department__Type').empty();
+            $('#Program').empty();
+            $('#Faculty__Type').append('<option value="">Choose Faculty</option>')
+            $('#Department__Type').append('<option value="">Select Any Faculty First</option>')
+             Responed.forEach(function (CallRecieve) {
+                 $('#Faculty__Type').append('<option value="' + CallRecieve.FacultyID + '">' + CallRecieve.FacultyName + '</option>')
+             });
+             // Program class
+             $.ajax({
+                 type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+                 dataType: 'JSON', //the type of data we are sending is json
+                 contentType: "application/json; charset=utf-8",
+                 data: StringData, // our data object
+                 url: p_url, //the post destination
+                 processData: false, //false because the preprocessor are not trigger
+                 encode: true, //turn on json encoding
+                 crossOrigin: true, // true because we are sending data with ajax as json format to php
+                 async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
+                 crossDomain: true, //just in case we host the site
+                 headers: {
+                     'Access-Control-Allow-Methods': '*',
+                     "Access-Control-Allow-Credentials": true,
+                     "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                     "Access-Control-Allow-Origin": "*",
+                     "Control-Allow-Origin": "*",
+                     "cache-control": "no-cache",
+                     'Content-Type': 'application/json'
+                 },
+             }).done(function (response) {
+                 Rprogram = response.result;
+                 Rprogram.forEach(function (result) {
+                     $('#Program').append('<option value="' + result.Program__name + '">' + result.Program__name + '</option>')
+                 });
+             }).fail((xhr, status, error) => {
+                 console.log('Oops...', 'Something went wrong with ajax !', 'error');
+             });
+         }).fail((xhr, status, error) => {
+             console.log('Oops...', 'Something went wrong with ajax !', 'error');
+         });
+     });
 });    
 $(document).ready(function($) {
-    $("#Faculty__Type").change(function () {
+     $("#Faculty__Type").change(function () {
         let ___FacultyType = $("#Faculty__Type").val();
-        const Data = {"DataId": ___FacultyType};
-        let StringData = JSON.stringify(Data);
-        const Url = base_url+'PageController/RenderRequirementData'; // the url where we want to POST
-        $.ajax({
-            type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-            dataType: 'JSON', //the type of data we are sending is json
-            contentType: "application/json; charset=utf-8",
-            data: StringData, // our data object
-            url: Url, //the post destination
-            processData: false, //false because the preprocessor are not trigger
-            encode: true, //turn on json encoding
-            crossOrigin: true, // true because we are sending data with ajax as json format to php
-            async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
-            crossDomain: true, //just in case we host the site
-            headers: {
-                'Access-Control-Allow-Methods': '*',
-                "Access-Control-Allow-Credentials": true,
-                "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                "Access-Control-Allow-Origin": "*",
-                "Control-Allow-Origin": "*",
-                "cache-control": "no-cache",
-                'Content-Type': 'application/json'
-            },
-        }).done(function(response) {
+        if (___FacultyType == "") {
+            $('#Department__Type').empty();
+            $('#Department__Type').append('<option value="">Select Any Faculty First</option>')
+            return false;
+        }
+         const JavascriptHook = {
+             "DataId": ___FacultyType
+         };
+         let StringData = JSON.stringify(JavascriptHook);
+         const Url = base_url + 'ApisController/fetchDepartment'; // the url where we want to POST
+         $.ajax({
+             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
+             dataType: 'JSON', //the type of data we are sending is json
+             contentType: "application/json; charset=utf-8",
+             data: StringData, // our data object
+             url: Url, //the post destination
+             processData: false, //false because the preprocessor are not trigger
+             encode: true, //turn on json encoding
+             crossOrigin: true, // true because we are sending data with ajax as json format to php
+             async: true, //because we are expecting long data so we set the whole data  Asynchronous with means configuring our Ajax code
+             crossDomain: true, //just in case we host the site
+             headers: {
+                 'Access-Control-Allow-Methods': '*',
+                 "Access-Control-Allow-Credentials": true,
+                 "Access-Control-Allow-Headers": "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
+                 "Access-Control-Allow-Origin": "*",
+                 "Control-Allow-Origin": "*",
+                 "cache-control": "no-cache",
+                 'Content-Type': 'application/json'
+             },
+         }).done(function (response) {
             Responed = response.result;
             $('#Department__Type').empty();
-            Responed.forEach(function(CallRecieve) {
-                $('#Department__Type').append('<option value="' + CallRecieve
-                    .Child_id + '">' + CallRecieve.Child_name + '</option>')
+            $('#Department__Type').append('<option value="">Choose Department</option>')
+            Responed.forEach(function (CallRecieve) {
+                $('#Department__Type').append('<option value="' + CallRecieve.DepartmentID + '">' + CallRecieve.DepartmentName + '</option>')
             });
-        }).fail((xhr, status, error) => {
-            console.log('Oops...', 'Something went wrong with ajax !', 'error');
-        });
-    });
+         }).fail((xhr, status, error) => {
+             console.log('Oops...', 'Something went wrong with ajax !', 'error');
+         });
+     });
 });    
 $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
         return {
@@ -310,30 +390,30 @@ $(document).ready(function() {
 // Validate add student data
 $(document).ready(($) => {
     //hide messages
+    var classid;
+    var sess;
     $("#error").hide();
     $("#messagediv").hide();
     $("#addstudent").show();
     //on submit
     $('#addstudent').submit((e) => {
+        
+        let App = $("#Application__Type").val();
+        if (App == 1) {
+            classid = '1';
+            sess = '1';
+        } else if (App == 3) {
+            classid = '1';
+            sess = '1';
+        } else {
+            classid = '';
+            sess = '';
+        }
         e.preventDefault();
         $("#error").hide();
         $("#messagediv").hide();
         //validate the  now
-        let StudentIdNo = $("#id").val();
-        if (StudentIdNo == "") {
-            $("#error").show().html("&nbsp; &nbsp;Sorry...! Your ID Number Fail To Generate.");
-            $("#id").addClass('invalid');
-            $("#id").focus();
-            return false;
-        }
-        let EnrollmentNo = $("#EnrollmentNumber").val();
-        if (EnrollmentNo == "") {
-            $("#error").show().html("&nbsp; &nbsp; Sorry...! Your Enrollment Number Fail To Generate.");
-            $("#EnrollmentNumber").addClass('invalid');
-            $("#EnrollmentNumber").focus();
-            return false;
-        }
-        let App = $("select#Application__Type").val();
+        
         if (App == "") {
             $("#error").show().html("&nbsp; &nbsp;Select Student Application Type.");
             $("#Application__Type").addClass('invalid');
@@ -342,14 +422,22 @@ $(document).ready(($) => {
         }else {
             $("#Application__Type").removeClass('invalid');
         }
-        let Dpt = $("select#Department__Type").val();
-        if (Dpt == "") {
-            $("#error").show().html("&nbsp; &nbsp;Select Student Course Type.");
-            $(".Gline").addClass('invalid');
-            $("select#Department__Type").focus();
+        let Fac = $("select#Faculty__Type").val();
+        if (Fac == "") {
+            $("#error").fadeIn().html("&nbsp; &nbsp;Select Your Prefere Faculty.");
+            $("select#Faculty__Type").focus();
             return false;
         }else {
-            $("#Department__Type").removeClass('invalid');
+            $("#Application__Type").removeClass('invalid');
+        }
+        let Dpt = $("select#Department__Type").val();
+        if (Dpt == "") {
+            $("#error").show().html("&nbsp; &nbsp;Select Student Department Type.");
+            $(".Depty").addClass('invalid');
+            $(".Depty").focus();
+            return false;
+        }else {
+            $(".Depty").removeClass('invalid');
         }
         let Prg = $("select#Program").val();
         if (Prg == "") {
@@ -417,11 +505,11 @@ $(document).ready(($) => {
         let Gn = $("#gender").val();
         if (Gn == "") {
             $("#error").show().html("&nbsp; &nbsp;Please Select Student Gender.");
-            $("#gender").addClass('invalid');
-            $("#gender").focus();
+            $(".Gender").addClass('invalid');
+            $(".Gender").focus();
             return false;
         }else {
-            $("#gender").removeClass('invalid');
+            $(".Gender").removeClass('invalid');
         }
         let email = $("#email").val();
         if (email == "") {
@@ -455,96 +543,8 @@ $(document).ready(($) => {
         }else {
             $("#mobile").removeClass('invalid');
         }
-        let sec = $("#session").val();
-        if (sec == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Student Year Of Entry.");
-            $("#session").addClass('invalid');
-            $("#session").focus();
-            return false;
-        }else {
-            $("#session").removeClass('invalid');
-        }
-        let guidence = $(".Gline").val();
-        if (guidence == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Student Guidence.");
-            $(".Gline").addClass('invalid');
-            $(".Gline").focus();
-            return false;
-        }else {
-            $("#Gline").removeClass('invalid');
-        }
-        let guidanceID = $("#guidanceID").val();
-        if (guidanceID == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Provide Guidence ID is Empty.");
-            $("#guidanceID").addClass('invalid');
-            $("#guidanceID").focus();
-            return false;
-        }else {
-            $("#guidanceID").removeClass('invalid');
-        }
-        let who = $("#who").val();
-        if (who == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Provide Guidence.");
-            $("#who").addClass('invalid');
-            $("#who").focus();
-            return false;
-        }else {
-            $("#who").removeClass('invalid');
-        }
-        let GSurname = $("#GSurname").val();
-        if (GSurname == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Surname.");
-            $("#GSurname").addClass('invalid');
-            $("#GSurname").focus();
-            return false;
-        }else {
-            $("#GSurname").removeClass('invalid');
-        }
-        let GLastname = $("#GLastname").val();
-        if (GLastname == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Lastname.");
-            $("#GLastname").addClass('invalid');
-            $("#GLastname").focus();
-            return false;
-        }else {
-            $("#GLastname").removeClass('invalid');
-        }
-        let GEmail = $("#GEmail").val();
-        if (GEmail == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Emaill Address.");
-            $("#GEmail").addClass('invalid');
-            $("#GEmail").focus();
-            return false;
-        }else {
-            $("#GEmail").removeClass('invalid');
-        }
-        let Gmobile = $("#Gmobile").val();
-        if (Gmobile == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Mobile Number.");
-            $("#Gmobile").addClass('invalid');
-            $("#Gmobile").focus();
-            return false;
-        }else {
-            $("#Gmobile").removeClass('invalid');
-        }
-        let GDOB = $("#GDOB").val();
-        if (GDOB == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Date of Birth.");
-            $("#GDOB").addClass('invalid');
-            $("#GDOB").focus();
-            return false;
-        }else {
-            $("#GDOB").removeClass('invalid');
-        }
-        let GAddress = $("#GAddress").val();
-        if (GAddress == "") {
-            $("#error").show().html("&nbsp; &nbsp;Please Enter Guidence Home / Office Address.");
-            $("#GAddress").addClass('invalid');
-            $("#GAddress").focus();
-            return false;
-        }else {
-            $("#GAddress").removeClass('invalid');
-        }
+        
+        
          const HMACSHA256 = (stringToSign, secret) => "not_implemented";
         // The header typically consists of two parts: 
         // the type of the token, which is JWT, and the signing algorithm being used, 
@@ -570,12 +570,13 @@ $(document).ready(($) => {
         
         const Plug = {
             "JwtApi": jwt,
-            "NewStudentId": StudentIdNo,
-            "EnrollmentNumber": EnrollmentNo,
             "Application": App,
+            "Faculty": Fac,
             "Program": Prg,
             "Department": Dpt,
             "Entry Level": Ety,
+            'classid': classid,
+            'semester': sess,
             "National Identification Number": Nin,
             "Othername": othername,
             "Surname": su,
@@ -583,17 +584,7 @@ $(document).ready(($) => {
             "Date of birth": Dob,
             "Relationship Status": rel,
             "Student Email": email,
-            "Session": sec,
             "Telephone Number": tel,
-            //Guidiance
-            "guidanceID":guidanceID,
-            "who": who,
-            "GSurname": GSurname,
-            "GLastname": GLastname,
-            "GEmail": GEmail,
-            "Gmobile": Gmobile,
-            "GDOB": GDOB,
-            "GAddress":GAddress
         };
         let RouteUserDateToPhp = JSON.stringify(Plug);
         $.ajax({
@@ -618,24 +609,25 @@ $(document).ready(($) => {
             },
         }).then((response) => {
             if (response.status == 505) {
-                $("#error").show().text(response.message);
+                $("#error").show().html("&nbsp; &nbsp;"+response.message);
                 $('#email').focus();
                 return false;
-            } else if (response.status == 3) {
+            } else if (response.status == 200) {
                 Swal('Success', response.Successmessage, 'success');
-                 let delay = 2000;
+                let delay = 5000;
                 setTimeout(() => {
                     window.location.replace(base_url+'Admin/Students/');
                 }, delay);
             }
             else {
-                $("#error").show().text(response.message);
+                $("#error").show().html("&nbsp; &nbsp;"+response.message);
             }
         }).fail((xhr, error) => {
-            $("#error").show().text('Oops...Server is down! error');
+            $("#error").show().html('Oops...Server is down! error');
         });
     });
- });
+});
+ //can be use in another project.. 
 $(document).ready(function() {
     $(".Gline").change(function() {
 		let element = document.getElementById('guidanceform');

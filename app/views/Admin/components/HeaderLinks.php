@@ -29,4 +29,3 @@
 			<!-- /texarea editor; -->
 			<!-- Custom CSS -->
 			<link rel="stylesheet" href="<?=ASSETS?>admin/assets/dist/css/mystyle.css">
-			<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">

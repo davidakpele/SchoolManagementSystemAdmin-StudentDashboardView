@@ -115,13 +115,8 @@
 											?>
 										<th><input type="checkbox" id="dataX" class="checkboxid" name="checkuser[]" value="<?=$SSD?>" /></th>
 										<td class="left" style="font-size: 11px;">
-											<a href="<?=ROOT . "Admin/Professors?featured=".(($presult['featured'] == 0)?'1' : '0')?>&Professor__id=<?=$presult['Professor__id'];?>"
-												class="btn btn-<?=(($presult['featured'] ==1)?'default':'danger')?> btn-xs"
-												title="Grant Professor Access To Account">
-												<i
-													class="fa fa-<?=(($presult['featured'] ==1)?'minus':'plus')?>"></i>
-												&nbsp
-												<?=(($presult['featured'] == 1)? 'Access Granted': 'Account Disabled')?>
+											<a href="<?=ROOT . "Admin/Professors?featured=".(($presult['featured'] == 0)?'1' : '0')?>&Professor__id=<?=$presult['Professor__id'];?>" class="btn btn-<?=(($presult['featured'] ==1)?'default':'danger')?> btn-xs" title="Grant Professor Access To Account">
+												<i class="fa fa-<?=(($presult['featured'] ==1)?'minus':'plus')?>"></i>&nbsp<?=(($presult['featured'] == 1)? 'Access Granted': 'Account Disabled')?>
 											</a>
 										</td>
 										<td class="left"><?=$presult['Accesscode']?></td>

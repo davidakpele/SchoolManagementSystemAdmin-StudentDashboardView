@@ -82,6 +82,7 @@ Class ApisController extends Controller {
                 if ($___ApplicationType ==   1 || $___ApplicationType == 2 || $___ApplicationType ==   3) {
                     $crf= $this->model->selectSublistRequirementView($___ApplicationType);
                     if ($crf) {
+                        dnd($crf);
                         $response['Status'] = '2001'; 
                         $response['result'] = $crf;
                     }else {

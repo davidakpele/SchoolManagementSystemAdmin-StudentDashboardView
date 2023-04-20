@@ -48,12 +48,6 @@
                             Students
                     </a>
                 </li>
-                <li class="">
-                    <a href="<?=ROOT?>Admin/Parents">
-                        <i class="fa fa-bars"></i>
-                            Parents
-                    </a>
-                </li>
             </ul>
         </li>
         <li class="treeview ">
@@ -101,6 +95,39 @@
                 </li>
             </ul>
         </li>
+        <li class="treeview ">
+            <a href="#"><i class="fa fa-book"></i> <span>Manage Exam</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li class="">
+                    <a href="<?=ROOT.'Admin/exam'?>">
+                        <i class="fa fa-bars"></i>
+                        Exam Settings
+                    </a>
+                </li>
+                <li class="">
+                    <a href="<?=ROOT.'Admin/Students/'?>">
+                        <i class="fa fa-bars"></i>
+                        Student Records
+                    </a>
+                </li>
+                <li class="">
+                    <a href="<?=ROOT.'Admin/performance'?>">
+                        <i class="fa fa-bars"></i>
+                        Student Performance
+                    </a>
+                </li>
+                <li class="">
+                    <a href="<?=ROOT.'Admin/payment_record'?>">
+                        <i class="fa fa-bars"></i>
+                        Student Payment Records
+                    </a>
+                </li>
+            </ul>
+        </li>
             <li class="header">ADMINISTRATOR</li>
                 <li class="">
                     <a href="<?=ROOT?>Admin/users" rel="noopener noreferrer">
@@ -108,7 +135,7 @@
                     </a>
                 </li>
                 <li class="">
-                    <a href="<?=ROOT?>Admnin/settings" rel="noopener noreferrer">
+                    <a href="<?=ROOT?>Admin/settings" rel="noopener noreferrer">
                         <i class="fa fa-cogs"></i> <span>Settings</span>
                     </a>
                 </li>

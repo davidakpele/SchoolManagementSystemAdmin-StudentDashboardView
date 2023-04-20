@@ -6,7 +6,7 @@ Class User {
 	 */
 
 	private $DB;
-	public function __construct(){
+	public function __construct(){ 
 		$this->DB = new Database;
 	}
 
@@ -22,10 +22,7 @@ Class User {
 	}
 	
 	public function OnlineStudent($depid, $clasid, $semid){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, 
-		student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active,
-		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
-		 FROM student, studentapp WHERE studentapp.Department_id =:depid AND studentapp.Class=:clasid AND studentapp.semester=:semid AND student.onlinestatus ="1" ORDER BY student.Surname DESC');
+		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp WHERE studentapp.Department_id =:depid AND studentapp.Class=:clasid AND studentapp.semester=:semid AND student.onlinestatus ="1" ORDER BY student.Surname DESC');
 		$this->DB->bind('depid', $depid);
 		$this->DB->bind('clasid', $clasid);
 		$this->DB->bind('semid', $semid);
@@ -38,14 +35,7 @@ Class User {
 	}
 
 	public function getviewresult($eid, $id){
-		$this->DB->query("SELECT monitor.examid, monitor.correctQuest, monitor.failQuest, monitor.defaultmark, monitor.score, monitor.grade,
-						monitor.studentid, e_timeset.eid, e_timeset.Department, e_timeset.Classes, e_timeset.Semester, e_timeset.Course,
-						courses.CourseCode, courses.CourseUnit, courses.CourseStatus, courses.CourseTitle 
-						FROM monitor, courses, e_timeset 
-						WHERE monitor.examid=:eid 
-						AND e_timeset.eid=monitor.examid
-						AND e_timeset.Course=courses.CourseCode
-						AND monitor.studentid=:id");
+		$this->DB->query("SELECT monitor.examid, monitor.correctQuest, monitor.failQuest, monitor.defaultmark, monitor.score, monitor.grade, monitor.studentid, e_timeset.eid, e_timeset.Department, e_timeset.Classes, e_timeset.Semester, e_timeset.Course, courses.CourseCode, courses.CourseUnit, courses.CourseStatus, courses.CourseTitle FROM monitor, courses, e_timeset WHERE monitor.examid=:eid AND e_timeset.eid=monitor.examid AND e_timeset.Course=courses.CourseCode AND monitor.studentid=:id");
 		$this->DB->bind(':eid', $eid);
 		$this->DB->bind(':id', $id);
 		$stmt = $this->DB->single();
@@ -147,25 +137,7 @@ Class User {
 			return false;
 		}
 	}
-	public function ParentDataCount(){
-		$this->DB->query("SELECT * FROM parent");
-		$stmt = $this->DB->rowCount();
-		if (!empty($stmt)){
-			return $stmt;
-		}else {
-			return false;
-		}
-	}
 
-	public function ParentSQL(){
-		$this->DB->query("SELECT * FROM parent");
-		$stmt = $this->DB->resultSet();
-		if (!empty($stmt)){
-			return $stmt;
-		}else {
-			return false;
-		}
-	}
 
 	public function fetchCourses(){
 		$this->DB->query("SELECT * FROM courses");
@@ -229,16 +201,7 @@ Class User {
 			return false;
 		}
 	}
-	public function SQLParent($id){
-		$this->DB->query("SELECT * FROM parent WHERE Parent___id =:id");
-		$this->DB->bind(':id', $id);
-		$stmt = $this->DB->single();
-		if (!empty($stmt)){
-			return $stmt;
-		}else {
-			return false;
-		}
-	}
+
 
 	public function SQLSemester($id){
 		$this->DB->query("SELECT * FROM semester WHERE ClassID =:id");
@@ -298,8 +261,7 @@ Class User {
 	}
 	
 	public function AddnewUser($data){
-		$this->DB->query('INSERT INTO users (Admin__id, Surname, Othername, Email, username, password, Gender, Mobile, Date_of_birth, Create_on, Role)
-						VALUES(:id, :Surname, :Othername, :email, :username, :password, :gender, :mobile, :DOB, NOW(), :assign)');
+		$this->DB->query('INSERT INTO users (Admin__id, Surname, Othername, Email, username, password, Gender, Mobile, Date_of_birth, Create_on, Role)VALUES(:id, :Surname, :Othername, :email, :username, :password, :gender, :mobile, :DOB, NOW(), :assign)');
 		$this->DB->bind(':id', $data['id']);
 		$this->DB->bind(':assign', $data['assign']);
 		$this->DB->bind(':username', $data['username']);
@@ -317,10 +279,7 @@ Class User {
 		}
 	}
 	public function AddCourseModel($data){
-		$this->DB->query('INSERT INTO courses (DepartmentID, ClassID, SemesterID, CourseCode, CourseTitle, CourseUnit, CourseStatus)
-						VALUES(:departmemtid, :classid, :semester,
-						 :courscode, :coursname, :CoursesUnit,
-						  :CourseStatus)');
+		$this->DB->query('INSERT INTO courses (DepartmentID, ClassID, SemesterID, CourseCode, CourseTitle, CourseUnit, CourseStatus) VALUES(:departmemtid, :classid, :semester, :courscode, :coursname, :CoursesUnit, :CourseStatus)');
 		$this->DB->bind(':departmemtid', $data['departmemtid']);
 		$this->DB->bind(':classid', $data['classid']);
 		$this->DB->bind(':semester', $data['semester']);
@@ -355,8 +314,7 @@ Class User {
 		}
 	}
 	public function createnewsemester($data){
-		$this->DB->query('INSERT INTO semester (Parent, ClassID, Title)
-						VALUES(:parent, :classid, :title)');
+		$this->DB->query('INSERT INTO semester (Parent, ClassID, Title)VALUES(:parent, :classid, :title)');
 		$this->DB->bind(':parent', $data['parent']);
 		$this->DB->bind(':classid', $data['classid']);
 		$this->DB->bind(':title', $data['title']);
@@ -379,8 +337,7 @@ Class User {
 		}
 	}
 	public function EditCourseModel($data){
-		$this->DB->query('UPDATE courses SET DepartmentID=:departmemtid, ClassID=:classid, SemesterID=:semester, 
-		CourseCode=:courscode, CourseTitle=:coursname, CourseUnit=:CoursesUnit, CourseStatus=:CourseStatus WHERE CourseID=:id');
+		$this->DB->query('UPDATE courses SET DepartmentID=:departmemtid, ClassID=:classid, SemesterID=:semester, CourseCode=:courscode, CourseTitle=:coursname, CourseUnit=:CoursesUnit, CourseStatus=:CourseStatus WHERE CourseID=:id');
 		$this->DB->bind(':id', $data['id']);
 		$this->DB->bind(':departmemtid', $data['departmemtid']);
 		$this->DB->bind(':classid', $data['classid']);
@@ -554,9 +511,7 @@ Class User {
 	}
 
 	public function FetchDepartment($___ApplicationType){
-		$this->DB->query('SELECT Category__ID, Category__name, Cat_id, Child_id, Child_name
-		FROM `categories`, `sublist` 
-		WHERE Cat_id = Category__ID AND Category__ID = :___ApplicationType');
+		$this->DB->query('SELECT Category__ID, Category__name, Cat_id, Child_id, Child_name FROM `categories`, `sublist` WHERE Cat_id = Category__ID AND Category__ID = :___ApplicationType');
 		$this->DB->bind(':___ApplicationType', $___ApplicationType);
 		$books = $this->DB->resultSet();
 		if (!empty($books)) {
@@ -619,10 +574,7 @@ Class User {
 	// ============================================================
 	
 	public function findStudentEdiReturnt($id){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, 
-		student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active,
-		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
-		 FROM student, studentapp WHERE student.student__Id = :id');
+		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp WHERE student.student__Id = :id');
 		$this->DB->bind(':id', $id);
 		$row = $this->DB->single();
 		if(!empty($row)){
@@ -807,9 +759,6 @@ Class User {
 		}
 	}
 	
-
-	
-
 	public function isEditDep($data){
 		$this->DB->query('UPDATE departments SET DepartmentName=:Depname, FacultyID=:Fid WHERE departmentID =:id');
 		$this->DB->bind(':Depname', $data['Depname']);
@@ -821,9 +770,6 @@ Class User {
 			return false;
 		}
 	}
-
-	
-	
 
 	// =============================================================================
 	// Checking if the Post Professor ID ALREADY for appointed Modal exist 
@@ -908,11 +854,7 @@ Class User {
 	
 	public function processor($Sender){
 		$conid =  uniqid();
-		//dnd($Sender);
-		$this->DB->query('INSERT INTO student (student__id, Conid, Roll__No, Surname, password, 
-		othername, Date__of__birth, gender, email, relationship, telephone) 
-		VALUES (:NewID, :conid, :EnrollmentNumber, :Surname, :password, :Othername, 
-		:DBO, :Gender, :Email, :Relationship, :Tel)');
+		$this->DB->query('INSERT INTO student (student__id, Conid, Roll__No, Surname, password, othername, Date__of__birth, gender, email, relationship, telephone)VALUES (:NewID, :conid, :EnrollmentNumber, :Surname, :password, :Othername, :DBO, :Gender, :Email, :Relationship, :Tel)');
 		// bind the values
 		$this->DB->bind(':conid', $conid);
 		$this->DB->bind(':NewID', $Sender['NewID']);
@@ -927,9 +869,7 @@ Class User {
 		$this->DB->bind(':Tel', $Sender['Tel']);
 		//Execute the function   
 		if($this->DB->execute()){
-			$this->DB->query('INSERT INTO studentapp (Conid, Application_id, Faculty_id, Department_id,
-			Program__Type, NIN, Entrylevel, Class, semester)
-			VALUES (:conid, :App, :Fac, :Dep, :Prog, :Nin, :Entry, :class, :sess)');
+			$this->DB->query('INSERT INTO studentapp (Conid, Application_id, Faculty_id, Department_id,Program__Type, NIN, Entrylevel, Class, semester)VALUES (:conid, :App, :Fac, :Dep, :Prog, :Nin, :Entry, :class, :sess)');
 			$this->DB->bind(':App', $Sender['App']);
 			$this->DB->bind(':Fac', $Sender['Fac']);
 			$this->DB->bind(':Dep', $Sender['Dep']);
@@ -947,40 +887,13 @@ Class User {
 			return false;
 		}
 	}
-	// Student Registering parent details
-	public function isParentSQLstmt($data){
-		$this->DB->query('INSERT INTO parent (Parent___id, child__id, First_name, Last_name, ParentEmail, Parentfeatured, ParentPassword, ParentGender, ParentDOB, Mobile, Address, Profile___Picture)
-		VALUES (:Fatherid, :ChildId, :fname, :lname, :email, :featured, :password, :Gender, :DOB, :mobile, :address, :img)');
-		// bind the values
-		$this->DB->bind(':Fatherid', $data['Fatherid']);
-		$this->DB->bind(':ChildId', $data['ChildId']);
-		$this->DB->bind(':fname', $data['fname']);
-		$this->DB->bind(':lname', $data['lname']);
-		$this->DB->bind(':email', $data['email']);
-		$this->DB->bind(':featured', $data['featured']);
-		$this->DB->bind(':password', $data['password']);
-		$this->DB->bind(':Gender', $data['Gender']);
-		$this->DB->bind(':DOB', $data['DOB']);
-		$this->DB->bind(':mobile', $data['mobile']);
-		$this->DB->bind(':address', $data['address']);
-		$this->DB->bind(':img', $data['img']);
-		//Execute the function   
-		if($this->DB->execute()){
-			return true;
-		}else {
-			return false;
-		}
-	}
+
 	// ============================================================
 	// Validating Professors method 
 	// ============================================================
 
 	public function AddProfessor($data){
-		$this->DB->query('INSERT INTO lecturals(Professor__id, Surname, Middle__name, Othername, Accesscode, Password, Email, featured, 
-												Telephone_No, Date_of_Birth, Place__of__birth, Gender, Relationship_sts, 
-												Citizenship, NIN, Height, Weight, Blood_Type, Religion, Address, 
-												Qualification, Profile__Picture) 
-				VALUES (:Professor__id, :Surname, :Middle__name, :Othername, :Accesscode, :Password,  :Email, :featured, :Telephone_No, :Date_of_Birth, :Place__of__birth, :Gender, :Relationship_sts, :Citizenship, :NIN, :Height, :Weight, :Blood_Type, :Religion, :Address, :Qualification,  :Profile__Picture)');
+		$this->DB->query('INSERT INTO lecturals(Professor__id, Surname, Middle__name, Othername, Accesscode, Password, Email, featured, Telephone_No, Date_of_Birth, Place__of__birth, Gender, Relationship_sts, Citizenship, NIN, Height, Weight, Blood_Type, Religion, Address, Qualification, Profile__Picture) VALUES (:Professor__id, :Surname, :Middle__name, :Othername, :Accesscode, :Password,  :Email, :featured, :Telephone_No, :Date_of_Birth, :Place__of__birth, :Gender, :Relationship_sts, :Citizenship, :NIN, :Height, :Weight, :Blood_Type, :Religion, :Address, :Qualification,  :Profile__Picture)');
 		$this->DB->bind(':Professor__id', $data['Professor__id']);
 		$this->DB->bind(':Surname', $data['Surname']);
 		$this->DB->bind(':Middle__name', $data['Middle__name']);
@@ -1078,17 +991,17 @@ Class User {
 
 	public function LoginHuman_resources($Accesscode, $Department, $password){
 		$this->DB->query("SELECT * FROM human_resources WHERE  Accesscode = :Accesscode AND Department = :Department");
-		 //Bind the values
-			$this->DB->bind(':Department', $Department);
-			$this->DB->bind('Accesscode', $Accesscode);
-			$runHr = $this->DB->single();
-			if(!empty($runHr)){
-			$HrPassword = $runHr->Password;
+	//Bind the values
+		$this->DB->bind(':Department', $Department);
+		$this->DB->bind('Accesscode', $Accesscode);
+		$runHr = $this->DB->single();
+		if(!empty($runHr)){
+		$HrPassword = $runHr->Password;
 			if(password_verify($password, $HrPassword)){
 				return $runHr;
 			}else{
 				return false;
-			}
+			}	
 		}
 	}
     // ============================================================
@@ -1096,17 +1009,11 @@ Class User {
     // ============================================================
 
 	public function LoginAccountant($Accesscode){
-		$this->DB->query("SELECT Surname, Othername, Email, featured, NIN, Accesscode, Profile__Picture, Password 
-                        FROM (SELECT Surname, Othername, Email, featured, NIN, Profile__Picture, Password, Accesscode as Accesscode
-                         FROM human_resources 
-                            UNION ALL
-                            SELECT Surname, Othername,  Email, featured, NIN, Profile__Picture, Password, Accesscode 
-                            FROM lecturals) x 
-                            WHERE Accesscode = :Accesscode ");
-                            //Bind the values 
-                    $this->DB->bind(':Accesscode', $Accesscode);
-                    $runAccountant = $this->DB->single();
-                return $runAccountant;
+		$this->DB->query("SELECT Surname, Othername, Email, featured, NIN, Accesscode, Profile__Picture, Password FROM (SELECT Surname, Othername, Email, featured, NIN, Profile__Picture, Password, Accesscode as Accesscode FROM human_resources UNION ALL SELECT Surname, Othername,  Email, featured, NIN, Profile__Picture, Password, Accesscode  FROM lecturals) x WHERE Accesscode = :Accesscode ");
+        //Bind the values 
+		$this->DB->bind(':Accesscode', $Accesscode);
+		$runAccountant = $this->DB->single();
+		return $runAccountant;
                 
 	}
 
@@ -1118,16 +1025,10 @@ Class User {
 	}
 
     public function MimiPassword($code, $password){
-        $this->DB->query("SELECT Password, Accesscode FROM 
-                            (SELECT Password, Accesscode as Accesscode
-                             FROM human_resources 
-                            UNION ALL 
-                            SELECT Password, Accesscode 
-                            FROM lecturals) a 
-                            WHERE Accesscode = :code");
-                            //Bind the values 
-                            $this->DB->bind(':code', $code);
-                    $mass = $this->DB->single();
+        $this->DB->query("SELECT Password, Accesscode FROM (SELECT Password, Accesscode as Accesscode FROM human_resources UNION ALL SELECT Password, Accesscode FROM lecturals) a WHERE Accesscode = :code");
+        //Bind the values 
+        $this->DB->bind(':code', $code);
+        $mass = $this->DB->single();
         if(!empty($mass)){
             $Loginpass = $mass->Password;
                 if(password_verify($password, $Loginpass)){
@@ -1207,22 +1108,6 @@ Class User {
 		}
 	}
 	
-	public function P_LoginAuth($studentid, $StudentPassword){
-		$this->DB->query('SELECT * FROM parent WHERE child__id = :studentid');
-		// Bind the values
-		$this->DB->bind(':studentid', $studentid);
-		$row = $this->DB->single();
-		if(!empty($row)){
-			$hashedPassword = $row->ParentPassword;
-			if(password_verify($StudentPassword, $hashedPassword)){
-				return $row;
-			}else {
-				return false;
-			}
-		}else {
-			return false;
-		}
-	}
 	public function ParentLogin($StudentUsername){
 		$this->DB->query('SELECT * FROM student WHERE Roll__No = :StudentUsername');
 		// Bind the values
@@ -1318,9 +1203,7 @@ Class User {
 	// ===============================================================
 
 	public function isStudentUpdate($data){
-		$this->DB->query('UPDATE student SET Roll__No = :Enrlid, Surname =:Surname, othername =:Othername,
-		 Date__of__birth=:DOB, gender=:gender, email =:email, relationship=:rel,
-		  telephone=:mobile WHERE student__Id =:id ');
+		$this->DB->query('UPDATE student SET Roll__No = :Enrlid, Surname =:Surname, othername =:Othername, Date__of__birth=:DOB, gender=:gender, email =:email, relationship=:rel, telephone=:mobile WHERE student__Id =:id ');
 		$this->DB->bind(':id', $data['id']);
 		$this->DB->bind(':Surname', $data['Surname']);
 		$this->DB->bind(':Othername', $data['Othername']);
@@ -1347,10 +1230,7 @@ Class User {
 		}    
 	}
 	public function StudentSelectall(){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, 
-		student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active,
-		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
-		 FROM student, studentapp WHERE  student.Conid =studentapp.Conid');
+		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp WHERE  student.Conid =studentapp.Conid');
 		$row = $this->DB->resultSet();
 		if($row > 0){
 			while($run = $this->DB->resultSet($row)){
@@ -1597,35 +1477,10 @@ Class User {
 			return false;
 		}		
 	}
-	public function deleteUserParent($id){
-		$ids = implode("','", $id);
-		$this->DB->query("DELETE  a.*, b.*, c.*  FROM parent a INNER JOIN student b ON a.child__id =b.student__Id INNER JOIN studentapp c ON c.Conid = b.Conid WHERE a.Parent___id IN ('".$ids."')");
-		$ids = [];
-		if (is_array($ids) || !is_array($ids))
-		foreach ($ids as $k => $id)	
-		$this->DB->bind(($k+1), $id);
-		if($this->DB->execute()){
-			return true;
-		}else{
-			return false;
-		}		
-	}
 
-	public function dndUser($id){
-		$ids = implode("','", $id);
-		$this->DB->query("DELETE FROM users WHERE Admin__id IN ('".$ids."')");
-		if (is_array($ids) || !is_array($ids))
-		foreach ($ids as $k => $id)	
-		$this->DB->bind(($k+1), $id);
-		if($this->DB->execute()){
-			return true;
-		}else{
-			return false;
-		}
-	}
 	public function SQLdeletestudent($id){
 		$ids = implode("','", $id);
-		$this->DB->query("DELETE  a.*, b.*, c.*  FROM student a INNER JOIN studentapp b ON b.Conid = a.Conid INNER JOIN parent c ON c.child__id =a.student__Id WHERE a.student__Id IN ('".$ids."')");
+		$this->DB->query("DELETE  a.*, b.* FROM student a INNER JOIN studentapp b ON b.Conid = a.Conid WHERE a.student__Id IN ('".$ids."')");
 		$ids = [];
 		if (is_array($ids) || !is_array($ids))
 		 	if ($ids) 
@@ -1655,25 +1510,6 @@ Class User {
 	public function SQLDismissedManagementRole($id){
 		$this->DB->query("DELETE FROM management__role WHERE ID = :id ");
 		$this->DB->bind(':id', $id);
-		if($this->DB->execute()){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	// Admin Send Professor Email
-	public function SQLSendProfEmail($data){
-		$this->DB->query("INSERT INTO EmailBox(EmailID, SenderID, RecipientID, SenderName, SenderMail, RecipientEmail, RecipientName, Subject, message, parent, Time)VALUES(:EmailID, :SenderID, :targetid, :SenderName, :SenderMail, :Email, :RecipientName, :Subject, :message, :parent, NOW())");
-		$this->DB->bind(':EmailID', $data['EmailID']);
-		$this->DB->bind(':SenderID', $data['SenderID']);
-		$this->DB->bind(':targetid', $data['targetid']);
-		$this->DB->bind(':SenderName', $data['SenderName']);
-		$this->DB->bind(':SenderMail', $data['SenderMail']);
-		$this->DB->bind(':Email', $data['Email']);
-		$this->DB->bind(':RecipientName', $data['RecipientName']);
-		$this->DB->bind(':Subject', $data['Subject']);
-		$this->DB->bind(':message', $data['message']);
-		$this->DB->bind(':parent', $data['parent']);
 		if($this->DB->execute()){
 			return true;
 		}else{
@@ -1732,21 +1568,6 @@ Class User {
 		}
 	}
 
-
-    // ========================================================================
-    //  
-    // ========================================================================
-	public function tryone($username, $password){
-		$this->DB->query('SELECT admin.username, admin.role_id, admin.password, admin2.username, admin2.role_id, 
-		admin2.password FROM `admin2`, `admin` 
-		WHERE admin.username = :username AND admin.password = :password 
-		OR admin2.username = :username AND admin2.password = :password');
-		$this->DB->bind(':username', $username);
-		$this->DB->bind(':password', $password);
-		$run= $this->DB->single();
-		return $run;
-	}
-
 	public function FindCourseId($Courseid){
 		$this->DB->query("SELECT * FROM student WHERE Department_id = :Courseid AND Onlinestatus ='1'");
 		$this->DB->bind(':Courseid', $Courseid);
@@ -1771,10 +1592,7 @@ Class User {
 		}
 	}
 	public function Viewstd($id){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, 
-		student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active,
-		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
-		 FROM student, studentapp  WHERE student.student__Id = :id');
+		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp  WHERE student.student__Id = :id');
 		$this->DB->bind(':id', $id);
 		$stmt= $this->DB->single();
 		if (!empty($stmt)) {
@@ -1785,7 +1603,11 @@ Class User {
 	}
 
 	public function ViewStudentRelationalTablewithParent($id){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth,student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings, parent.Parent___id, parent.child__id, parent.First_name, parent.Last_name, parent.ParentEmail, parent.Parentfeatured, parent.ParentPassword, parent.ParentGender, parent.ParentDOB, parent.Mobile, parent.Address, parent.Profile___Picture FROM parent, student, studentapp WHERE student.student__Id = :id AND parent.child__id = student.student__Id AND studentapp.Conid =  student.Conid');
+		$this->DB->query('SELECT a.*, b.* FROM student a  
+		inner join studentapp b
+		on a.Conid =  b.Conid
+		WHERE a.student__Id = :id 
+		AND b.Conid =  a.Conid');
 		$this->DB->bind(':id', $id);
 		$stmt= $this->DB->resultSet();
 		if (!empty($stmt)) {
@@ -1833,10 +1655,7 @@ Class User {
 		}
 	}
 	public function isEditstudent($data){
-		$this->DB->query("UPDATE student, studentapp SET student.Surname = :fname, student.othername=:lname, student.Date__of__birth=:DOB,
-						student.gender=:Gender, student.email= :email, studentapp.settings=:emailsettings, student.relationship=:relationship, 
-						student.telephone=:mobile, image=:img WHERE student__Id =:id ");
-				
+		$this->DB->query("UPDATE student, studentapp SET student.Surname = :fname, student.othername=:lname, student.Date__of__birth=:DOB, student.gender=:Gender, student.email= :email, studentapp.settings=:emailsettings, student.relationship=:relationship, student.telephone=:mobile, image=:img WHERE student__Id =:id ");
 		$this->DB->bind('fname', $data['fname']);
 		$this->DB->bind('lname', $data['lname']);
 		$this->DB->bind('DOB', $data['DOB']);
@@ -1856,8 +1675,7 @@ Class User {
 	}
 
 	public function UpdateparentModel($data){
-		$this->DB->query('UPDATE parent SET First_name=:fname,Last_name=:lname,ParentEmail=:email,ParentGender=:gender,
-		ParentDOB=:DOB,Mobile=:mobile,Address=:address WHERE Parent___id=:id');
+		$this->DB->query('UPDATE parent SET First_name=:fname,Last_name=:lname,ParentEmail=:email,ParentGender=:gender, ParentDOB=:DOB,Mobile=:mobile,Address=:address WHERE Parent___id=:id');
 		$this->DB->bind(':id', $data['id']);
 		$this->DB->bind(':fname', $data['fname']);
 		$this->DB->bind(':lname', $data['lname']);
@@ -1886,8 +1704,7 @@ Class User {
 
 
 	public function createUser($data){
-		$this->DB->query('INSERT INTO student (student__id, Roll__No, Application_id, NIN, Surname, othername, password, email, telephone) 
-		VALUES (:studentid, :EnrollmentNumber, :AppType, :nin, :Surname, :FirstName, :password, :Email, :MobileNum)');
+		$this->DB->query('INSERT INTO student (student__id, Roll__No, Application_id, NIN, Surname, othername, password, email, telephone) VALUES (:studentid, :EnrollmentNumber, :AppType, :nin, :Surname, :FirstName, :password, :Email, :MobileNum)');
 		// bind the values
 		$this->DB->bind(':studentid', $data['studentid']);
 		$this->DB->bind(':EnrollmentNumber', $data['EnrollmentNumber']);
@@ -1919,6 +1736,138 @@ Class User {
 			$id =str_pad($stmtid + 1,1,0, STR_PAD_LEFT);
 			$Studentid = '900'.  $id;
 			return $Studentid;
+		}
+	}
+
+
+	public function getExamData(){
+		$this->DB->query('SELECT * FROM e_timeset');
+		$result = $this->DB->resultSet();
+		if (!empty($result)) {
+			return $result;
+		}else {
+			return false;
+		}
+	}
+	public function getExamSettingData($id){
+		$this->DB->query('SELECT * FROM e_timeset WHERE eid=:id');
+		$this->DB->bind(':id', $id);
+		$resultstatement = $this->DB->single();
+	
+		$reponse=[];
+		if (!empty($resultstatement)) {
+		
+			$dp_id=$resultstatement->Department;
+			$cl_id=$resultstatement->Classes;
+			$co_id=$resultstatement->Course;
+			$sm_id=$resultstatement->Semester;
+
+			$reponse['eid']=$resultstatement->eid;
+			$reponse['startTime']=$resultstatement->startTime;
+			$reponse['endTime']=$resultstatement->endTime;
+			$reponse['duedate']=$resultstatement->duedate;
+			
+			$du= explode(":",$resultstatement->duration);
+			if (!empty($du)) {
+				$h =$du[0].'h:';
+				$m =$du[1].'m:';
+				$s =$du[2].'s';
+				$reponse['duration']=$h.$m.$s;
+			}
+			$reponse['total']=$resultstatement->total;
+			$reponse['status']=$resultstatement->status;
+			$reponse['date']=$resultstatement->date;
+		
+			// select department name
+			$this->DB->query('SELECT DepartmentID, DepartmentName FROM departments WHERE DepartmentID=:dp_id');
+			$this->DB->bind(':dp_id', $dp_id);
+			$dep_Result = $this->DB->single();
+			$reponse['departmentname']=$dep_Result->DepartmentName;
+			// select Class name
+			$this->DB->query('SELECT * FROM class WHERE ClassID=:cl_id');
+			$this->DB->bind(':cl_id', $cl_id);
+			$cls_Result = $this->DB->single();
+			$reponse['Classname']=$cls_Result->Title;
+			// select Course name
+			$this->DB->query('SELECT CourseID, CourseTitle, CourseCode FROM courses WHERE CourseCode=:co_id');
+			$this->DB->bind(':co_id', $co_id);
+			$cos_Result = $this->DB->single();
+			$reponse['Coursename']=$cos_Result->CourseCode;
+			// select Semester name
+			$this->DB->query('SELECT SemesterID, Title FROM semester WHERE SemesterID=:sm_id');
+			$this->DB->bind(':sm_id', $sm_id);
+			$sem_Result = $this->DB->single();
+			$reponse['Semestername']=$sem_Result->Title;
+			if(!empty($reponse))
+			return $reponse;
+		}else {
+			return false;
+		}
+	}
+
+	public function getStudentRecord($collections){
+		$this->DB->query('SELECT a.student__Id, a.Conid, b.Application_id, b.Faculty_id, b.Department_id, b.Class, b.semester, b.Conid, c.Category__ID, c.Category__name, d.FacultyID, d.FacultyName, e.DepartmentID, e.DepartmentName, f.ClassID, f.Title, g.SemesterID, g.Title FROM student as a, studentapp as b, categories as c, faculties as d, departments as e, class as f, semester as g  WHERE d.FacultyID=:f_id and e.DepartmentID=:d_id and f.ClassID=:c_id and g.SemesterID=:s_id and b.Conid=:con_id and a.student__Id=:id and c.Category__ID=d.Cat_id;');
+		$this->DB->bind(':id', $collections['id']);
+		$this->DB->bind(':f_id', $collections['f_id']);
+		$this->DB->bind(':d_id', $collections['d_id']);
+		$this->DB->bind(':c_id', $collections['c_id']);
+		$this->DB->bind(':s_id', $collections['s_id']);
+		$this->DB->bind(':con_id', $collections['con_id']);
+		$result = $this->DB->single();
+		if (!empty($result)) {
+			return $result;
+		}else{
+			return false;
+		}
+	}
+	public function isFetchSemester(){
+		$this->DB->query('SELECT * FROM semester');
+		$stmt = $this->DB->resultSet();
+		if (!empty($stmt)){
+			return $stmt;
+		}else{
+			return false;
+		}
+	}
+
+	public function get_student_record($depid, $Classid, $semsterid){
+		$this->DB->query("SELECT ar.*, d.*, c.*, y.Surname, y.othername, a.eid, a.Course 
+		FROM monitor ar  
+		inner join e_timeset a 
+		on a.eid =ar.examid  
+		inner join departments c
+		on c.DepartmentID=:depid
+		inner join student y
+		on y.student__Id=ar.studentid
+		inner join courses d
+		on d.CourseCode=a.Course
+		where a.Department=:depid 
+		and a.Classes=:Classid 
+		and a.Semester=:semsterid");
+		$this->DB->bind(':depid', $depid);
+		$this->DB->bind(':Classid', $Classid);
+		$this->DB->bind(':semsterid', $semsterid);
+		$_dstatement = $this->DB->single();
+		
+		if ($_dstatement) {
+			if(!empty($_dstatement)){
+				return $_dstatement;
+			}else{
+				return false;
+			}
+		}else{
+			return $_dstatement;
+		}
+	}
+
+	public function saveCategoryStatusChanges($data){
+		$this->DB->query('UPDATE `categories` SET Status=:status WHERE Category__ID = :id');
+		$this->DB->bind(':status', $data['status']);
+		$this->DB->bind(':id', $data['id']);
+		if($this->DB->execute()){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }	

@@ -67,14 +67,14 @@
                             <!-- Menu Toggle Button -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!-- The user image in the navbar-->
-                                <img src="http://localhost/ci_exam/assets/dist/img/usersys-min.png" class="user-image" alt="View  Image">
+                                <img src="<?=ASSETS?>assets/img/dp.jpg" class="user-image" alt="View  Image">
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                 <span class="hidden-xs"><?=((isLoggedInAdmin())?'Administrator': 'No View ');?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->
                                 <li class="user-header">
-                                    <img src="http://localhost/ci_exam/assets/dist/img/usersys-min.png" class="img-circle" alt="View  Image">
+                                    <img src="<?=ASSETS?>assets/img/dp.jpg" class="img-circle" alt="View  Image">
                                     <p>
                                         Admin Williams                            <small>Member Since Mar, 2010</small>
                                     </p>
@@ -105,7 +105,7 @@
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel">
                         <div class="pull-left image">
-                            <img src="http://localhost/ci_exam/assets/dist/img/usersys-min.png" class="img-circle" alt="View  Image">
+                            <img src="<?=ASSETS?>assets/img/dp.jpg" class="img-circle" alt="View  Image">
                         </div>
                         <div class="pull-left info">
                             <p class="hidden-xs"><?=((isLoggedInAdmin())?'Administrator': 'No View ');?></p>
@@ -113,92 +113,149 @@
                         </div>
                     </div>
                    <ul class="sidebar-menu" data-widget="tree">
-                        <li class="header">MAIN MENU</li>
-                        <!-- Optionally, you can add icons to the links -->
-                            <li class=""><a href="<?=ROOT?>Admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                            <li class="treeview active menu-open">
-                            <a href="#"><i class="fa fa-folder-open"></i> <span>Master Data</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Department">
-                                        <i class="fa fa-bars"></i> 
-                                            Department
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Class">
-                                        <i class="fa fa-bars"></i>
-                                            Class
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Courses">
-                                        <i class="fa fa-bars"></i>
-                                            Course
-                                    </a>
-                                </li>
-                                <li class="active">
-                                    <a href="<?=ROOT?>Admin/Professors">
-                                        <i class="fa fa-bars"></i>
-                                            Lecturer
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Students">
-                                        <i class="fa fa-bars"></i>
-                                            Student
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="treeview ">
-                            <a href="#"><i class="fa fa-link"></i> <span>Relation</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li class="">
-                                    <a href="http://localhost/ci_exam/kelasdosen">
-                                        <i class="fa fa-bars"></i>
-                                        Class - Lecturer
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="http://localhost/ci_exam/jurusanmatkul">
-                                        <i class="fa fa-bars"></i>
-                                        Department - Course
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="">
-                            <a href="<?=ROOT?>Admin/soal" rel="noopener noreferrer">
-                                <i class="fa fa-file-text"></i> <span>Question Bank</span>
-                            </a>
-                        </li>
-                        <li class="header">REPORTS</li>
-                            <li class="">
-                                <a href="<?=ROOT?>Admin/hasilujian" rel="noopener noreferrer">
-                                    <i class="fa fa-file"></i> <span>Exam Results</span>
-                                </a>
-                            </li>
-                            <li class="header">ADMINISTRATOR</li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/users" rel="noopener noreferrer">
-                                        <i class="fa fa-users"></i> <span>View  User</span>
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admnin/settings" rel="noopener noreferrer">
-                                        <i class="fa fa-cogs"></i> <span>Settings</span>
-                                    </a>
-                                </li>
-                        </ul>
+					<li class="header">MAIN MENU</li>
+					<!-- Optionally, you can add icons to the links -->
+						<li class=""><a href="<?=ROOT?>Admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+						<li class="treeview menu-open">
+							<a href="#"><i class="fa fa-folder-open"></i> <span>Application</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="">
+									<a href="<?=ROOT?>Admin/Application">
+										<i class="fa fa-bars"></i> 
+											Application
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT?>Admin/Faculties">
+										<i class="fa fa-bars"></i>
+											Faculty
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT?>Admin/Department">
+										<i class="fa fa-bars"></i>
+											Department
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="treeview ">
+							<a href="#"><i class="fa fa-users"></i> <span>Master Data</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="">
+									<a href="<?=ROOT?>Admin/Professors">
+										<i class="fa fa-bars"></i>
+											Lecturer
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT?>Admin/Students">
+										<i class="fa fa-bars"></i>
+											Students
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="treeview ">
+							<a href="#"><i class="fa fa-link"></i> <span>Relation</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Application'?>">
+										<i class="fa fa-bars"></i>
+										Application-Table
+									</a>
+								</li>
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Faculties'?>">
+										<i class="fa fa-bars"></i>
+									Faculty-Table
+									</a>
+								</li>
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Department'?>">
+										<i class="fa fa-bars"></i>
+									Department-Table
+									</a>
+								</li>
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Courses'?>">
+										<i class="fa fa-bars"></i>
+									Course-Table
+									</a>
+								</li>
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Class'?>">
+										<i class="fa fa-bars"></i>
+									Class-Table
+									</a>
+								</li>
+								<li class="">
+									<a href="<?php echo ROOT.'Admin/Semester'?>">
+										<i class="fa fa-bars"></i>
+									Semester-Table
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="treeview ">
+							<a href="#"><i class="fa fa-book"></i> <span>Manage Exam</span>
+								<span class="pull-right-container">
+									<i class="fa fa-angle-left pull-right"></i>
+								</span>
+							</a>
+							<ul class="treeview-menu">
+								<li class="">
+									<a href="<?=ROOT.'Admin/exam'?>">
+										<i class="fa fa-bars"></i>
+										Exam Settings
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT.'Admin/Students/'?>">
+										<i class="fa fa-bars"></i>
+										Student Records
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT.'Admin/performance'?>">
+										<i class="fa fa-bars"></i>
+										Student Performance
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT.'Admin/payment_record'?>">
+										<i class="fa fa-bars"></i>
+										Student Payment Records
+									</a>
+								</li>
+							</ul>
+						</li>
+							<li class="header">ADMINISTRATOR</li>
+								<li class="">
+									<a href="<?=ROOT?>Admin/users" rel="noopener noreferrer">
+										<i class="fa fa-users"></i> <span>User Management</span>
+									</a>
+								</li>
+								<li class="">
+									<a href="<?=ROOT?>Admin/settings" rel="noopener noreferrer">
+										<i class="fa fa-cogs"></i> <span>Settings</span>
+									</a>
+								</li>
+							</li>
+						</li>
+					</ul>
 
                 </section>
                 <!-- /.sidebar -->
@@ -321,70 +378,7 @@
 												</tr>
 											</tbody>
 										</table>
-										<table class="table table-striped table-bordered table-hover table-checkable order-column valign-middle" id="example4">
-											<thead>
-												<tr>
-													<td colspan="4"><h5><strong>II. Family Background</strong></h5></td>
-												</tr>
-											</thead>
-											<tbody>
-											<?php 
-											if ($returnview['ParentGender'] == 'Male'):?>
-												<tr>
-													<td colspan="4" class="text-center bold">Father Details</td>
-												</tr>
-												<tr>
-													<td>Surname</td>
-													<td><?=((isset($returnview['First_name']))?$returnview['First_name']:'')?></td>
-													<td>Middlename</td>
-													<td><?=((isset($returnview['Middlename']))?$returnview['Middlename']:'')?></td>
-												</tr>
-												<tr>
-													<td>Lastname</td>
-													<td><?=((isset($returnview['Last_name']))?$returnview['Last_name']:'')?></td>
-													<td >Email</td>
-													<td><?=((isset($returnview['ParentEmail']))?$returnview['ParentEmail']:'')?></td>
-												</tr>
-												<tr>
-													<td>Address</td>
-													<td><?=((isset($returnview['Address']))?$returnview['Address']:'')?></td>
-													<td>Mobile Number</td>
-													<td><?=((isset($returnview['Mobile']))?$returnview['Mobile']:'')?></td>
-												</tr>
-												<tr>
-													<td>Occupation</td>
-													<td><?=((isset($returnview['settings']))?$returnview['settings']:'')?></td>
-												</tr>
-											<?php else: ?>
-												<tr>
-													<td colspan="4" class="text-center bold">Mother's Details</td>
-												</tr>
-												<tr>
-													<td>Surname</td>
-													<td>--</td>
-													<td>Middlename</td>
-													<td>--</td>
-												</tr>
-												<tr>
-													<td>Lastname</td>
-													<td>--</td>
-													<td >Email</td>
-													<td>--</td>
-												</tr>
-												<tr>
-													<td>Address</td>
-													<td>--</td>
-													<td>Mobile Number</td>
-													<td>--</td>
-												</tr>
-												<tr>
-													<td>Occupation</td>
-													<td>--</td>
-												</tr>
-											<?php endif; ?>
-											</tbody>
-											<?php endforeach; ?>
-										</table>
+										<?php endforeach; ?>
 									</div>
 								</div>
 							</div>

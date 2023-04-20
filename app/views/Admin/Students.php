@@ -89,7 +89,7 @@
 						<th>Enrollment Number</th>
 						<th>Name</th>
 						<th>Email</th>
-						<th>Dept</th>
+						<th>Record</th>
 						<th>ACTION</th>
 					</tr>
 				</thead>
@@ -123,7 +123,7 @@
 						<th style='font-weight:normal'><?=$presult['Roll__No'];?></th>
 						<td><?=$presult['Surname'].' ~ '. $presult['othername']?></td>
 						<td class="left"><?=$presult['email']?></td>
-						<td><input disabled="" value="<?=$departmentname?>" class="form-control"></td>
+						<td><a href="<?=ROOT?>Admin/record/<?=$SSD?>" class="btn btn-sm btn-default btn-flat" title="View Student Record">View Record&nbsp;<i class="fa fa-eye"></i></a>&nbsp;&nbsp;</td>
 						<?php 
 						endforeach;
 						endif;

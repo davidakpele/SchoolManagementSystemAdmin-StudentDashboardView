@@ -116,7 +116,7 @@
         
         public function FetchApplication($___ApplicationType){
             $id = $___ApplicationType;
-            $this->DB->query("SELECT * FROM `categories` WHERE Category__ID=:id AND Status=1");
+            $this->DB->query("SELECT * FROM `categories` WHERE Category__ID=:id AND Status=0");
             $this->DB->bind(':id', $id);
             $keyval = $this->DB->Single();
             if(!empty($keyval)){

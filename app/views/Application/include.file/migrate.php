@@ -1,6 +1,6 @@
 <?php
     $this->DB = new Database;
-    $this->DB->query('SELECT * FROM student__account ORDER BY student__Id DESC');
+    $this->DB->query('SELECT * FROM student ORDER BY student__Id DESC');
     $row = $this->DB->single();
     if (empty($row)) {
         $AvaliableID = $row['student__Id'];

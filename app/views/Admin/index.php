@@ -74,22 +74,6 @@
         <section class="content container-fluid">		
     <div class="row">
         <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-red">
-        <div class="inner">
-            <h3><?=(($data['NumParent'])?$data['NumParent'] : '0');?></h3>
-            <p>Parents</p>
-        </div>
-        <div class="icon">
-            <i class="">
-                <img src="<?=ASSETS?>assets/img/parent1.png" alt="" style="max-width:90px">
-            </i>
-        </div>
-        <a href="<?=ROOT?>Admin/Parents" class="small-box-footer">
-            More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-        </div>
-    </div>
-        <div class="col-lg-3 col-xs-6">
         <div class="small-box"  style="background-color:#483D8B; color:#fff">
         <div class="inner">
             <h3><?=(($data['Studentcount'])?$data['Studentcount'] : '0');?></h3>
@@ -205,15 +189,15 @@
         </div>
     </div>
         <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-aqua">
+        <div class="small-box bg-orange">
         <div class="inner">
-            <h3>1</h3>
-            <p>Questions</p>
+            <h3><br/></h3>
+            <p>Exam view</p>
         </div>
         <div class="icon">
-           <img src="<?=ASSETS?>assets/img/visa.png" alt="" style="max-width:90px">
+           <img src="<?=ASSETS?>assets/img/exam.png" alt="" style="max-width:90px">
         </div>
-        <a href="<?=ROOT?>Admin/soal" class="small-box-footer">
+        <a href="<?=ROOT?>Admin/exam" class="small-box-footer">
             More info <i class="fa fa-arrow-circle-right"></i>
         </a>
         </div>
@@ -233,7 +217,7 @@
         </div>
     </div>
         <div class="col-lg-3 col-xs-6">
-        <div class="small-box bg-orange">
+        <div class="small-box bg-aqua">
         <div class="inner">
             <h3>3</h3>
             <p>System Users</p>

@@ -19,7 +19,6 @@
     
 </style>
 <script type="text/javascript">
-	let base_url = '<?=ROOT?>';
 	const id = '<?=((isset($data['id']))?$data['id']: '')?>';
 	const pid = '<?=((isset($data['pid']))?$data['pid']: '')?>';
 </script>
@@ -76,10 +75,6 @@
 							<div class="row">
 								<div class="col-md-12">
 									<div class="col-md-4 col-sm-12 col-xs-12">
-										<label for="studentid">Student ID:<span class="text-danger">*</span></label>
-										<input type="text" readonly class="form-control" name="id" id="id" value="<?=((isset($data['id']))?$data['id']: '')?>"  />
-									</div>
-									<div class="col-md-4 col-sm-12 col-xs-12">
 										<label for="Application Type">Application Type:</label>
                                         <select class="form-control" name="Application__Typappe" id="Application__Type">
                                             <option selected value="">--Select--</option>
@@ -96,7 +91,7 @@
 									</div>
 									<div class="col-md-4 col-sm-12 col-xs-12">
 										<label for="Department Type">Department:</label>
-                                        <select name="Department__Type" id="Department__Type" class="form-control select2">
+                                        <select name="Department__Type" id="Department__Type" class="Depty form-control select2">
                                             <option value=""  selected="">--select--</option>
                                         </select>
 									</div>
@@ -115,20 +110,22 @@
 										<label for="NIN">NIN:</label>
                                         <input class="form-control" id="nin" type="number" value="<?=((isset($_POST['NIN']))?$_POST['NIN']: '');?>" placeholder="NIN:"  onkeypress="return validInput(event);"/>
 									</div>
-									<div class="col-md-4 col-sm-12 col-xs-12">
-										<label for="Entry Level">Entry Level:</label>
-                                        <select class="form-control select2" name="Entrylevel" id="EtyLevel" value="<?=((isset($_POST['Entrylevel']))?$_POST['Entrylevel']: '');?>">
-                                            <option selected="selected" value="">--Select--</option>
-                                            <?php foreach($data['StmtEntrylevel'] as $StmtEntry):?>
-                                            <option value="<?=$StmtEntry['Entry__level__Name'];?>"><?=$StmtEntry['Entry__level__Name'];?></option>
-                                            <?php endforeach;?>
-                                        </select>
+									<div class="col-md-4 col-sm-12 col-xs-12 EntryDevparent">
+										<div class="EntryDevchild">
+											<label for="Entry Level">Entry Level:</label>
+											<select class="form-control select2" name="Entrylevel" id="EtyLevel" value="<?=((isset($_POST['Entrylevel']))?$_POST['Entrylevel']: '');?>">
+												<option selected="selected" value="">--Select--</option>
+												<?php foreach($data['StmtEntrylevel'] as $StmtEntry):?>
+												<option value="<?=$StmtEntry['Entry__level__Name'];?>"><?=$StmtEntry['Entry__level__Name'];?></option>
+												<?php endforeach;?>
+											</select>
+										</div>
 									</div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12">
-                                        <div style="margin-top:20px; font-weight:bold; font-size:20px;text-decoration:underline">
-                                            <p>Personal Details</p>
-                                        </div>
-                                    </div>
+								</div>
+								<div class="col-md-4 col-sm-12 col-xs-12">
+									<div style="margin-top:20px; margin-left:20px;font-weight:bold; font-size:20px;text-decoration:underline">
+										<p>Personal Details</p>
+									</div>
 								</div>
 								<div class="col-md-12">
 									<div class="col-md-4 col-sm-12 col-xs-12">
@@ -147,7 +144,7 @@
 								<div class="col-md-12">
                                     <div class="col-md-4 col-sm-12 col-xs-12">
 										<label for="Gender">Gender</label>
-										<select name="Gender" id="gender" class="form-control select2" value="">
+										<select name="Gender" id="gender" class="Gender form-control select2" value="">
 											<option value=""  selected>Select Gender</option>
 											<option value="Female">Male</option>
 											<option value="Male">Female</option>
@@ -175,21 +172,8 @@
 										 <lable for="Telephone">Tel*</lable>
                                         <input type="tel" class="form-control" id="mobile" name="telephone" value="<?=((isset($_POST['telephone']))?$_POST['telephone']: '');?>" placeholder="+(234) 8032 4552 09"  autocomplete="off" />
 									</div>
-									<div class="col-md-4 col-sm-12 col-xs-12">
-										 <label for="Session">Session:</label>
-                                        <select list="sessionList" class="form-control select2" name="session" id="session" value="<?=((isset($_POST['session']))? trim($_POST['session'],FILTER_SANITIZE_STRING) : '')?>">
-                                            <option selected="selected" value="">--Select--</option>
-                                            <?php foreach ($data['StmtSession'] as $session): ?>
-                                            <option value="<?=$session['session'];?>"><?=$session['session'];?></option>
-                                        <?php endforeach;?>
-                                        </select>
-									</div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12">
-										<label for="EntrollmentNo">Entrollment No:<span class="text-danger">*</span></label>
-                                        <input type="text" name="RollNo" readonly class="form-control" id="EnrollmentNumber" value="<?=((isset($data['enrolNo']))?$data['enrolNo'] : '');?>" />
-									</div>
 								</div>
-								<div class="col-md-12">
+								<div class="col-md-12 hidden">
 									<hr/>
 									<div class="col-md-4 col-sm-12 col-xs-12">
 										<p style="text-transform: uppercase; text-decoration:underline;font-weight:bold;">Student Parent or Guidance Details</p>

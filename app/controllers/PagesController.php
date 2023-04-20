@@ -574,9 +574,25 @@ public function ProcessNewStudentOnline(){
         $jsonString = file_get_contents("php://input");
         $response = array();
         $phpObject = json_decode($jsonString);
-        
-        $NewStudentIdTagNo = $phpObject->{'NewStudentId'};
-        $NewStudentEnrollmentNo = $phpObject->{'EnrollmentNumber'};
+        //get or set id and entry number
+        $stmt = $this->userModel->SQLFetchStudentDESC();
+        if ($stmt == false) {
+           $Studentid = '9001';
+        }else {
+            $AvaliableID = $stmt->student__Id;
+            $Studentid = $AvaliableID+1;
+        }
+        $length = 11;
+        $number = '1234567890';
+        $numberLength = strlen($number);
+        $randomNumber = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomNumber .= $number[rand(0, $numberLength - 1)];
+        }  
+        $enrolNo = 'MCU'.$randomNumber;
+
+        $NewStudentIdTagNo = $Studentid;
+        $NewStudentEnrollmentNo = $enrolNo;
         $App = $phpObject->{'Application'};
         $Fac = $phpObject->{'Faculty'};
         $Dpt = $phpObject->{'Department'};
@@ -594,7 +610,7 @@ public function ProcessNewStudentOnline(){
         $ReS = $phpObject->{'Relationship Status'};
         $Tel = $phpObject->{'Telephone Number'};
         $isJwtApi = $phpObject->{'JwtApi'};
-    
+        
         $newJsonString = json_encode($phpObject);
         
         // This is jwt token is use to process student /parent data
@@ -639,10 +655,11 @@ public function ProcessNewStudentOnline(){
                 // Send Student Via Email
                 // if email is sent, show this message
                 $response['status']= 200;
-                $response['Successmessage']= 'Verification mail has been sent to the email you provided. Please verify email to continue application. If you have used a wrong email, please fill the form again with a valid email address. 
+                $response['Successmessage']= 'Verification mail has been sent to the student email you provided. Please verify email to continue application. If you have used a wrong email, please fill the form again with a valid email address. 
                 <br/><br/><a class="buttonResendEmail" href="'.ROOT.'Application/Registration"><b>Continue Application</b></a> ';
                 // close sending email
-                
+                unset($_SESSION['userID']);
+                unset($_SESSION['api']);
             }else {
                 $response['message']= 'Sorry.. Something went';
             }
@@ -828,7 +845,6 @@ public function ProcessNewStudentOnline(){
                                 'examTime'=>$GetExamTime,
                                 'isCount'=>$CountExam,
                             ];
-                            //dnd($data);
                         $this->view("Student/Examination", $data);
                     }catch(ViewPageException $e){
                         throw new Exception("Error Processing Request", 1);
@@ -871,7 +887,6 @@ public function ProcessNewStudentOnline(){
                     window.location.assign('".ROOT."Student/Login/');
                 </script>";
         }else{
-            //dnd($_POST);
             $eid = $_POST['exam_id'];
             $id = $_SESSION['student__Id'];
             $isSelectExam= $this->namespacemodel->isCheckExam($eid);
@@ -986,10 +1001,6 @@ public function ProcessNewStudentOnline(){
                     window.location.replace("'.ROOT.'Dashboard/AuthExamination");
                 </script>';
             }else {
-                // echo"<pre>";
-                // print_r($finallyGrade); 
-                // echo"</pre>";
-                // dnd('');
                 $save= $this->namespacemodel->isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $ansmsg, $id);
                 if ($save) {
                 $data = 
@@ -1514,66 +1525,6 @@ public function LogoutStudent(){
             'photo'=>$img
         ];
         $this->view("Student/Studentgrade", $data);
-    }
-   
- 
-    public function registerParentData(){
-        $response = array();
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if (isset($_FILES['file']['name']) != '' && isset($_POST['fname']) && isset($_POST['lname']) && isset($_POST['DOB']) && isset($_POST['Gender'])
-            && isset($_POST['email']) && isset($_POST['mobile']) && isset($_POST['address']) 
-            && isset($_POST['ChildId']) && isset($_POST['Fatherid'])){
-            // validate file
-            $photo = $_FILES['file'];
-            $name = $photo['name'];
-            $nameArray = explode('.', $name);
-            $fileName = $nameArray[0];
-            $fileExt = $nameArray[1];
-            $mime = explode('/', $photo['type']);
-            $mimeType = $mime[0];
-            $mimeExt = $mime[1];
-            $tmpLoc = $photo['tmp_name'];   
-            $fileSize = $photo['size']; 
-            // $allowed = array('jpg', 'jpeg', 'png');
-            $uploadName = md5(microtime()).'.'.$fileExt;
-            $uploadPath =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-            $dbpath     =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-            $folder =  'ParentFolder/'.trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING));
-            if ($fileSize > 90000000000000) {
-                $response['status'] = 300;
-                $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
-            }elseif ($fileSize < 90000000000000) {
-                if(!file_exists($folder)){
-                    mkdir($folder,077,true);
-                }
-                move_uploaded_file($tmpLoc,$dbpath);
-                $password = password_hash($_POST['fname'], PASSWORD_ARGON2ID);
-                $data = 
-                [
-                    'img'=>$uploadPath,
-                    'fname'=>trim(filter_var($_POST['fname'], FILTER_SANITIZE_STRING)),
-                    'lname'=>trim(filter_var($_POST['lname'], FILTER_SANITIZE_STRING)),
-                    'DOB'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
-                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
-                    'email'=>trim(filter_var($_POST['email'], FILTER_SANITIZE_STRING)),
-                    'featured'=>'1',
-                    'password'=>$password,
-                    'mobile'=>trim(filter_var($_POST['mobile'], FILTER_SANITIZE_STRING)),
-                    'address'=>trim(filter_var($_POST['address'], FILTER_SANITIZE_STRING)),
-                    'mobile'=>trim(filter_var($_POST['mobile'], FILTER_SANITIZE_STRING)),
-                    'ChildId'=>trim(filter_var($_POST['ChildId'], FILTER_SANITIZE_STRING)),
-                    'Fatherid'=>trim(filter_var($_POST['Fatherid'], FILTER_SANITIZE_STRING)),
-                ];
-        
-                if ($this->userModel->isParentSQLstmt($data)){
-                    unset($_SESSION['api']);
-                    unset($_SESSION['userID']);
-                    $response['status'] = 200;
-                    $response['message'] = '<b>Application Has Successfully Completed..!</b><p>Your Matric number has also sent to your parent email.</p>';
-                } 
-            }
-        }
-        echo json_encode($response);
     }
     
     public function AuthUser(){

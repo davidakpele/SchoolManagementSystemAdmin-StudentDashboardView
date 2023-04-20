@@ -150,24 +150,6 @@ CREATE TABLE IF NOT EXISTS `Staff`(
     `Registration_Date` DATETIME
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
  
--- CREATING Non Parent TABLE(NOTE::)the parent id is a unique id that reference student__tb > Parent__OR__Guadian__ID that way we an able to find or filter parent and student details when needed.
-
-CREATE TABLE IF NOT EXISTS `parent`(
-  `No` TINYINT(10) PRIMARY KEY AUTO_INCREMENT,
-  `id` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
-  `child__id` VARCHAR(50) UNIQUE COLLATE utf8mb4_unicode_ci NOT NULL,
-  `First_name` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Last_name` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ParentEmail` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Parentfeatured` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ParentPassword` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ParentGender` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ParentDOB` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Mobile` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Address` TEXT,
-  `Photo` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL
-)ENGINE = InnoDB DEFAULT CHARSET = latin1;
-
 -- CREATING ADMIN TABLE
 
 CREATE TABLE IF NOT EXISTS `users`(

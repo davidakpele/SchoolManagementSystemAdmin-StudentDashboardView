@@ -18,7 +18,6 @@ class Admin extends Controller {
     public function index() {
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         $countStudent = $this->userModel->studentDataCount();
-        $countParents = $this->userModel->ParentDataCount();
         $CountProfessors= $this->userModel->LecturalDataCount();
         $countuser= $this->userModel->sqlCountusers();
         $countApp = $this->userModel->AppRowCount();
@@ -44,7 +43,6 @@ class Admin extends Controller {
             'faculty'=>$countFaculties,
             'department'=>$countDept,
             'ReadOnly'=> $countuser,
-            'NumParent'=>$countParents,
             'CourseRow'=>$countCourse
         ];
         $this->view('Admin/index', $data);
@@ -1198,29 +1196,6 @@ public function AddNewStudents(){
         ob_end_clean();
         echo json_encode($response);
     }
-
-      public function deleteParent(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->deleteUserParent($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
     public function deleteApp(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         header("Access-Control-Allow-Origin: *"); 
@@ -1315,23 +1290,8 @@ public function AddNewStudents(){
         @$throwprogram = @$this->userModel->SelectProgram();
         @$throwSession= @$this->userModel->Selectsession();
         @$throwEntrylevel = @$this->userModel->SelectEntryLevel();
-        $stmt = $this->userModel->SQLFetchStudentDESC();
-        if ($stmt == false) {
-           $Studentid = '9001';
-        }else {
-            $AvaliableID = $stmt->student__Id;
-            $Studentid = $AvaliableID;
-            $sid= $Studentid+1;
-        }
-        $length = 11;
-        $number = '1234567890';
-        $numberLength = strlen($number);
-        $randomNumber = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomNumber .= $number[rand(0, $numberLength - 1)];
-        }  
-        $enrolNo = 'MCU'.$randomNumber;
-        $parentid= md5(microtime(true).mt_Rand());
+       
+      
             @$data =
             [
                 'page_title' => 'Application Form for Freshers',
@@ -1339,9 +1299,6 @@ public function AddNewStudents(){
                 'throw' => $throwprogram, 
                 'StmtEntrylevel' => $throwEntrylevel,
                 'StmtSession' => $throwSession, 
-                'pid'=>$parentid,
-                'id'=>$sid,
-                'enrolNo'=>$enrolNo,
             ];
         $this->view('Admin/Addstudent', $data);
     }
@@ -2272,34 +2229,6 @@ public function AddNewStudents(){
         $this->view('Admin/Department', $data);
     }
 
-    public function Parents(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-       $SqlParent= $this->userModel->ParentSQL();
-       $data = 
-       [
-        'SqlData'=>$SqlParent,
-       ];
-        $this->view('Admin/Parents', $data);
-    }
-    public function pedit($url){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $urlParts = explode('/', $url);
-        // Set Controller 
-        $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Parents';
-        $controllerName = $controller;
-        $id = $controllerName;
-        $Sqlmodal = $this->userModel->SQLParent($id);
-        if ($Sqlmodal) {
-            $data = 
-            [
-                'page_title'=>'Edit Data',
-                'Sqlreturn'=>$Sqlmodal
-            ];
-            $this->view('Admin/edit/pedit', $data);
-        }else {
-            header('location:' . ROOT . 'Admin/Parents');
-        }
-    }
 
     public function mioprer(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -2910,7 +2839,6 @@ public function AddNewStudents(){
                     }
                 }
             }
-
             ob_end_clean();
             echo json_encode($response);
         }
@@ -2929,7 +2857,6 @@ public function AddNewStudents(){
         $semesterSql= $this->userModel->GetSemesterData($id);
         $id = $semesterSql->ClassID;
         $class = $this->userModel->getClassData($id);
-      //  dnd($semesterSql);
         $data = 
         [
             'class'=>$class,
@@ -2937,6 +2864,144 @@ public function AddNewStudents(){
             'semesterdata'=>$semesterSql,
         ];
         $this->view('Admin/edit/editSemester', $data);
+        }
+    }
+
+    public function exam(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            $getExamset = $this->userModel->getExamData();
+            $data = 
+            [
+                'page_title'=>'Exam view',
+                'exam'=>(!empty($getExamset)) ? $getExamset : '',
+            ];
+            $this->view('Admin/exam', $data);
+        }
+    }
+
+    public function record(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            $url=implode('',$_REQUEST);
+            $urlParts = explode('/', $url);
+            if (!isset($urlParts[2]) || empty($urlParts[2])) {
+               echo "<script>
+                        alert('Invalid URL Request.!');
+                        window.location.replace('". ROOT ."Admin/Students');
+                    </script>";
+            }else {
+                // Set Controller ? 
+                $controller = (((!empty($urlParts[2])) ? $urlParts[2] : ROOT.'Admin/Students'));
+                $controllerName = $controller;
+                $id= trim(filter_var((int)$controllerName, FILTER_SANITIZE_NUMBER_INT));
+                $id = $id;
+                $getData = $this->userModel->Viewstd($id);
+    
+                 $collections=
+                [
+                    'page_title'=>'Student Performance | Record',
+                    'id'=>$id,
+                    'f_id'=>$getData->Faculty_id,
+                    'd_id'=>$getData->Department_id,
+                    'c_id'=>$getData->Class,
+                    's_id'=>$getData->semester,
+                    'con_id'=>$getData->Conid
+                ];
+                
+                $get_student_record = $this->userModel->getStudentRecord($collections);
+                $get_student_semester= $this->userModel->isFetchSemester();
+                $get_student_class= $this->userModel->ClassModel();
+                $data=
+                [
+                    'page_title'=>'Student Performance | Record',
+                    'data'=>$get_student_record,
+                    'sme'=>$get_student_semester,
+                    'cls'=>$get_student_class,
+                    'id'=>$id,
+                ];
+                
+                $this->view('Admin/student_record', $data);
+            }
+           
+        }
+    }
+
+    public function data(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            $action = $_GET['action'];
+            if ($action =='view_exam') {
+                $id = trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+                $getexamData = $this->userModel->getExamSettingData($id);
+                if (!empty($getexamData)) {
+                    $data=
+                    ['data'=>$getexamData];
+                    $this->view('Admin/modal/exam_modal', $data);
+                }
+            }
+            if ($action == 'change_status') {
+                 if(isset($_GET['status'])){
+                    // Sanitize POST data
+                    $status = $_GET['status'];
+                    $id= (int)$_GET['id'];
+                    $data = 
+                        [
+                            'page_title'=>'Application Page',
+                            'id'=>$id,
+                            'status'=>$status
+                        ];
+                        if ($this->userModel->saveCategoryStatusChanges($data)){
+                            //Redirect to the page
+                            header('location:'.ROOT.'Admin/Application' );
+                        } else {
+                            die('Sorry..! Something went wrong');
+                        }
+                    }
+            }
+            if ($action =='get_record') {
+                header("Access-Control-Allow-Origin: *");
+                header("Access-Control-Allow-Methods: *");
+                header("Access-Control-Allow-Headers: *");
+                header("Content-Type: application/json");
+                header("Access-Control-Max-Age: 3600");
+                header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+                
+                if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
+                    dnd('Connection Failed.!');
+                }else{
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    $phpObject = json_decode($jsonString);
+                    $depid=$phpObject->{'department'};
+                    $Classid=$phpObject->{'class'};
+                    $semsterid=$phpObject->{'semester'};
+                    $newJsonString = json_encode($phpObject);
+                    $get_student_course = $this->userModel->get_student_record($depid, $Classid, $semsterid);
+                    if ($get_student_course) {
+                        $response['status']=200;
+                        $response['data']=$get_student_course;
+                    }else {
+                        $response['status']=400;
+                        $response['message']='Sorry..! Student Has\'t Performan Any Task Yet.';
+                    }
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
+        }
+    }
+    public function settings(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            
+            $data=['page_title'=>'Settings'];
+            $this->view('Admin/Settings', $data);
         }
     }
 }

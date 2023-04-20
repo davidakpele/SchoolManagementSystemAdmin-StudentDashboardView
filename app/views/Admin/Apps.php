@@ -83,7 +83,8 @@
 				<thead>
                 <tr>
                     <th>S/N</th>
-                    <th>Cat. Name</th>
+                    <th>Status</th>
+                    <th>Category Name</th>
                     <th>Parent</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -98,8 +99,14 @@
                         if ($presult > 0) $i ++;?>
 						<tr>
 							<td><?=$i?></td>
+                            <td>
+                                <a href="<?=ROOT."Admin/data?action=change_status&status=".(($presult['Status'] == 0)?'1' : '0')?>&id=<?=$presult['Category__ID'];?>" class="btn btn-<?=(($presult['Status'] ==1)?'default':'danger')?> btn-xs" title="Grant Professor Access To Account">
+                                    <i class="fa fa-<?=(($presult['Status'] ==1)?'minus':'plus')?>"></i>&nbsp<?=(($presult['Status'] == 1)? 'Available Now': 'Make Available')?>
+                                </a>
+                            </td>
                             <td><?=$presult['Category__name']?> </td>
                             <td><?=$presult['Parent']?></td>
+                           
                             <td>
                                 <div class="flex" style="display:flex">
                                     <div class="text-center">
