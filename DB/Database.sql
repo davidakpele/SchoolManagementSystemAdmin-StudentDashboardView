@@ -21080,10 +21080,23 @@ CREATE TABLE IF NOT EXISTS `questions` (
     `sn` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `answer` (
+CREATE TABLE IF NOT EXISTS  `answer` (
     `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
     `qid` text NOT NULL,
     `ansid` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `options` (
+    `sn` INT(10) PRIMARY KEY AUTO_INCREMENT,
+    `optionid` VARCHAR(50) NOT NULL,
+    `options` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS E `optionsinfo` (
+    `sn ` INT(10) PRIMARY KEY AUTO_INCREMENT,
+    `qid` VARCHAR(50) NOT NULL,
+    `optionsid` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

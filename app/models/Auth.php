@@ -67,10 +67,7 @@
             }
         }
         public function findSpecificStudent($id){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, 
-		student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active,
-		studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings
-		 FROM student, studentapp WHERE student.student__Id = :id AND student.Conid = studentapp.Conid');
+		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp WHERE student.student__Id = :id AND student.Conid = studentapp.Conid');
 		$this->DB->bind(':id', $id);
 		$row = $this->DB->single();
 		if(!empty($row)){

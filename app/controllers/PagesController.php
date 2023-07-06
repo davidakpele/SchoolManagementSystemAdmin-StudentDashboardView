@@ -112,7 +112,7 @@ Class PagesController extends Controller {
     	
     }
 
-    public function SecretInterfaceBug(){
+    public function Auth(){
         header("Access-Control-Allow-Origin: *"); 
         header("Content-Type: application/json; charset=UTF-8");
         header("Access-Control-Allow-Methods: POST");
@@ -121,19 +121,30 @@ Class PagesController extends Controller {
         ob_start();
         $jsonString = file_get_contents("php://input");
         $response = array();
-        $i = json_decode($jsonString);
-        $AdminPostUsername=$i->{'Username'};
-        $AdminPostPassword=$i->{'Password'};
-        $newJsonString = json_encode($i);
-        $ValidPostUsername = strip_tags(trim(filter_var($AdminPostUsername, FILTER_SANITIZE_STRING)));
-        $ValidPostPassword = strip_tags(trim(filter_var($AdminPostPassword, FILTER_SANITIZE_STRING)));
-        $loggedInUser = @$this->userModel->login($ValidPostUsername, $ValidPostPassword);
-        if ($loggedInUser) {
-            @$this->createUserSession($loggedInUser);
-            $response['status'] =  '0390ad4cd33025f6b401dfbedd4d239d90d157c9224bfa22308085d563cd';
-        }else {
-            $response['message']= 'Invalid Username or Password.';
+        $Incomingdata = json_decode($jsonString);
+
+        $Postpassword=$Incomingdata->{'password'};
+
+        $SetnewJsonString = json_encode($Incomingdata);
+        if (!filter_var(strip_tags(trim($Incomingdata->{'email'})), FILTER_VALIDATE_EMAIL)) {
+            $response['status'] =  '401';
+            $response['message']= 'Invalid Email Address.!';
+        }else{
+            $Postemail=$Incomingdata->{'email'};
+            $data=
+            [
+                'email'=> strip_tags(trim(filter_var($Postemail, FILTER_SANITIZE_STRING))),
+                'password'=> strip_tags(trim(filter_var($Postpassword, FILTER_SANITIZE_STRING))),
+            ];
+            $loggedInUser = @$this->userModel->login($data);
+            if ($loggedInUser) {
+                @$this->createUserSession($loggedInUser);
+                $response['status'] =  '200OK';
+            }else {
+                $response['message']= 'Invalid Username or Password.';
+            }
         }
+        
         ob_end_clean();
         echo json_encode($response);
     }
@@ -142,20 +153,20 @@ Class PagesController extends Controller {
     // ========================================================
 
     public function Log(){
-         if(isLoggedInAccountant()){
-              header('location:' . ROOT . 'Management/LecturalDashboard/index');
+        if(isLoggedInAccountant()){
+                header('location:' . ROOT . 'Management/LecturalDashboard/index');
             }elseif (isLoggedInStaff()) {
-                 header('location:' . ROOT . 'Management/LecturalDashboard/index');
+                header('location:' . ROOT . 'Management/LecturalDashboard/index');
             }elseif (isLoggedInHr()) {
-                 header('location:' . ROOT . 'Management/LecturalDashboard/index');
+                header('location:' . ROOT . 'Management/LecturalDashboard/index');
             }elseif (isLoggedInLectural()) {
                 header('location:' . ROOT . 'Management/LecturalDashboard/index');
             }
             @$data = 
-                [
-                    'page_title'=>'Management Login',
-                    'meta_tage_content_Seo'=>'',
-                ]; 
+            [
+                'page_title'=>'Management Login',
+                'meta_tage_content_Seo'=>'',
+            ]; 
            
         @$this->view("Management/Log", @$data);	
     }
@@ -312,15 +323,16 @@ Class PagesController extends Controller {
         @$dataAPi['type'] =2;
         @$dataAPi['password'] = '';
          try{
-                @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-                @$data = [
-                            'page_title'=>'Lecturar Dashboard',
-                            'ZoomLink'=>$response->join_url,
-                            'ZoomId'=>$response->id,
-                            'Manualpassword'=>$response->password,
-                            'h323_password'=>$response->h323_password,
-                            'encrypted_password'=>$response->encrypted_password,
-                        ];
+            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+            @$data = 
+            [
+                'page_title'=>'Lecturar Dashboard',
+                'ZoomLink'=>$response->join_url,
+                'ZoomId'=>$response->id,
+                'Manualpassword'=>$response->password,
+                'h323_password'=>$response->h323_password,
+                'encrypted_password'=>$response->encrypted_password,
+            ];
             }catch(Exception $ex){
                 die($ex);
             }
@@ -364,44 +376,6 @@ Class PagesController extends Controller {
         
     }
 
-    
-    public function ParentLoginPortal(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $PostUsername=$phpObject->{'Username'};
-        $PostPassword=$phpObject->{'Password'};
-        $newJsonString = json_encode($phpObject);
-        if (empty($PostUsername) || $PostUsername =="") {
-            $response['errormessage']='Please Enter Your Matric Number Or Application Number';
-        }else if (empty($PostPassword) || $PostPassword =="") {
-            $response['errormessage']= 'Please Enter Your Password';
-        }else{
-            $StudentUsername = trim(filter_var($PostUsername, FILTER_SANITIZE_STRING));
-            $StudentPassword = trim(filter_var($PostPassword, FILTER_SANITIZE_STRING));
-            @$loggedInstudent = $this->userModel->ParentLogin($StudentUsername);
-            if(!empty($loggedInstudent)){
-                $studentid = $loggedInstudent->student__Id;
-                @$FinalLogin = $this->userModel->P_LoginAuth($studentid, $StudentPassword);
-                if ($FinalLogin) {
-                    $response['status'] =  200;
-                    $this->createParentSession($FinalLogin);
-                }else {
-                    $response['message']= 'Username/Password Mismatch';
-                }
-            }else {
-                $response['message']= 'Invalid Matric Number Entered..!';
-            }
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
     // ==============================================
     // Entry Requirment Method 
     // ===============================================
@@ -472,7 +446,6 @@ public function isRegister(){
         $jsonString = file_get_contents("php://input");
         $response = array();
         $phpObject = json_decode($jsonString);
-        $isJwtApi = $phpObject->{'__EVENTARGUMENT'};
         $AppType = $phpObject->{'AppType'};
         $Surname = $phpObject->{'Surname'};
         $FirstName = $phpObject->{'FirstName'};
@@ -496,7 +469,7 @@ public function isRegister(){
         }
         if (empty($Stm)){
             $response['message']= 'Please Provide Your Email Address.';
-        }elseif (!$validateEmail == true) {
+        }elseif (!$validateEmail) {
             $response['message']= $Stm.' is not a valid email address.';
         }elseif (!empty($AppType) && !empty($Surname) && !empty($FirstName) && !empty($MiddleName) && !empty($MobileNum) && !empty($Stm)) {
             if($this->userModel->isExistsEmail($Stm)) {
@@ -821,6 +794,7 @@ public function ProcessNewStudentOnline(){
             $new_url = $parts[0].'/'.$parts[1].'/'.$parts[2].'/'.$parts[3].'/'.$parts[4].'/'.$parts[5].'/'.$parts[6];
             $eid=strip_tags(trim((string)filter_var($parts[6], FILTER_SANITIZE_STRING), true));
             $isSelectExam= $this->namespacemodel->getExam($eid);
+            //dnd($isSelectExam);
             $CountExam = $this->namespacemodel->isCounter($eid);
             $GetExamTime= $this->namespacemodel->isexamTime($eid);
             $id = $_SESSION['student__Id'];
@@ -900,9 +874,11 @@ public function ProcessNewStudentOnline(){
             $userAnswers = [];
             $defaultmark= 100;
             foreach ($isSelectExam as $k ) {
+                $count++;
+               
                 $arr = $k['questionid'];
                 $ansid = $k['ansid'];
-                $count++;
+                
                 if (isset($_POST[$count])) {
                    foreach ($_POST[$count] as $key => $value) {
                         if ($_POST[$count]) {
@@ -910,13 +886,16 @@ public function ProcessNewStudentOnline(){
                             $userAnswers = $value;
                         }
                     }
-                    $isAnswers= $this->namespacemodel->isCheckExamAnsers($ci, $userAnswers);
-                   
                  
+                    $isAnswers= $this->namespacemodel->isCheckExamAnsers($ci, $userAnswers);
+                    
                     if ($isAnswers == false) {
                         $FailAns[]= 'true';
                         $wrongAns = count($FailAns);
+        
+                        $CorrentAnsresult= count($CorrentAns);
                     }elseif ($isAnswers == true) {
+                        $wrongAns = count($FailAns);
                         $CorrentAns[]= 'true';
                         $CorrentAnsresult= count($CorrentAns);
                     }
@@ -926,7 +905,7 @@ public function ProcessNewStudentOnline(){
                 }
                 
             } 
-
+            //processing score and grade
             // to avoid error of empty value
             $wrongAns = (!empty($wrongAns)) ? $wrongAns : '';
             $CorrentAnsresult = (!empty($CorrentAnsresult)) ? $CorrentAnsresult : '0' ;
@@ -944,13 +923,14 @@ public function ProcessNewStudentOnline(){
             $id = $_SESSION['student__Id'];
             $Courseid= $_POST['courseid'];
             $appType = $this->namespacemodel->FetchStudentData($id);
-
+            
             if ($appType) {
                 $relationid = $appType->Conid;
                 $checkStudentData = $this->namespacemodel->studentdata($relationid);
                 // ============================================
                 $Application__Type = $checkStudentData->Application_id;
             }
+               
             // ============================================
             $core1 = $this->userModel->fetchApp($Application__Type);
             // ================================
@@ -994,7 +974,9 @@ public function ProcessNewStudentOnline(){
                 $finallyGrade = 'O';
                 $scores = '0';
             }
+            
             $beforeSave = $this->namespacemodel->beforeSave($eid,$id);
+         
             if (!empty($beforeSave)) {
                 $msg = ". ";
                 echo '<script>alert("You\'ve Already Written This Particular Exam, You Can\'t Re-write This Exam unless You Got The Admin Permission.");
@@ -1346,28 +1328,28 @@ public function ProcessNewStudentOnline(){
         $id = $Admin__id;
         @$Route = @$this->userModel->lastlog($last_login, $Admin__id);
         $stmt = $this->userModel->SQLuserEdit($id);
-            if($stmt){
-                $_SESSION['Admin__id'] = @$stmt->Admin__id;
-                $_SESSION['username'] = @$stmt->username;
-                $_SESSION['adminExmail'] = @$stmt->Email;
-                $_SESSION['adminSurname']= @$stmt->Surname;
-                $_SESSION['adminothername']= @$stmt->Othername;
-                $_SESSION['Role'] = $stmt->Role;
-                // Taking current system Time
-                $_SESSION['start'] = time();
-                //set session to expire after one day 24hr
-               // $_SESSION['expire'] = $_SESSION['start'] + (73 * 60 * 60) ;  
-                // Use a ternary operation to set the URL 
-                $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
-                if(isset($url)){ 
-                    echo "<script>
-                            window.location.replace('". ROOT . @$url."');
-                        </script>";
-                    echo '<nosript>';
-                    echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $url . '" />';
-                    echo '</nosript>';
-                }
+        if($stmt){
+            $_SESSION['Admin__id'] = @$stmt->Admin__id;
+            $_SESSION['username'] = @$stmt->username;
+            $_SESSION['adminExmail'] = @$stmt->Email;
+            $_SESSION['adminSurname']= @$stmt->Surname;
+            $_SESSION['adminothername']= @$stmt->Othername;
+            $_SESSION['Role'] = $stmt->Role;
+            // Taking current system Time
+            $_SESSION['start'] = time();
+            //set session to expire after one day 24hr
+            // $_SESSION['expire'] = $_SESSION['start'] + (73 * 60 * 60) ;  
+            // Use a ternary operation to set the URL 
+            $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
+            if(isset($url)){ 
+                echo "<script>
+                        window.location.replace('". ROOT . @$url."');
+                    </script>";
+                echo '<nosript>';
+                echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $url . '" />';
+                echo '</nosript>';
             }
+        }
     }
 
    
@@ -1597,6 +1579,8 @@ public function LogoutStudent(){
             }
         }
     }
-}
 
-//https://fmovies.co/film/numb3rs-season-1-14556?play=13
+    public function EventBox(){
+        dnd('hello');
+    }
+}

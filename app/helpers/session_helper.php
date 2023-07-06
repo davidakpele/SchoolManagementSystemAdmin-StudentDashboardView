@@ -99,3 +99,16 @@ function pretty_html_special_characters($text){
 function htmlspanishchars($str){
     return str_replace(array("&lt;", "&gt;"), array("<", ">"), htmlspecialchars($str, ENT_NOQUOTES, "UTF-8"));
 }
+
+function AuthCheck(){
+    if(!isLoggedInAdmin()){
+        header('location:' . ROOT . 'Administration/Default');
+    }else{
+       if ($_SESSION['Role'] ==1 || $_SESSION['Role'] ==2) {
+            return true;
+        }else{ 
+            return false;
+        } 
+    }
+    
+}

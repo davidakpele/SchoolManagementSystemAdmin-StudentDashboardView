@@ -67,33 +67,21 @@
                                 </tr>
                             </thead>
 				        <tbody>
-					<?php $i = 0?>
-					<?php
-						if ($data['exam'])
-						foreach ($data['exam'] as $exam): ?>
-						<?php if ($exam > 0) $i ++;?>
-						<tr>
-							<td><?=$i?></td>
-                            <td><?=$exam['Course']?></td>
-                            <td><?=$exam['startTime']?> </td>
-                            <td><?=((empty($exam['endTime']))? '': $exam['endTime'])?></td>
-                            <td><?=$exam['duedate']?></td>
-                            <td><?=$exam['total']?></td>
-                        <td>
-                            <div class="flex" style="display:flex">
-                                <div class="text-center">
-                                    <button type="button" data-id="<?=$exam['eid']?>" class="btn btn-xs btn-primary viewbtn"><i class="fa fa-eye"></i></button>
-                                </div>
-                            </div>
-                        </td>
-					</tr>
-					<?php endforeach?>
-				</tbody>
-			</table>
-		</form>
-	</div>
-</div>
-</section>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </section>
 <!-- /.content -->
 </div>
             

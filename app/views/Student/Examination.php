@@ -132,12 +132,13 @@
                                     <?php $this->db = new Database;?>
                                     <?php  
                                     if (!empty($data['examcontroller']))
-                                    foreach ($data['examcontroller'] as $key ):?>
+                                    $formdata = '';
+                                    foreach ($data['examcontroller'] as $key):?>
                                         <?php 
+                                        $ops= $key['optionsid'];
                                         $qns=$key['question'];
                                         $qid=$key['questionid'];
                                         ?>
-                                    
                                     <div class="question-item py-4 <?=(($qi) != 1 ? "d-none" : '') ?>">
                                         <div class="d-flex align-items-top mb-3">
                                             <div class="col-auto">
@@ -155,6 +156,7 @@
                                             </div>
                                         </div>
                                          <!-- OPTIONS -->
+                                       
                                        <div class="mx-3">
                                             <div class="row mb-2">
                                                 <div class="col-sm-12 col-md-6 col-lg-6">
@@ -162,8 +164,11 @@
                                                         <div class="custom-control quiz-input position-relative"> 
                                                             <label class="font-weight-normal">
                                                                 <span class="quiz-option-number">A</span>
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt1'])?>" >
-                                                                <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt1'])?></span>
+                                                                <input type="radio" 
+                                                                id="<?=((!empty($key['optionsid'][0]['optionid']))?$key['optionsid'][0]['optionid'] : $no)?>" 
+                                                                name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" 
+                                                                value="<?=htmlspecialchars($key['optionsid'][0]['optionid'])?>" >
+                                                                <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['optionsid'][0]['options'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -173,8 +178,11 @@
                                                         <div class="custom-control quiz-input">
                                                             <label class="font-weight-normal">
                                                                 <span class="quiz-option-number">B</span>
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt2'])?>" >
-                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt2'])?></span>
+                                                                <input type="radio" 
+                                                                id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" 
+                                                                name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" 
+                                                                value="<?=htmlspecialchars($key['optionsid'][1]['optionid'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['optionsid'][1]['options'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -184,8 +192,11 @@
                                                         <div class="custom-control quiz-input">
                                                             <label class="font-weight-normal">
                                                                 <span class="quiz-option-number">C</span>
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt3'])?>" >
-                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt3'])?></span>
+                                                                <input type="radio" 
+                                                                id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" 
+                                                                name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" 
+                                                                value="<?=htmlspecialchars($key['optionsid'][2]['optionid'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['optionsid'][2]['options'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>
@@ -196,8 +207,11 @@
                                                         <div class="custom-control quiz-input">
                                                             <label class="font-weight-normal">
                                                                 <span class="quiz-option-number">D</span>
-                                                                <input type="radio" id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" value="<?=htmlspecialchars($key['opt4'])?>" >
-                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['opt4'])?></span>
+                                                                <input type="radio" 
+                                                                id="<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>" 
+                                                                name="<?=$no?>[<?=((!empty($key['questionid']))?$key['questionid'] : $no)?>]" 
+                                                                value="<?=htmlspecialchars($key['optionsid'][3]['optionid'])?>" >
+                                                               <span>&nbsp;&nbsp;&nbsp;<?=htmlspecialchars($key['optionsid'][3]['options'])?></span>
                                                             </label>
                                                         </div>
                                                     </div>

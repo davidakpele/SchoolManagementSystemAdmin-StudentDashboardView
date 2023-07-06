@@ -21,8 +21,8 @@
         <span class="d-sm-inline-block" data-active-item-text="">Settings</span>
       </button>
        <ul class="dropdown-menu" role="menu" data-show-active-item="" data-skip-active-class="true" aria-labelledby="fgroupingdropdown">
-        <li><a class="dropdown-item  btn btn-primary" href="<?=ROOT?>Student/AuthExamination" data-filter="sort" data-pref="lastaccessed" data-value="ul.timeaccess desc" aria-label="Sort courses by last accessed date" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem"><i class="icon fa fa-pencil fa-fw " style="color:blue"></i>Examination</a></li>
-        <li><a class="dropdown-item btn btn-primary" href="<?=ROOT?>Student/change_password/" data-filter="sort" data-pref="title" data-value="fullname" aria-label="Sort courses by course name" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" aria-current="true"><i class="icon fa fa-cog fa-fw " style="color:blue"></i>Reset Password</a></li>
+        <li><a class="dropdown-item  btn btn-primary" href="<?=ROOT?>Student/AuthExamination" data-filter="sort" data-pref="lastaccessed" data-value="ul.timeaccess desc" aria-label="Sort courses by last accessed date" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" style="font-size:12px"><i class="icon fa fa-pencil fa-fw " style="color:blue;"></i>Examination</a></li>
+        <li><a class="dropdown-item btn btn-primary" href="<?=ROOT?>Student/change_password/" data-filter="sort" data-pref="title" data-value="fullname" aria-label="Sort courses by course name" aria-controls="courses-view-6283de8d29ced6283de8cf34be6" role="menuitem" aria-current="true"style="font-size:12px"><i class="icon fa fa-cog fa-fw " style="color:blue;"></i>Reset Password</a></li>
       </ul>
       </div>
     </div>
@@ -253,14 +253,14 @@
             </div>
           </div>
         </div>
-        <div class="card-body p-3" id="yui_3_17_2_1_1652775199957_330">
+        <!-- <div class="card-body p-3" id="yui_3_17_2_1_1652775199957_330">
           <h6 id="instance-2333704-header" class="card-title d-inline" style="font-weight:600">UPCOMING EVENTS</h6>
           <div class="card-text content mt-2">
           <img class="icon " alt="Close window" title="Close window" src="<?=ASSETS?>img/icon">
             <a href="#" onclick="___CallViewEvent()">Tutor Marked Assignment 1<small>(TMA1) Close Saturday, 4 June, 11:59 PM</small></a>
           </div>
           <span class="border-bottom"></span>
-        </div>
+        </div> -->
       </div>
   </div>
 </div>
@@ -292,36 +292,6 @@
       }
     });
   });
-
-function ___CallViewEvent(SSD){
-		let data = {"SSD":SSD};
-		jQuery.ajax({
-			url: '<?=ROOT;?>PagesController/EventBox',
-			method: "POST",
-			data: data,
-			crossDomain: true,
-			dataType: 'html',
-			crossOrigin: true,
-			async: true,
-			cache: false,
-			processData: true,
-			headers: {
-						'Access-Control-Allow-Methods': '*',
-						"Access-Control-Allow-Credentials": true,
-						"Access-Control-Allow-Headers" : "Access-Control-Allow-Headers, Origin, X-Requested-With, Content-Type, Accept, Authorization",
-						"Access-Control-Allow-Origin": "*",
-						"Control-Allow-Origin": "*",
-						"cache-control": "no-cache"
-					},
-			success:(data)=>{
-				$('body').append(data);
-				$('#EventModal').modal('show');
-			},
-			error: ()=>{
-				alert("Something went wrong..!");
-			}
-		});
-	}
   // When the user scrolls down 20px from the top of the document, show the button
   window.onscroll = function () {
     scrollFunction()

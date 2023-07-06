@@ -31,7 +31,7 @@ class Admin extends Controller {
             if ($role==1) {
                 $countuser = $countuser;
             }else {
-                dnd('Accountant');
+                 $countuser = 1;
             }
         }
         $data = 
@@ -200,94 +200,99 @@ public function AddNewStudents(){
 }
 // Admin all profile methodjhgouihpigfiyfougy98
     public function Professors(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');} 
-        $stmt = $this->userModel->lectural();
-        $data = 
-        [
-            'page_title' => 'PROFESSOR TABLE',
-            'All'=> $stmt,
-        ];
-        if(isset($_GET['featured'])){
-			// Sanitize POST data
-            $Professor__id = $_GET['Professor__id'];
-            $featured= (int)$_GET['featured'];
-           $data = 
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{ 
+            $stmt = $this->userModel->lectural();
+            $data = 
             [
-                'page_title'=> 'PROFESSOR TABLE LIST',
-                'ft'=> $stmt,
-                'Professor__id'=> $Professor__id,
-                'featured'=> $featured
+                'page_title' => 'PROFESSOR TABLE',
+                'All'=> $stmt,
             ];
-             if ($this->userModel->GrantAccessTOprofessor($Professor__id, $featured)){
-                //Redirect to the page
-                header('location: ' . ROOT . 'Admin/Professors' );
-            } else {
-                    die('Sorry..! Something went wrong');
-            }
-         }
-         //  This right here will fetch data from the database to the UI
-         if(isset($_GET['Edit'])){
-            $Edit__id = $_GET['Edit'];
-            $Edit__id = (int)$_GET['Edit'];
-             $row =$this->userModel->findUserByApp($Edit__id);
-             if($row == true){
-                //  Fetching values from database
-                $ssid=$row->Professor__id;
-                $sname=$row->Surname;$mname=$row->Middle__name;$Oname=$row->Othername;
-                $Ascode=$row->Accesscode;$email=$row->Email;$ftd=$row->featured;
-                $tel=$row->Telephone_No;$DoB=$row->Date_of_Birth;$PoD=$row->Place__of__birth;
-                $gn= $row->Gender;$Religion = $row->Religion;$relatx=$row->Relationship_sts;
-                $Cst=$row->Civil_status;$Ctz= $row->Citizenship;$nin=$row->NIN;$Hat=$row->Height;
-                $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->photo;
-                $Add=$row->Address;
-                $Saved_image = (($photo != '')?$photo : '');
-                // Assign each one to data array so we can pass in data to our page.
-                $data =
-                    [
-                        'page_title'=>'Edit Professor',
-                        'SavephotoError'=>'',
-                        'id'=>$ssid,'sname'=>$sname,'mname'=>$mname,
-                        'Oname'=>$Oname,'Ascode'=> $Ascode,'email'=>$email,
-                        'ftd'=>$ftd,'tel'=>$tel,'DoB'=>$DoB,'PoD'=>$PoD,
-                        'gn'=>$gn,'relatx'=>$relatx,
-                        'Cst'=>$Cst,'Ctz'=>$Ctz,'nin'=>$nin,'Hat'=>$Hat,
-                        'Wat'=>$Wat,'QCT'=>$QCT, 'Religion'=>$Religion,
-                        'Bty'=>$Bty,'photo'=>$photo,'Add'=>$Add,
-                        'Saved_image'=>$Saved_image,
-                    ];
-                if(isset($_POST['__EditProfessor']) && !empty($data['Saved_image'])){
-                   $data['SavephotoError']= 'You must delete or replace this photo before you make a successful Edit'; 
-                }elseif (isset($_POST['__EditProfessor']) && empty($_FILES)) {
-                    echo "<script>alert('File is empty')</script>";
-                }
-             }else {
-                  header('location:' . ROOT. 'Admin/Professors');
-             }
-        } 
-        if (isset($_GET['View'])) {
-    
-            $id = $_GET['View'];
-            $fetchSingleUser = $this->userModel->loadingProfData($id);
-            if(!$fetchSingleUser == true){
-                echo "<script>alert('Invalid ID Given..! Pleasee You are not authorised to Access this User. Contact Super Admin.');
-                    window.location.replace('".ROOT."Admin/Professors');
-                </script>";
-               // header('location:' . ROOT. 'Admin/Professors/');
-            }
-            if($fetchSingleUser == true){
-                $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->photo;$Add=$fetchSingleUser->Address;
-                $patch = $fname .' '.$lname;
-                $data = 
+            if(isset($_GET['featured'])){
+                // Sanitize POST data
+                $Professor__id = $_GET['Professor__id'];
+                $featured= (int)$_GET['featured'];
+            $data = 
                 [
-                    'page_title'=>'View '.$patch.' Personal Data Sheet - PROFILE',
-                    'returnIdS'=>$returnIdS,'sname'=>$fname,'Oname'=>$lname,'mname'=>$mname,'Ascode'=>$Ascode,'email'=>$email,'ftd'=>$ftd,'tel'=>$tel,'DoB'=>$DoB,'PoD'=>$PoD,'gn'=>$gn,'relatx'=>$relatx,'Cst'=>$Cst,'Ctz'=>$Ctz,'nin'=>$nin,'Hat'=>$Hat,'Wat'=>$Wat,'QCT'=>$QCT,'Religion'=>$Religion,'Bty'=>$Bty,'photo'=>$photo,'Add'=>$Add,
+                    'page_title'=> 'PROFESSOR TABLE LIST',
+                    'ft'=> $stmt,
+                    'Professor__id'=> $Professor__id,
+                    'featured'=> $featured
                 ];
-            }else{
-                die('Something went wrong on the Server.');   
+                if ($this->userModel->GrantAccessTOprofessor($Professor__id, $featured)){
+                    //Redirect to the page
+                    header('location: ' . ROOT . 'Admin/Professors' );
+                } else {
+                        die('Sorry..! Something went wrong');
+                }
             }
+            //  This right here will fetch data from the database to the UI
+            if(isset($_GET['Edit'])){
+                $Edit__id = $_GET['Edit'];
+                $Edit__id = (int)$_GET['Edit'];
+                $row =$this->userModel->findUserByApp($Edit__id);
+                if($row == true){
+                    //  Fetching values from database
+                    $ssid=$row->Professor__id;
+                    $sname=$row->Surname;$mname=$row->Middle__name;$Oname=$row->Othername;
+                    $Ascode=$row->Accesscode;$email=$row->Email;$ftd=$row->featured;
+                    $tel=$row->Telephone_No;$DoB=$row->Date_of_Birth;$PoD=$row->Place__of__birth;
+                    $gn= $row->Gender;$Religion = $row->Religion;$relatx=$row->Relationship_sts;
+                    $Cst=$row->Civil_status;$Ctz= $row->Citizenship;$nin=$row->NIN;$Hat=$row->Height;
+                    $Wat= $row->Weight;$Bty=$row->Blood_Type;$QCT=$row->Qualification;$photo=$row->photo;
+                    $Add=$row->Address;
+                    $Saved_image = (($photo != '')?$photo : '');
+                    // Assign each one to data array so we can pass in data to our page.
+                    $data =
+                        [
+                            'page_title'=>'Edit Professor',
+                            'SavephotoError'=>'',
+                            'id'=>$ssid,'sname'=>$sname,'mname'=>$mname,
+                            'Oname'=>$Oname,'Ascode'=> $Ascode,'email'=>$email,
+                            'ftd'=>$ftd,'tel'=>$tel,'DoB'=>$DoB,'PoD'=>$PoD,
+                            'gn'=>$gn,'relatx'=>$relatx,
+                            'Cst'=>$Cst,'Ctz'=>$Ctz,'nin'=>$nin,'Hat'=>$Hat,
+                            'Wat'=>$Wat,'QCT'=>$QCT, 'Religion'=>$Religion,
+                            'Bty'=>$Bty,'photo'=>$photo,'Add'=>$Add,
+                            'Saved_image'=>$Saved_image,
+                        ];
+                    if(isset($_POST['__EditProfessor']) && !empty($data['Saved_image'])){
+                    $data['SavephotoError']= 'You must delete or replace this photo before you make a successful Edit'; 
+                    }elseif (isset($_POST['__EditProfessor']) && empty($_FILES)) {
+                        echo "<script>alert('File is empty')</script>";
+                    }
+                }else {
+                    header('location:' . ROOT. 'Admin/Professors');
+                }
+            } 
+            if (isset($_GET['View'])) {
+        
+                $id = $_GET['View'];
+                $fetchSingleUser = $this->userModel->loadingProfData($id);
+                if(!$fetchSingleUser == true){
+                    echo "<script>alert('Invalid ID Given..! Pleasee You are not authorised to Access this User. Contact Super Admin.');
+                        window.location.replace('".ROOT."Admin/Professors');
+                    </script>";
+                // header('location:' . ROOT. 'Admin/Professors/');
+                }
+                if($fetchSingleUser == true){
+                    $returnIdS=$fetchSingleUser->Professor__id;$fname = $fetchSingleUser->Surname;$lname = $fetchSingleUser->Othername;$mname=$fetchSingleUser->Middle__name;$Ascode=$fetchSingleUser->Accesscode;$email=$fetchSingleUser->Email;$ftd=$fetchSingleUser->featured;$tel=$fetchSingleUser->Telephone_No;$DoB=$fetchSingleUser->Date_of_Birth;$PoD=$fetchSingleUser->Place__of__birth;$gn= $fetchSingleUser->Gender;$relatx=$fetchSingleUser->Relationship_sts;$Cst=$fetchSingleUser->Civil_status;$Ctz= $fetchSingleUser->Citizenship;$nin=$fetchSingleUser->NIN;$Hat=$fetchSingleUser->Height;$Wat= $fetchSingleUser->Weight;$QCT =$fetchSingleUser->Qualification;$Religion =$fetchSingleUser->Religion;$Bty=$fetchSingleUser->Blood_Type;$photo=$fetchSingleUser->photo;$Add=$fetchSingleUser->Address;
+                    $patch = $fname .' '.$lname;
+                    $data = 
+                    [
+                        'page_title'=>'View '.$patch.' Personal Data Sheet - PROFILE',
+                        'returnIdS'=>$returnIdS,'sname'=>$fname,'Oname'=>$lname,'mname'=>$mname,'Ascode'=>$Ascode,'email'=>$email,'ftd'=>$ftd,'tel'=>$tel,'DoB'=>$DoB,'PoD'=>$PoD,'gn'=>$gn,'relatx'=>$relatx,'Cst'=>$Cst,'Ctz'=>$Ctz,'nin'=>$nin,'Hat'=>$Hat,'Wat'=>$Wat,'QCT'=>$QCT,'Religion'=>$Religion,'Bty'=>$Bty,'photo'=>$photo,'Add'=>$Add,
+                    ];
+                }else{
+                    die('Something went wrong on the Server.');   
+                }
+            }
+            
+            $this->view('Admin/Professors', $data);
         }
-         
-        $this->view('Admin/Professors', $data);
     }
 
     public function add(){
@@ -302,8 +307,8 @@ public function AddNewStudents(){
             $Prof__ID = $r;
         }
 
-        $length = 7;
-        $key = 'MUC.STP';
+        $length = 8;
+        $key = 'UD';
         $number = '1234567890';
         $numberLength = strlen($number);
         $randomNumber = '';
@@ -560,25 +565,30 @@ public function AddNewStudents(){
         ];
         $this->view('Admin/importFile', $data);
     }
+    
     public function users(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        // ALTER TABLE `super__administrator` ADD `Role` INT(11) NULL AFTER `create_on`, ADD UNIQUE (`Role`);
-        $role= (int)$_SESSION['Role'];
-        if ($role==2) {
-             $all = $this->userModel->adminTable();
-        }else {
-            if ($role==1) {
-                $all = $this->userModel->SuperadminTable();
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{ 
+            $role= (int)$_SESSION['Role'];
+            if ($role==2) {
+                $all = $this->userModel->adminTable();
             }else {
-                dnd('Accountant');
+                if ($role==1) {
+                    $all = $this->userModel->SuperadminTable();
+                }else {
+                    dnd('Accountant');
+                }
             }
+            $data = 
+            [
+                'page_title'=>'User Management',
+                'All'=>$all,
+            ];
+            $this->view('Admin/ManageUser', $data);
         }
-        $data = 
-        [
-            'page_title'=>'User Management',
-            'All'=>$all,
-        ];
-        $this->view('Admin/ManageUser', $data);
     }
     public function dassa(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -901,64 +911,58 @@ public function AddNewStudents(){
             $this->view('Admin/Professors', $data);
     }
     
-    public function Event(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-         if(!isLoggedInAdmin()){
-            header('location:' . ROOT . 'Administration/Default');
-         }  
-        $data = [
-                    'page_title' => 'Create and View Event Table'
-                ];
-                $this->view('Admin/Event', $data);
-    }
     // Admin display All students data
     public function Students(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');} 
-        @$DC = @$this->userModel->SelectSpecial__ID();
-        $stmt1 = $this->userModel->StudentSelectall();
-        @$DC = @$this->userModel->SelectSpecial__ID();
-        @$throwprogram = @$this->userModel->SelectProgram();
-        @$throwSession= @$this->userModel->Selectsession();
-        @$throwEntrylevel = @$this->userModel->SelectEntryLevel();
-        $data = 
-        [
-            'page_title' => 'Students',
-            'select' => $stmt1,
-            'DisplayCateogries' => $DC,
-            'throw' => $throwprogram, 
-            'StmtEntrylevel' => $throwEntrylevel,
-            'StmtSession' => $throwSession, 
-        ];
-         if(isset($_GET['delete_image']) && isset($_GET['Edit'])){
-            // $Edit__id = trim(filter_var($_GET['Edit'], FILTER_SANITIZE_STRING));
-            $Edit__id = $_GET['Edit'];
-            $Edit__id = (int)$_GET['Edit']; 
-            $post = $this->userModel->findStudentEdiReturnt($Edit__id);
-            if(!$post == true){
-                header('location:' . ROOT. 'Admin/Students');
-            }
-            $photo = $post->image;
-            $image_url = PATHROOT.$photo;
-            if($post == true){
-                if(is_file($photo) || is_dir($image_url)){
-                    unlink($photo);
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{ 
+            @$DC = @$this->userModel->SelectSpecial__ID();
+            $stmt1 = $this->userModel->StudentSelectall();
+            @$DC = @$this->userModel->SelectSpecial__ID();
+            @$throwprogram = @$this->userModel->SelectProgram();
+            @$throwSession= @$this->userModel->Selectsession();
+            @$throwEntrylevel = @$this->userModel->SelectEntryLevel();
+            $data = 
+            [
+                'page_title' => 'Students',
+                'select' => $stmt1,
+                'DisplayCateogries' => $DC,
+                'throw' => $throwprogram, 
+                'StmtEntrylevel' => $throwEntrylevel,
+                'StmtSession' => $throwSession, 
+            ];
+            if(isset($_GET['delete_image']) && isset($_GET['Edit'])){
+                $Edit__id = $_GET['Edit'];
+                $Edit__id = (int)$_GET['Edit']; 
+                $post = $this->userModel->findStudentEdiReturnt($Edit__id);
+                if(!$post == true){
+                    header('location:' . ROOT. 'Admin/Students');
                 }
-                $deletePhotoPATH = $this->userModel->DeleteStudentPhotoURL($Edit__id);
-                if($deletePhotoPATH ==true){
-                    header('location:' . ROOT. 'Admin/Students?Edit='.$Edit__id);
+                $photo = $post->image;
+                $image_url = PATHROOT.$photo;
+                if($post == true){
+                    if(is_file($photo) || is_dir($image_url)){
+                        unlink($photo);
+                    }
+                    $deletePhotoPATH = $this->userModel->DeleteStudentPhotoURL($Edit__id);
+                    if($deletePhotoPATH ==true){
+                        header('location:' . ROOT. 'Admin/Students?Edit='.$Edit__id);
+                    }
+                }else{
+                    die('Something went Wrong...!');
                 }
-            }else{
-                die('Something went Wrong...!');
             }
+            
+            $this->view('Admin/Students', $data);
         }
-         
-        $this->view('Admin/Students', $data);
     }
 
     // Edit student by amdin
     
     public function isEditStudent(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');} 
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
             header("Access-Control-Allow-Origin: *"); 
             header("Content-Type: application/json; charset=UTF-8");
             header("Access-Control-Allow-Methods: POST");
@@ -1064,38 +1068,7 @@ public function AddNewStudents(){
         ob_end_clean();
         echo json_encode($response);
   }
-    // Delete student from the database by Admin
-    public function DeleteStudent(){
-       if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DeleteId'};
-        $newJsonString = json_encode($phpObject);
-        $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-        if($id == true){
-            //Return json message to the GUI
-            if($this->userModel->deletestudent($id)){
-                $response['status'] = 'success';
-                $response['message']= 'Successfully deleted.';
-            }else {
-                $response['status'] = 'error';
-            $response['message']= 'Sorry..! Something Happen At The Database Process.';
-            }
-        }else {
-            $response['status'] = 'error';
-            $response['message']= 'Invalid Data Sent. ';
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-
+   
     public function AdminUpdatePassword(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         header("Access-Control-Allow-Origin: *");
@@ -1309,7 +1282,7 @@ public function AddNewStudents(){
         header("Access-Control-Allow-Methods: POST");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        //ob_start();
+        ob_start();
         $jsonString = file_get_contents("php://input");
         $response = array();
         $phpObject = json_decode($jsonString);
@@ -1320,8 +1293,11 @@ public function AddNewStudents(){
         if($this->userModel->SQLdeletestudent($id)){
             $response['status'] = 200;
             $response['message']= 'Successfully deleted.';
+        }else {
+            $response['status'] = 'error';
+            $response['message']= 'Sorry..! Something Happen At The Database Process.';
         }
-        //ob_end_clean();
+        ob_end_clean();
         echo json_encode($response);
     }
     // Delete student by Admin
@@ -1940,14 +1916,19 @@ public function AddNewStudents(){
     echo json_encode($response);
     }
     public function Application(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $appsql = $this->userModel->sqlcategorylist();
-        $data = 
-        [
-            'page_title'=>'Application Page',
-            'apps'=>$appsql
-        ];
-        $this->view('Admin/Apps', $data);
+         if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $appsql = $this->userModel->sqlcategorylist();
+            $data = 
+            [
+                'page_title'=>'Application Page',
+                'apps'=>$appsql
+            ];
+            $this->view('Admin/Apps', $data);
+        }
     }
     public function addApp(){
          if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -2170,30 +2151,40 @@ public function AddNewStudents(){
     
  
     public function faculties(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $ftsql = $this->userModel->facultiessSql();
-        @$App = @$this->userModel->FetchDataAsMenuBar();
-        $data = 
-        [
-            'page_title'=>'Faculties',
-            'facultylist'=>$ftsql,
-            'App'=>$App
-        ];
-        
-        $this->view("Admin/Faculties", $data);
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $ftsql = $this->userModel->facultiessSql();
+            @$App = @$this->userModel->FetchDataAsMenuBar();
+            $data = 
+            [
+                'page_title'=>'Faculties',
+                'facultylist'=>$ftsql,
+                'App'=>$App
+            ];
+            
+            $this->view("Admin/Faculties", $data);
+        }
     }
 
     public function Department(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $dp = $this->userModel->AdminSQLfetchDepartment();
-       @$throwprogram = @$this->userModel->facultiessSql();
-        $data =
-        [
-            'page_title'=>'Department',
-            'dp'=>$dp,
-            'App'=>@$throwprogram
-        ];
-        $this->view('Admin/Department', $data);
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $dp = $this->userModel->AdminSQLfetchDepartment();
+            @$throwprogram = @$this->userModel->facultiessSql();
+            $data =
+            [
+                'page_title'=>'Department',
+                'dp'=>$dp,
+                'App'=>@$throwprogram
+            ];
+            $this->view('Admin/Department', $data);
+        }
     }
 
 
@@ -2271,20 +2262,25 @@ public function AddNewStudents(){
     }
 
     public function Courses(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $courseSQL = $this->userModel->fetchCourses();
-        $Dept = $this->userModel->AdminSQLfetchDepartment();
-        $class = $this->userModel->fetchClass();
-        $semester = $this->userModel->fetchsemeter();
-        $data = 
-        [
-            'page_title'=>'Course',
-            'cr'=>$courseSQL,
-            'dep'=>$Dept,
-            'class'=>$class,
-            'smt'=>$semester
-        ];
-        $this->view('Admin/Courses', $data);
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $courseSQL = $this->userModel->fetchCourses();
+            $Dept = $this->userModel->AdminSQLfetchDepartment();
+            $class = $this->userModel->fetchClass();
+            $semester = $this->userModel->fetchsemeter();
+            $data = 
+            [
+                'page_title'=>'Course',
+                'cr'=>$courseSQL,
+                'dep'=>$Dept,
+                'class'=>$class,
+                'smt'=>$semester
+            ];
+            $this->view('Admin/Courses', $data);
+        }
     }
 
     public function addcourse(){
@@ -2507,13 +2503,18 @@ public function AddNewStudents(){
         }
     }
     public function Class(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $getClassSqlModel = $this->userModel->ClassModel();
-        $data = 
-        [
-            'class'=>$getClassSqlModel,
-        ];
-        $this->view('Admin/Class', $data);
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $getClassSqlModel = $this->userModel->ClassModel();
+            $data = 
+            [
+                'class'=>$getClassSqlModel,
+            ];
+            $this->view('Admin/Class', $data);
+        }
     }
     public function addClass(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -2605,15 +2606,20 @@ public function AddNewStudents(){
         echo json_encode($response);
     }
     public function Semester(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        $getSemesterSqlModel = $this->userModel->fetchsemeter();
-        $getClassSqlModel = $this->userModel->ClassModel();
-        $data = 
-        [
-            'semester'=>$getSemesterSqlModel,
-            'class'=>$getClassSqlModel,
-        ];
-        $this->view('Admin/Semester', $data);
+         if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $getSemesterSqlModel = $this->userModel->fetchsemeter();
+            $getClassSqlModel = $this->userModel->ClassModel();
+            $data = 
+            [
+                'semester'=>$getSemesterSqlModel,
+                'class'=>$getClassSqlModel,
+            ];
+            $this->view('Admin/Semester', $data);
+        }
     }
 
      public function Deletesemester(){
@@ -2835,9 +2841,11 @@ public function AddNewStudents(){
     }
 
     public function exam(){
-        if(!isLoggedInAdmin()){
-            header('location:' . ROOT . 'Administration/Default');
-        }else {
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
             $getExamset = $this->userModel->getExamData();
             $data = 
             [
@@ -2897,8 +2905,10 @@ public function AddNewStudents(){
     }
 
     public function data(){
-        if(!isLoggedInAdmin()){
-            header('location:' . ROOT . 'Administration/Default');
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
         }else{
             $action = $_GET['action'];
             if ($action =='view_exam') {

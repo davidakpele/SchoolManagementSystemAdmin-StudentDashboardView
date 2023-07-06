@@ -125,29 +125,26 @@ $(document).ready(($) => {
     $('#__AdminBoxText').submit((x) => {
         x.preventDefault();
         x.stopImmediatePropagation();
-        let Username = $("input#username").val();
-        let Password = $("input#password").val();
-        if (Username == "") {
+        let __email = $("input#username").val();
+        let __password = $("input#password").val();
+        if (__email == "") {
             $("#AdminLoginerrorMessage").fadeIn().text("Please enter your username");
             $("input#username").focus();
             return false;
         }
-        if (Password == "") {
+        if (__password == "") {
             $("#AdminLoginerrorMessage").fadeIn().text("Please enter your password");
             $("input#password").focus();
             return false;
         }
-        const Jx = {
-            "Username": Username,
-            "Password": Password
-        };
-        let roll = JSON.stringify(Jx);
+        const data = {"email": __email, "password": __password};
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
             dataType: 'JSON',
             contentType: "application/json; charset=utf-8",
-            data: roll, // our data object
-            url: $('#__AdminBoxText')[0].action, // the url where we want to POST
+            data: JSON.stringify(data), // our data object
+            url: base_url+'/PagesController/Auth',
+            // url: $('#__AdminBoxText')[0].action, // the url where we want to POST
             processData: false,
             encode: true,
             crossOrigin: true,
@@ -165,7 +162,9 @@ $(document).ready(($) => {
         }).then((response) => {
             //user is logged in successfully in the back-end
             $("#AdminLoginerrorMessage").fadeIn().text(response.message, response.status);
-            if (response.status == '0390ad4cd33025f6b401dfbedd4d239d90d157c9224bfa22308085d563cd') {
+            if (response.status == '200OK') {
+                $("#AdminLoginerrorMessage").hide();
+                $("#AdminLoginerrorMessage").remove();
                 $.jGrowl("Successfully Login.!", {
                     header: 'Access Granted'
                 });

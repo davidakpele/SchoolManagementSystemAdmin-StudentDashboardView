@@ -14,9 +14,7 @@
             $this->DB = new Database;
         }
         public function RenderProgrammeListSQL($id){
-            $this->DB->query('SELECT Id, Duration, headerone, Subtext, UTME, WASSCE, NECO_SSCE, IGCSE, GCSE, Child_id, Child_name 
-            FROM `requirementoutlines`, `sublist` 
-            WHERE Child_id = Id AND Child_id = :id');
+            $this->DB->query('SELECT Id, Duration, headerone, Subtext, UTME, WASSCE, NECO_SSCE, IGCSE, GCSE, Child_id, Child_name FROM `requirementoutlines`, `sublist` WHERE Child_id = Id AND Child_id = :id');
             $this->DB->bind(':id', $id);
             $sqlstmt = $this->DB->resultSet();
             if (!empty($sqlstmt)) {
@@ -26,9 +24,7 @@
             }
         }
         public function selectDeps($id){
-            $this->DB->query('SELECT faculties.FacultyID, departments.DepartmentName, departments.DepartmentID, departments.FacultyID
-            FROM `departments`, `faculties` 
-            WHERE departments.FacultyID = faculties.FacultyID AND departments.FacultyID = :id');
+            $this->DB->query('SELECT faculties.FacultyID, departments.DepartmentName, departments.DepartmentID, departments.FacultyID FROM `departments`, `faculties` WHERE departments.FacultyID = faculties.FacultyID AND departments.FacultyID = :id');
             $this->DB->bind(':id', $id);
             $stmt = $this->DB->resultSet();
             if (!empty($stmt)) {
@@ -82,8 +78,7 @@
             }
 	    }    
         public function selectSemester($id){
-            $this->DB->query("SELECT semester.SemesterID, semester.Parent, semester.ClassID, semester.Title, class.ClassID 
-            FROM `semester`, `class` WHERE  semester.ClassID=class.ClassID AND class.ClassID=:id ");
+            $this->DB->query("SELECT semester.SemesterID, semester.Parent, semester.ClassID, semester.Title, class.ClassID FROM `semester`, `class` WHERE  semester.ClassID=class.ClassID AND class.ClassID=:id ");
             $this->DB->bind(':id', $id);
             $checkexist = $this->DB->resultSet();
             if (!empty($checkexist)) {
@@ -102,9 +97,7 @@
             }
 	    }    
         public function FetchRender($___ApplicationType){
-            $this->DB->query('SELECT Category__ID, Category__name, Cat_id, Child_id, Child_name
-            FROM `categories`, `sublist` 
-            WHERE Cat_id = Category__ID AND Category__ID = :___ApplicationType');
+            $this->DB->query('SELECT Category__ID, Category__name, Cat_id, Child_id, Child_name FROM `categories`, `sublist` WHERE Cat_id = Category__ID AND Category__ID = :___ApplicationType');
             $this->DB->bind(':___ApplicationType', $___ApplicationType);
             $books = $this->DB->resultSet();
             if (!empty($books)) {

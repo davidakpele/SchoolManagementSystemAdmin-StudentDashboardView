@@ -33,11 +33,6 @@
         }
         public function GetNoneExistingExam($eid,$depid,$clasid,$semid){
             $ids = $eid;
-            /**
-             * this code check is exam is already written by a specific user
-             * assuming exam id is [1,2,3,7] and if one exam is written by users, it takes the exam id and the user id and store them both in database-table monitor {Meid | studendid} 
-             * the sql check if written by this user that logged-in display the exam that is not written or exist here in the monitor table.x
-             */
             $comma_separated = implode("','", $ids);
             $comma_separated = "'".$comma_separated."'";
             $this->Router->query("SELECT * FROM e_timeset WHERE Department=1 AND Classes=3 AND Semester=1 AND status=0 AND eid NOT IN (".$comma_separated.") ");
@@ -94,8 +89,7 @@
             }
         }
         public function isSave($eid, $getConAns, $FailAnsQ, $defaultmark, $finallyGrade, $ansmsg, $id){
-            $this->Router->query('INSERT INTO monitor(examid, correctQuest, failQuest, defaultmark, score, grade, studentid, examstatus)
-                                VALUES(:eid, :getConAns, :FailAnsQ, :defaultmark, :finallyGrade, :ansmsg, :id, 1)');
+            $this->Router->query('INSERT INTO monitor(examid, correctQuest, failQuest, defaultmark, score, grade, studentid, examstatus) VALUES(:eid, :getConAns, :FailAnsQ, :defaultmark, :finallyGrade, :ansmsg, :id, 1)');
             $this->Router->bind(':eid', $eid);
             $this->Router->bind(':getConAns', $getConAns);
             $this->Router->bind(':FailAnsQ', $FailAnsQ);
@@ -112,11 +106,8 @@
         }
 
         public function lastlogAccountant($Active_login, $activeusernin, $activeuserAccesscode){
-            $this->Router->query("SELECT NIN, Accesscode FROM (SELECT NIN, Accesscode as Accesscode FROM staff 
-                    UNION ALL
-                    SELECT NIN, Accesscode FROM lecturals) x 
-                    WHERE Accesscode = :activeuserAccesscode AND NIN = :activeusernin ");
-                    //Bind the values 
+            $this->Router->query("SELECT NIN, Accesscode FROM (SELECT NIN, Accesscode as Accesscode FROM staff UNION ALL SELECT NIN, Accesscode FROM lecturals) x  WHERE Accesscode = :activeuserAccesscode AND NIN = :activeusernin ");
+            //Bind the values 
             $this->Router->bind(':activeuserAccesscode', $activeuserAccesscode);
             $this->Router->bind(':activeusernin', $activeusernin);
             $runAccountant = $this->Router->single();
@@ -127,9 +118,6 @@
             }
         }
             
-
-        
-
         public function StudentRecords(){
             $this->Router->query('SELECT ReceivedAns,qid,ansid,ans FROM studentans, answer');
             $Statement = $this->Router->resultSet();
@@ -283,18 +271,35 @@
         }
 
         public function getExam($eid){
-            //$this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ORDER BY RAND() ");
-            $this->Router->query("SELECT * FROM questions WHERE examinationid=:eid ");
+            $this->Router->query('SELECT a.examinationid, a.questionid, a.question, a.ansid,a.point,a.sn, b.* FROM questions a, optionsinfo b WHERE b.qid=a.questionid AND a.examinationid=:eid');
             $this->Router->bind(':eid', $eid);
             $stmt = $this->Router->resultSet();
-             if(!empty($stmt)){
-                return $stmt;
+            if(!empty($stmt)){
+                $ids =[];
+                $data = array();
+                foreach ($stmt as $k){
+                    $ids[] =$k['optionsid'];
+                    $ids = implode(",",$ids);
+                    $this->Router->query("SELECT * FROM options WHERE optionid IN (".$ids.") ");
+                    $ids =array();
+                    if (is_array($ids) || !is_array($ids))
+                        foreach ($ids as $k => $id)
+                            $this->Router->bind(($k+1), $id);
+                            $run = $this->Router->resultSet();
+                            $searchForValue = ',';
+                        
+                            if (strpos($k['optionsid'], $searchForValue) !== false) {
+                                $k['optionsid']=$run;
+                                $data[]= $k;
+                            }
+               }   
+               return $data;                 
             }else {
                 return false;
             }
         }
         public function isCheckExamAnsers($ci, $userAnswers){
-            $this->Router->query("SELECT * FROM answer WHERE qid=:ci AND ans=:userAnswers");
+            $this->Router->query("SELECT * FROM answer WHERE qid=:ci AND ansid=:userAnswers");
             $this->Router->bind(':ci', $ci);
             $this->Router->bind(':userAnswers', $userAnswers);
             $stmt = $this->Router->resultSet();

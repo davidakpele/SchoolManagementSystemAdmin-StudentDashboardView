@@ -882,7 +882,6 @@ Class User {
 			if ($this->DB->execute()) {
 				return true;
 			}
-			
 		}else {
 			return false;
 		}
@@ -927,14 +926,14 @@ Class User {
 	//Login admin if that ADMIN 
 	// ============================================================
 
-	public function login($ValidPostUsername, $ValidPostPassword){
-		$this->DB->query('SELECT Id, Level, Admin__id, username, password, Role FROM `usermanager`, `users` WHERE Id=Role AND Username = :ValidPostUsername');
+	public function login($data){
+		$this->DB->query('SELECT a.*, b.Id, b.Level, a.Role FROM usermanager b INNER JOIN users a ON b.Id=a.Role WHERE a.Email = :email');
 		// Bind the values
-		$this->DB->bind(':ValidPostUsername', $ValidPostUsername);
+		$this->DB->bind(':email', $data['email']);
 		$row = $this->DB->single();
 		if(!empty($row)){
 			$hashedPassword = $row->password;
-			if(password_verify($ValidPostPassword, $hashedPassword)){
+			if(password_verify($data['password'], $hashedPassword)){
 				return $row;
 			}else {
 				return false;
@@ -1125,11 +1124,8 @@ Class User {
 	// =======================================================================
 	
 	public function findUserByEmailInStudent__table($email){
-		// UsING prepared statement
 		$this->DB->query('SELECT * FROM student WHERE email = :email');
-		//The email param will be binded with the email variable
 		$this->DB->bind(':email', $email);
-		//Check if email is already registered
 		if($this->DB->rowCount() > 0){
 			return true;
 		}else{
@@ -1143,11 +1139,8 @@ Class User {
 	// ======================================================================
 
 	public function findProfessorByEmail($isCheckEmail){
-		// UsING prepared statement
 		$this->DB->query('SELECT * FROM lecturals WHERE Email = :isCheckEmail');
-		//The email param will be binded with the email variable
 		$this->DB->bind(':isCheckEmail', $isCheckEmail);
-		//Check if email is already registered
 		if($this->DB->rowCount() > 0){
 			return true;
 		}else{
@@ -1820,19 +1813,7 @@ Class User {
 	}
 
 	public function get_student_record($depid, $Classid, $semsterid){
-		$this->DB->query("SELECT ar.*, d.*, c.*, y.Surname, y.othername, a.eid, a.Course 
-		FROM monitor ar  
-		inner join e_timeset a 
-		on a.eid =ar.examid  
-		inner join departments c
-		on c.DepartmentID=:depid
-		inner join student y
-		on y.student__Id=ar.studentid
-		inner join courses d
-		on d.CourseCode=a.Course
-		where a.Department=:depid 
-		and a.Classes=:Classid 
-		and a.Semester=:semsterid");
+		$this->DB->query("SELECT ar.*, d.*, c.*, y.Surname, y.othername, a.eid, a.Course FROM monitor ar inner join e_timeset a on a.eid =ar.examid inner join departments c on c.DepartmentID=:depid inner join student y on y.student__Id=ar.studentid inner join courses d on d.CourseCode=a.Course where a.Department=:depid and a.Classes=:Classid and a.Semester=:semsterid");
 		$this->DB->bind(':depid', $depid);
 		$this->DB->bind(':Classid', $Classid);
 		$this->DB->bind(':semsterid', $semsterid);
