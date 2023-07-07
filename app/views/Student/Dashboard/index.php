@@ -238,7 +238,7 @@
               <a href="../AuthUser?Search=<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" title="<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" style="display:flex">
                 <img src="<?=ASSETS?>img/f2" class="userpicture defaultuserpic" width="20" height="20" alt="<?=$rvalue['Surname'].' '.$rvalue['othername']; $rvalue['student__Id']?>">
                 <span style="margin-left:5px;"><?=$rvalue['Surname'].' '.$rvalue['othername']?><span class="active__online__std" style="margin-top:5px"></span></span>
-              </a>
+              </a> 
             </div>
             <?php endforeach;?>
             <div class="footer"></div>

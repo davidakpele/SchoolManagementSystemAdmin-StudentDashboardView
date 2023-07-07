@@ -193,7 +193,7 @@
                                     <div>
                                       <img src="<?=((!empty($data['returnData']))?ROOT.$data['returnData']->image: ASSETS.'img/avatar/profile.jpg' )?>" width="100" height="100"  class="rounded-circle mypicture" alt="<?=$_SESSION['globalname']?>" alt="Picture of <?=$_SESSION['globalname']?> (<?=$_SESSION['Reference']?>)" title="Picture of <?=$_SESSION['globalname']?> (<?=$_SESSION['Reference']?>)"/>
                                       <h4><?=((!empty($data['returnData']))?$data['returnData']->Surname.' '.$data['returnData']->othername: ASSETS.'img/avatar/profile.jpg' )?></h4>
-                                      <p class="text-muted mb-0"><?=((!empty($data['returnData']))?$data['returnData']->Roll__No: '' )?></p>
+                                      <p class="text-muted mb-0"><?=((!empty($data['returnData']))?$data['returnData']->email: '' )?></p>
                                     </div>
                                     <p class="mt-2 card-text">
                                         For what reason would it be advisable for me to think about business content?

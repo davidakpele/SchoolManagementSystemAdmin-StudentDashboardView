@@ -677,7 +677,7 @@ public function ProcessNewStudentOnline(){
         if ($cheks) {
             // Here is Multiple department 
             $isVerifyDelete = $this->userModel->isDeleteStudentModel($cheks);
-        if($isVerifyDelete) {
+            if($isVerifyDelete) {
                 $response['status'] = 200;
                 $response['message']= 'Successfully Deleted.';
             }
@@ -1578,9 +1578,5 @@ public function LogoutStudent(){
                 $this->view('Student/exam', $data);
             }
         }
-    }
-
-    public function EventBox(){
-        dnd('hello');
     }
 }

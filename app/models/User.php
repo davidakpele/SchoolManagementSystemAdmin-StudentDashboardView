@@ -22,7 +22,7 @@ Class User {
 	}
 	
 	public function OnlineStudent($depid, $clasid, $semid){
-		$this->DB->query('SELECT student.student__Id, student.Conid, student.Roll__No, student.Surname, student.othername, student.password, student.Date__of__birth, student.gender, student.email, student.featured, student.relationship, student.telephone, student.image, student.Onlinestatus, student.active, studentapp.Conid, studentapp.Application_id, studentapp.Faculty_id, studentapp.Department_id, studentapp.Program__Type, studentapp.NIN, studentapp.Entrylevel, studentapp.Class, studentapp.semester, studentapp.settings FROM student, studentapp WHERE studentapp.Department_id =:depid AND studentapp.Class=:clasid AND studentapp.semester=:semid AND student.onlinestatus ="1" ORDER BY student.Surname DESC');
+		$this->DB->query('SELECT a.student__Id, a.Conid, a.Surname, a.othername, b.* FROM student a INNER JOIN studentapp b ON b.Conid=a.Conid WHERE b.Department_id =:depid AND b.Class=:clasid AND b.semester=:semid AND a.onlinestatus ="1" ORDER BY a.Surname DESC');
 		$this->DB->bind('depid', $depid);
 		$this->DB->bind('clasid', $clasid);
 		$this->DB->bind('semid', $semid);
@@ -1477,16 +1477,17 @@ Class User {
 		$ids = [];
 		if (is_array($ids) || !is_array($ids))
 		 	if ($ids) 
-			foreach ($ids as $k => $id)	
-			$this->DB->bind(($k+1), $id);
-			if($this->DB->execute()){
-				return true;
-			}else{
-				return false;
-			} 		
+				foreach ($ids as $k => $id)	
+					$this->DB->bind(($k+1), $id);
+					if($this->DB->execute()){
+						return true;
+					}else{
+						return false;
+					} 		
 	}
+
 	// =====================================================================
-	//Admin  Delete st method	
+	// Admin  Delete st method	
 	// =====================================================================
 	
 	public function isSQLdeleteStudentADMIN($id){
@@ -1499,7 +1500,8 @@ Class User {
 			return false;
 		}
 	}
-// Dismissed Professor From Management Role
+
+    // Dismissed Professor From Management Role
 	public function SQLDismissedManagementRole($id){
 		$this->DB->query("DELETE FROM management__role WHERE ID = :id ");
 		$this->DB->bind(':id', $id);
@@ -1509,7 +1511,6 @@ Class User {
 			return false;
 		}
 	}
-
 
 	// Fetching professor data from the database from email composer 
 	public function SqlFetchProfessEmails($mim){
