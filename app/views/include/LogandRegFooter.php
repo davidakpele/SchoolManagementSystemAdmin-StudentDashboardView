@@ -14,7 +14,9 @@
 <!-- footer div ends here -->
 <script src="<?=ASSETS?>important__stylesheet__file/jquery.jgrowl.js"></script>
 <script type="text/javascript" src="<?=ASSETS?>vendor_plugins/DataValidation.js"></script>
+<script type="text/javascript" src="<?=ASSETS?>vendor_plugins/auth.js"></script>
 <script>
+const auth = new Auth();
 $(function() {
     $('.tooltip').tooltip();	
     $('.tooltip-left').tooltip({ placement: 'left' });	

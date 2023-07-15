@@ -52,8 +52,8 @@
                 <img class="slider img-responsive" src="<?=ASSETS?>img/gallery/s.jpg">
                 <img class="slider img-responsive" src="<?=ASSETS?>img/gallery/s.jpg">
             </div>
-            <center>
-                <img src="<?=ASSETS?>img/product/1.png" class="img-responsive" style="max-width:120px">
+            <center class="mt-5" style="margin-top:40px">
+                <img src="<?=LOGO_ROOT.$data['settings']->logo?>" class="img-responsive" style="max-width:120px">
                 <h1 style="font-size: 22px; color: white;">Mercy College University Of Nigeria</h1>
                 <h1 style="font-size: 39px; color: white;">Administration Login</h1>
             </center>
@@ -65,16 +65,19 @@
                             <div class="row p-0">
                                 <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-0">
                                     <div class="col-12 p-0 px-4"> 
-                                        <span class="text text-muted">Username:</span> 
+                                        <span class="text text-muted">Email Address:</span> 
                                     </div>
                                     <div class="col-12 p-0 px-4"> 
-                                        <input type="text" id="username" name="username" class="form-control" value="<?=((isset($_POST['username']))?$_POST['username']: '')?>" placeholder="username" />
+                                        <input type="text" id="username" name="username" class="form-control" value="<?=((isset($_POST['username']))?$_POST['username']: '')?>" placeholder="Email" />
                                     </div>
                                     <div class="col-12 p-0 px-4"> 
                                         <span class="text text-muted">Password:</span> 
                                     </div>
                                     <div class="col-12 p-0 px-4"> 
-                                        <input type="password" id="password" name="password" value="<?=((isset($_POST['password']))?$_POST['password']: '');?>" class="form-control"  placeholder="Password"/>
+                                        <input type="password" id="password" name="password" value="<?=((isset($_POST['password']))?$_POST['password']: '');?>" class="form-control"  placeholder="Password" autocomplete="off" />
+                                    </div>
+                                    <div class="col-12 p-0 px-4_btn" style="display:flex;">
+                                        <input type="checkbox" name="rememberMe" id="rememberMe"><span style="margin-top:4px; color:gray">Remember me</span>
                                     </div>
                                     <div class="col-12 p-0 px-4_btn">
                                         <button class="btn btn-primary w-100" value="Login" type="submit">

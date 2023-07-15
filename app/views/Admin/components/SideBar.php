@@ -135,7 +135,7 @@
                     </a>
                 </li>
                 <li class="">
-                    <a href="<?=ROOT?>Admin/settings" rel="noopener noreferrer">
+                    <a href="<?=ROOT?>Admin/settings?action=role" rel="noopener noreferrer">
                         <i class="fa fa-cogs"></i> <span>Settings</span>
                     </a>
                 </li>

@@ -137,7 +137,13 @@ $(document).ready(($) => {
             $("input#password").focus();
             return false;
         }
-        const data = {"email": __email, "password": __password};
+        let rememberMeCheck = document.querySelector('#rememberMe');
+        if (rememberMeCheck.checked) {
+            let a = rememberMeCheck.value = 'Yes:Checked';
+        } else {
+            let a = rememberMeCheck.value = '';
+        }
+        const data = {"email": __email, "password": __password,"RememberMe": rememberMeCheck.value};
         $.ajax({
             type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
             dataType: 'JSON',
@@ -163,6 +169,16 @@ $(document).ready(($) => {
             //user is logged in successfully in the back-end
             $("#AdminLoginerrorMessage").fadeIn().text(response.message, response.status);
             if (response.status == '200OK') {
+                if (response.rememberme==true) {
+                    const database = [];
+                    // login api here
+                    localStorage.setItem("Authuser", JSON.stringify(data));
+                    localStorage.setItem("auth", 200);
+                    database.push(JSON.stringify(response));
+                } else {
+                    localStorage.removeItem("Authuser");
+                    localStorage.removeItem("auth");
+                }
                 $("#AdminLoginerrorMessage").hide();
                 $("#AdminLoginerrorMessage").remove();
                 $.jGrowl("Successfully Login.!", {

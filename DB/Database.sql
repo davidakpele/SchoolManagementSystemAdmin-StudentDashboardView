@@ -3,7 +3,6 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2020 at 07:55 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3 
 
@@ -24,9 +23,6 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `academic_infos`
---
 
 -- CREATING Lectural SCHOOL TABLE
 
@@ -113,11 +109,10 @@ CREATE TABLE IF NOT EXISTS StudentApp(
     `Entrylevel` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
     `Class` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
     `semester` INT(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `reg_year` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
     `settings` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 ALTER TABLE StudentApp ADD UNIQUE(Conid);
-
-
 
 -- CREATING STAFF TABLE
 
@@ -171,21 +166,11 @@ CREATE TABLE IF NOT EXISTS `users`(
 -- INSERT INTO superadmin table
 
 INSERT INTO `users` (`No`, `Admin__id`, `Surname`, `Othername`, `Email`, `username`, `password`, `Gender`, `Mobile`,  `last_login`, `Create_on`, `Role`, `Profile___Picture`)
- VALUES('1', '8798112', 'David', 'Akpele', 'admin@aol.com', 'Admin', '$argon2id$v=19$m=65536,t=4,p=1$SW91dkNXZkVVTFYuNE52SQ$vSEyPtRqsTwYiMspuOly3244f6fPW0qwdaGyrWFOltA', 'Male', '+(234) 906-9888-05', '2021-04-3 00:00:00', '2021-04-3 00:00:00', '1', 'http://localhost/school/public/assets/img/profile.jpg');
+ VALUES('1', '8798112', 'David', 'Akpele', 'admin@admin.com', 'Admin', '$argon2id$v=19$m=65536,t=4,p=1$SW91dkNXZkVVTFYuNE52SQ$vSEyPtRqsTwYiMspuOly3244f6fPW0qwdaGyrWFOltA', 'Male', '+(234) 906-9888-05', '2021-04-3 00:00:00', '2021-04-3 00:00:00', '1', 'http://localhost/school/public/assets/img/profile.jpg');
 ALTER TABLE `users` ADD INDEX(`Email`);
 ALTER TABLE `users` ADD INDEX(`Username`);
 ALTER TABLE `users` ADD INDEX(`Gender`);
 
--- CREATING OND STUDENT REQUIREMENT FOR THIS UNIVERSITY
-
-CREATE TABLE IF NOT EXISTS `Required__Subjects`(
-  `No` INT(11) PRIMARY KEY UNIQUE AUTO_INCREMENT,
-  `Subject__Id` VARCHAR(60) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Compulsory__Sub_Id` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Subject__name` VARCHAR(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Grade` VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Updated__date` DATETIME
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- CREATE COMPUSLSORY SUBJECTS TABLE THAT MATCHES THE REQUIREMENT SUBJECT
 
@@ -222,18 +207,6 @@ INSERT INTO `Entry_year`(`No`, `Session`)
               ('10', '2027/2028');
 
 
-CREATE TABLE `e_center` (
-    `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
-    `Courseid` VARCHAR(255) NOT NULL,
-    `question` text NOT NULL,
-    `answer` text NOT NULL,
-    `Student__answer` text NOT NULL,
-    `option 1` text NOT NULL,
-    `option 2` text NOT NULL,
-    `option 3` text NOT NULL,
-    `option 4` text NOT NULL,
-    `Ansbutton` VARCHAR (200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `e_timeset`(
     `No` INT(10) PRIMARY KEY AUTO_INCREMENT,
@@ -21088,6 +21061,7 @@ CREATE TABLE IF NOT EXISTS  `answer` (
 
 CREATE TABLE IF NOT EXISTS `options` (
     `sn` INT(10) PRIMARY KEY AUTO_INCREMENT,
+    `qid` VARCHAR(50) NOT NULL,
     `optionid` VARCHAR(50) NOT NULL,
     `options` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -21167,6 +21141,17 @@ CREATE TABLE IF NOT EXISTS`attendance_record` (
   `type` tinyint(1) NOT NULL COMMENT '1=present,2=absent',
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `settings`
+--
+CREATE TABLE IF NOT EXISTS `midtechserver`.`settings` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT , 
+    `logo` TEXT NOT NULL , 
+    `schoolname` VARCHAR(255)  NOT NULL, 
+    `backgroundcolor` VARCHAR(100) NOT NULL , 
+    PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
 ALTER TABLE `categories` ADD `Status` INT(10) NOT NULL AFTER `Category__name`;
 ALTER TABLE `categories` ADD INDEX(`Parent`);

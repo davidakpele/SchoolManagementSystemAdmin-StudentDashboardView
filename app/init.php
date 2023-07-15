@@ -19,5 +19,6 @@ require_once '../app/helpers/vendor/firebase/php-jwt/src/JWT.php';
 require_once '../app/helpers/zoom.php';
 // Request POST METHOD
 require_once '../app/helpers/Request.php';
+require_once '../app/helpers/Settings.php';
 // Php mailer
 require_once "../app/helpers/vendor/autoload.php";

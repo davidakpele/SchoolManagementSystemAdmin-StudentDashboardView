@@ -110,5 +110,10 @@ function AuthCheck(){
             return false;
         } 
     }
-    
+}
+
+
+function redirect($url){
+    header("Location: " . $url);
+    exit();
 }

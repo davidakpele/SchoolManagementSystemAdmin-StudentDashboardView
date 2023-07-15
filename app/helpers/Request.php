@@ -6,10 +6,6 @@
  * This functions here are User define method against APIs
  */
 
-	function redirect($url=''){
-		if(!empty($url))
-		echo '<script>location.href="'.ROOT.$url.'"</script>';
-	}
 	function getRequestMethod(){
 		return strtoupper($_SERVER['REQUEST_METHOD']);
 	}
@@ -81,5 +77,11 @@ function dnd($data){
     print_r($data);
     echo  "<pre>";
     die();
+}
+
+function print_data($data){
+    echo  "<pre>";
+    print_r($data);
+    echo  "<pre>";
 }
 

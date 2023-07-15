@@ -15,12 +15,19 @@ Class PagesController extends Controller {
     // =====================================================================================
     private $dataModel;
     private $namespacemodel;
+    private $_settings_model;
     public function __construct() {
        @$this->userModel = @$this->loadModel('User');
        @$this->namespacemodel = @$this->loadModel('LoginModel');
+       @$this->_settings_model = $this->loadModel('SettingsModel');
     }
 
-    
+    public function _AppSettings(){
+        $isSettings_Data = $this->_settings_model->_isGetLogo();
+        if (!empty($isSettings_Data)) {
+            return $isSettings_Data;
+        }
+    }
     public function RenderDep(){
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
@@ -106,7 +113,7 @@ Class PagesController extends Controller {
         if(isLoggedInAdmin()){
             header('location:' . ROOT . 'Admin/');
         }else {
-            @$data = ['page_title' => 'Admin Dashboard Login System'];
+            @$data = ['settings'=>$this->_AppSettings(), 'page_title' => 'Admin Dashboard Login System'];
             @$this->view("Admin/Administration/Default", @$data);
         }
     	
@@ -124,6 +131,7 @@ Class PagesController extends Controller {
         $Incomingdata = json_decode($jsonString);
 
         $Postpassword=$Incomingdata->{'password'};
+        $rememberme = $phpObject->{'RememberMe'};
 
         $SetnewJsonString = json_encode($Incomingdata);
         if (!filter_var(strip_tags(trim($Incomingdata->{'email'})), FILTER_VALIDATE_EMAIL)) {
@@ -138,6 +146,13 @@ Class PagesController extends Controller {
             ];
             $loggedInUser = @$this->userModel->login($data);
             if ($loggedInUser) {
+                if(!empty($rememberme)){
+                    setcookie("_adminEmail",$data['email'],time()+ 3600);
+                    setcookie("_adminPassword",$data['password'],time()+ 3600); 
+                    $response['rememberme'] = true;                      
+               }else{
+                    $response['rememberme'] = true;
+                }
                 @$this->createUserSession($loggedInUser);
                 $response['status'] =  '200OK';
             }else {
@@ -231,6 +246,9 @@ Class PagesController extends Controller {
                                 $_SESSION['cookiecode'] = $_COOKIE['accesscode'];
                                 $_SESSION['cookiepass'] = $_COOKIE['password'];
                                 $response['status'] = true;
+                                $response['rememberme'] = true;
+                            }else{
+                                $response['rememberme'] = false;
                             }
                         }else {
                             $login1 = $this->ManagementLecturalSession($Profemail, $fullname, $activeusernin, $activeuserid, $activeuserRole,  $activeuserAccesscode, $activeuserphoto);
