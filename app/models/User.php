@@ -1421,15 +1421,36 @@ Class User {
 	// Record Admin Last Login
 	// ===================================================================
 
-	public function lastlog($last_login, $Admin__id){
-		$this->DB->query('UPDATE users SET last_login = :last_login WHERE Admin__id = :Admin__id');
+	public function lastlog($user_ip, $last_login, $Admin__id){
+		$this->DB->query("SELECT * FROM  monitor_user_activities WHERE userid=:Admin__id AND status=1");
 		$this->DB->bind(':Admin__id', $Admin__id);
-		$this->DB->bind(':last_login', $last_login);
-		if($this->DB->execute()){
-			return true;
-		}else{
-			return false;
+		$row = $this->DB->single();
+		if(!empty($row)){
+			return '501';
+		}else {
+			$this->DB->query('INSERT INTO monitor_user_activities (userid, status, login_time, log_ip_address) 
+				VALUES(:Admin__id, 1, :last_login, :user_ip)');
+			$this->DB->bind(':Admin__id', $Admin__id);
+			$this->DB->bind(':user_ip', $user_ip);
+			$this->DB->bind(':last_login', $last_login);
+			if($this->DB->execute()){
+				return true;
+			}else{
+				return false;
+			}
 		}
+		
+	}
+
+	public function _updateLogoutAdmin($Update_logout_time, $Admin__id){
+		$this->DB->query('UPDATE `monitor_user_activities` SET logout_time=:Update_logout_time, status=0 WHERE logout_time="0000-00-00 00:00:00" and userid=:Admin__id');
+			$this->DB->bind(':Admin__id', $Admin__id);
+			$this->DB->bind(':Update_logout_time', $Update_logout_time);
+			if($this->DB->execute()){
+				return true;
+			}else{
+				return false;
+			}
 	}
 
 	// ===================================================================

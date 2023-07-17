@@ -167,7 +167,6 @@ $(document).ready(($) => {
             },
         }).then((response) => {
             //user is logged in successfully in the back-end
-            $("#AdminLoginerrorMessage").fadeIn().text(response.message, response.status);
             if (response.status == '200OK') {
                 if (response.rememberme==true) {
                     const database = [];
@@ -188,10 +187,27 @@ $(document).ready(($) => {
                 setTimeout(function () {
                     window.location.reload(1);
                 }, delay);
+            } else {
+                if (response.status == "501") {
+                    $("#AdminLoginerrorMessage").show().html(response.message +"&nbsp;&nbsp;Do you have a clearance access code to block this person?<p><div class='d-flex gap-3' style='display:flex'><button class='btn btn-primary btn-sm __yesresponses' style='width:100px'>Yes, i have</button>&nbsp;&nbsp; <button class='btn btn-primary btn-sm __noresponses' style='width:100px'>No, i Don't</button></p>");
+                } else if (response.status == "401") {
+                    $("#AdminLoginerrorMessage").fadeIn().text(response.message);
+                }else if (response.status == "402") {
+                    $("#AdminLoginerrorMessage").fadeIn().text(response.message);
+                }
             }
         }).fail((xhr, error) => {
             $("#AdminLoginerrorMessage").fadeIn().text('Oops...Server is down! error');
         });
+    });
+
+
+    $('.__yesresponses').click(function (e) {
+        alert('Yes Clicked');
+    });
+    
+    $('.__noresponses').click(function (e) {
+        alert('No Clicked');
     });
 });
 

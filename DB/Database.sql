@@ -21153,6 +21153,17 @@ CREATE TABLE IF NOT EXISTS `midtechserver`.`settings` (
     `backgroundcolor` VARCHAR(100) NOT NULL , 
     PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
+CREATE TABLE `midtechserver`.`monitor_user_activities` (
+    `sn` INT NOT NULL AUTO_INCREMENT , 
+    `userid` VARCHAR(255) NOT NULL , 
+    `status` INT(10) NOT NULL , 
+    `login_time` DATETIME NOT NULL , 
+    `logout_time` DATETIME NOT NULL , 
+    `log_ip_address` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , 
+    PRIMARY KEY (`sn`), 
+    INDEX (`userid`)
+    ) ENGINE = InnoDB;
+    
 ALTER TABLE `categories` ADD `Status` INT(10) NOT NULL AFTER `Category__name`;
 ALTER TABLE `categories` ADD INDEX(`Parent`);
 ALTER TABLE `categories` ADD UNIQUE (`Category__ID`);

@@ -131,7 +131,7 @@ Class PagesController extends Controller {
         $Incomingdata = json_decode($jsonString);
 
         $Postpassword=$Incomingdata->{'password'};
-        $rememberme = $phpObject->{'RememberMe'};
+        $rememberme = $Incomingdata->{'RememberMe'};
 
         $SetnewJsonString = json_encode($Incomingdata);
         if (!filter_var(strip_tags(trim($Incomingdata->{'email'})), FILTER_VALIDATE_EMAIL)) {
@@ -153,9 +153,14 @@ Class PagesController extends Controller {
                }else{
                     $response['rememberme'] = true;
                 }
-                @$this->createUserSession($loggedInUser);
-                $response['status'] =  '200OK';
+                if($this->createUserSession($loggedInUser) =="501"){
+                    $response['status'] =  '501';
+                    $response['message']= 'This account has been logged-in somewhere else at the moment..!';
+                }else{
+                    $response['status'] =  '200OK';
+                }
             }else {
+                $response['status'] =  '402';
                 $response['message']= 'Invalid Username or Password.';
             }
         }
@@ -1341,31 +1346,36 @@ public function ProcessNewStudentOnline(){
   
     // Creating Session for Admin
     public function createUserSession($data){
+        $user_ip= get_IP_address();
         @$last_login = date("Y-m-d H:i:s");
         @$Admin__id = @$data->Admin__id;
         $id = $Admin__id;
-        @$Route = @$this->userModel->lastlog($last_login, $Admin__id);
-        $stmt = $this->userModel->SQLuserEdit($id);
-        if($stmt){
-            $_SESSION['Admin__id'] = @$stmt->Admin__id;
-            $_SESSION['username'] = @$stmt->username;
-            $_SESSION['adminExmail'] = @$stmt->Email;
-            $_SESSION['adminSurname']= @$stmt->Surname;
-            $_SESSION['adminothername']= @$stmt->Othername;
-            $_SESSION['Role'] = $stmt->Role;
-            // Taking current system Time
-            $_SESSION['start'] = time();
-            //set session to expire after one day 24hr
-            // $_SESSION['expire'] = $_SESSION['start'] + (73 * 60 * 60) ;  
-            // Use a ternary operation to set the URL 
-            $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
-            if(isset($url)){ 
-                echo "<script>
-                        window.location.replace('". ROOT . @$url."');
-                    </script>";
-                echo '<nosript>';
-                echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $url . '" />';
-                echo '</nosript>';
+        @$Route = @$this->userModel->lastlog($user_ip, $last_login, $Admin__id);
+        if ($Route ==='501') {
+            return $Route;
+        }else {
+            $stmt = $this->userModel->SQLuserEdit($id);
+            if($stmt){
+                $_SESSION['Admin__id'] = @$stmt->Admin__id;
+                $_SESSION['username'] = @$stmt->username;
+                $_SESSION['adminExmail'] = @$stmt->Email;
+                $_SESSION['adminSurname']= @$stmt->Surname;
+                $_SESSION['adminothername']= @$stmt->Othername;
+                $_SESSION['Role'] = $stmt->Role;
+                // Taking current system Time
+                $_SESSION['start'] = time();
+                //set session to expire after one day 24hr
+                // $_SESSION['expire'] = $_SESSION['start'] + (73 * 60 * 60) ;  
+                // Use a ternary operation to set the URL 
+                $url = ($_SESSION['admin_level'] === 1) ? 'Admin/Home' : 'PagesController/Logout';
+                if(isset($url)){ 
+                    echo "<script>
+                            window.location.replace('". ROOT . @$url."');
+                        </script>";
+                    echo '<nosript>';
+                    echo '<meta http-equiv="refresh" content="0;url=' . ROOT . $url . '" />';
+                    echo '</nosript>';
+                }
             }
         }
     }
@@ -1502,12 +1512,16 @@ public function LogoutStudent(){
 
 	public function Logout(){
         if (session_status() == PHP_SESSION_ACTIVE) {
-            unset($_SESSION['Admin__id']);
-            unset($_SESSION['username']);
-            unset($_SESSION['adminEmail']);
-            unset($_SESSION['adminSurname']);
-            unset($_SESSION['adminothername']);
-            header('location:' . ROOT . 'Administration/Default/');
+            @$Update_logout_time = date("Y-m-d H:i:s");
+            @$Admin__id = $_SESSION['Admin__id'];
+            if($this->userModel->_updateLogoutAdmin($Update_logout_time, $Admin__id)){
+                 unset($_SESSION['Admin__id']);
+                unset($_SESSION['username']);
+                unset($_SESSION['adminEmail']);
+                unset($_SESSION['adminSurname']);
+                unset($_SESSION['adminothername']);
+                header('location:' . ROOT . 'Administration/Default/');
+            }
         }	
     }  
 
