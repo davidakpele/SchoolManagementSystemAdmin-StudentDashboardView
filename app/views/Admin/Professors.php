@@ -1,21 +1,11 @@
 <?php include_once 'components/HeaderLinks.php';?> 
     <style>
        /* checkbox checked */
-        input[type="checkbox"]:checked:before {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 8px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-        margin-left: 4px;
-        margin-top: 1px;
-        }
-        #idm{
-            overflow: scroll;
-        }
+	   	.dropdown-menu {position: absolute;top: 100%;left: 0;z-index: 1000;display: none;float: left;min-width: 10rem;padding: 0.5rem 0;margin: 0.125rem 0 0;font-size: 1.0rem;color: #212529;text-align: left;list-style: none;background-color: #fff;background-clip: padding-box;border: 1px solid rgba(0, 0, 0, 0.15);border-radius: 0.25rem;box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 18%);}
+		.dropdown-item {display: block;width: 100%;padding: 0.25rem 1rem;clear: both;font-weight: 400;color: #212529;text-align: inherit;white-space: nowrap;background-color: transparent;border: 0;}
+		.dropdown-divider {height: 0;margin: 0.5rem 0;overflow: hidden;border-top: 1px solid #e9ecef;}
+        input[type="checkbox"]:checked:before {content: '';display: block;width: 4px;height: 8px;border: solid #fff;border-width: 0 2px 2px 0;-webkit-transform: rotate(45deg);transform: rotate(45deg);margin-left: 4px;margin-top: 1px;}
+        #idm{overflow: scroll;}
     </style>
   
 </head>
@@ -129,10 +119,29 @@
 												<img src="<?=ASSETS?>img/avatar/emptyProfile.png" class="rounded img-thumbnail" alt="<?=$presult['Surname'].' '.$presult['Othername']?>" style="width:40px; height:40.7px">
 											<?php endif; ?>
 										</td>
-										<td >
-											<a href="<?=ROOT?>Admin/edit/<?=$SSD?>" class="btn btn-sm btn-primary btn-flat" title="Edit Professor Profile">Edit&nbsp;<i class="fa fa-edit"></i></a>&nbsp;&nbsp;
-											<button type="button" class="btn btn-success btn-sm btn-flat" onclick="___SubmitAppointment(<?=$SSD;?>)" title="Appoint Professor To Certain Department">Appoint&nbsp;<i class="fa fa-calendar"></i></button>
-											<button type="button" class="btn btn-sm btn-danger" onClick="juioDT(<?=$SSD?>);"title="Delete a Professor">Delete<i class="fa fa-trash"></i></button>
+										<td>
+											<div class="dropdown">
+												<button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
+													Action&nbsp;&nbsp;<i class="fa fa-caret-down" aria-hidden="true" style="font-size:12px"></i>
+													<span class="sr-only">Dropdown</span>
+												</button>
+												<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="font-size:14px">
+													<a class="dropdown-item" href="<?=ROOT?>Admin/edit/<?=$SSD?>">
+														<span class="fa fa-edit text-primary"></span>
+														&nbsp;&nbsp;Edit
+													</a>
+													<div class="dropdown-divider"></div>
+													<span class="dropdown-item" onclick="___SubmitAppointment(<?=$SSD;?>)" style="cursor:pointer">
+														<span class="fa fa-calendar text-success"></span>
+														&nbsp;Appoint
+													</span>
+													<div class="dropdown-divider"></div>
+													<span class="dropdown-item" onClick="juioDT(<?=$SSD?>);" style="cursor:pointer">
+														<span class="fa fa-trash text-danger"></span>
+														&nbsp;Delete
+													</span>
+												</div>
+											</div>
 										</td>
 									</tr>
 									<?php endforeach?>

@@ -92,15 +92,13 @@
                         </li>
                     </ul>
                 </div>
-            </nav>		</header>
-
-                    <!-- Sidebar -->
-                    <!-- Left side column. contains the logo and sidebar -->
+            </nav>		
+        </header>
+            <!-- Sidebar -->
+            <!-- Left side column. contains the logo and sidebar -->
             <aside class="main-sidebar">
-
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
-
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel">
                         <div class="pull-left image">
@@ -112,80 +110,84 @@
                         </div>
                     </div>
                    <ul class="sidebar-menu" data-widget="tree">
-                        <li class="header">MAIN MENU</li>
-                        <!-- Optionally, you can add icons to the links -->
-                            <li class=""><a href="<?=ROOT?>Admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                            <li class="treeview active menu-open">
-                            <a href="#"><i class="fa fa-folder-open"></i> <span>Master Data</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
+                    <li class="header">MAIN MENU</li>
+                    <!-- Optionally, you can add icons to the links -->
+                        <li class="active">
+                            <a href="<?=ROOT?>Admin/dashboard">
+                                <i class="fa fa-dashboard"></i> 
+                                <span>Dashboard</span>
                             </a>
-                            <ul class="treeview-menu">
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Department">
-                                        <i class="fa fa-bars"></i> 
-                                            Department
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Class">
-                                        <i class="fa fa-bars"></i>
-                                            Class
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Course">
-                                        <i class="fa fa-bars"></i>
-                                            Course
-                                    </a>
-                                </li>
-                                <li class="active">
-                                    <a href="<?=ROOT?>Admin/Professors">
-                                        <i class="fa fa-bars"></i>
-                                            Lecturer
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="<?=ROOT?>Admin/Student">
-                                        <i class="fa fa-bars"></i>
-                                            Student
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="treeview ">
-                            <a href="#"><i class="fa fa-link"></i> <span>Relation</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li class="">
-                                    <a href="http://localhost/ci_exam/kelasdosen">
-                                        <i class="fa fa-bars"></i>
-                                        Class - Lecturer
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a href="http://localhost/ci_exam/jurusanmatkul">
-                                        <i class="fa fa-bars"></i>
-                                        Department - Course
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="">
-                            <a href="<?=ROOT?>Admin/soal" rel="noopener noreferrer">
-                                <i class="fa fa-file-text"></i> <span>Question Bank</span>
+                            <a href="<?=ROOT?>Admin/Application">
+                                <i class="fa fa-bars"></i> 
+                                <span>Application</span>
                             </a>
                         </li>
-                        <li class="header">REPORTS</li>
-                            <li class="">
-                                <a href="<?=ROOT?>Admin/hasilujian" rel="noopener noreferrer">
-                                    <i class="fa fa-file"></i> <span>Exam Results</span>
-                                </a>
-                            </li>
+                        <li class="">
+                            <a href="<?=ROOT?>Admin/Faculties">
+                                <i class="fa fa-bars"></i>
+                                <span>Faculty</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?=ROOT?>Admin/Department">
+                                <i class="fa fa-bars"></i>
+                                <span>Department</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?=ROOT?>Admin/Professors">
+                                <i class="fa fa-bars"></i>
+                                <span>Lecturer</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?=ROOT?>Admin/Students">
+                                <i class="fa fa-bars"></i>
+                                <span>Students</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?php echo ROOT.'Admin/Courses'?>">
+                                <i class="fa fa-bars"></i>
+                                <span>Course-Table</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?php echo ROOT.'Admin/Class'?>">
+                                <i class="fa fa-bars"></i>
+                                <span>Class-TableS</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="<?php echo ROOT.'Admin/Semester'?>">
+                                <i class="fa fa-bars"></i>
+                                <span>Semester-Table</span>
+                            </a>
+                        </li>
+                        
+                        <li class="treeview ">
+                            <a href="#"><i class="fa fa-book"></i> <span>Manage Exam</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li class="">
+                                    <a href="<?=ROOT.'Admin/exam'?>">
+                                        <i class="fa fa-bars"></i>
+                                        Exam Settings
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="<?=ROOT.'Admin/payment_record'?>">
+                                        <i class="fa fa-bars"></i>
+                                        Student Payment Records
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                             <li class="header">ADMINISTRATOR</li>
                                 <li class="">
                                     <a href="<?=ROOT?>Admin/users" rel="noopener noreferrer">
@@ -193,12 +195,13 @@
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="<?=ROOT?>Admnin/settings" rel="noopener noreferrer">
+                                    <a href="<?=ROOT?>Admin/settings?action=role" rel="noopener noreferrer">
                                         <i class="fa fa-cogs"></i> <span>Settings</span>
                                     </a>
                                 </li>
-                        </ul>
-
+                            </li>
+                        </li>
+                    </ul>
                 </section>
                 <!-- /.sidebar -->
             </aside>		<!-- /.sidebar -->

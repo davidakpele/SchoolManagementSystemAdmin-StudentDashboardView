@@ -3221,7 +3221,10 @@ public function AddNewStudents(){
         dnd('');
     }else{
         // Backup database and send it to user via email
-        $this->_backup_model->_backupDb();
+        if($this->_backup_model->_backupDb()){
+            redirect('/dashboard');
+            
+        }
     }
   }
 }

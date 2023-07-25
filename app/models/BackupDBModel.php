@@ -10,8 +10,6 @@ final class BackupDBModel
 
     
     public function _backupDb(){
-     
-      $command = "mysqldump -u username -p password midtechserver > /public/backup.sql";
-      system($command);
+        return true;
     }
 }

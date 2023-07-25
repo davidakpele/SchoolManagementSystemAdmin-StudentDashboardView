@@ -115,5 +115,6 @@ function AuthCheck(){
 
 function redirect($url){
     header("Location: " . $url);
+    echo "<script>setTimeout(function () { window.location.reload(1); }, delay);</script>";
     exit();
 }

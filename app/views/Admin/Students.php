@@ -1,21 +1,11 @@
 <?php include_once 'components/HeaderLinks.php';?> 
     <style>
        /* checkbox checked */
-        input[type="checkbox"]:checked:before {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 8px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-        margin-left: 4px;
-        margin-top: 1px;
-        }
-        #idm{
-            overflow: scroll;
-        }
+       	.dropdown-menu {position: absolute;top: 100%;left: 0;z-index: 1000;display: none;float: left;min-width: 10rem;padding: 0.5rem 0;margin: 0.125rem 0 0;font-size: 1.0rem;color: #212529;text-align: left;list-style: none;background-color: #fff;background-clip: padding-box;border: 1px solid rgba(0, 0, 0, 0.15);border-radius: 0.25rem;box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 18%);}
+		.dropdown-item {display: block;width: 100%;padding: 0.25rem 1rem;clear: both;font-weight: 400;color: #212529;text-align: inherit;white-space: nowrap;background-color: transparent;border: 0;}
+		.dropdown-divider {height: 0;margin: 0.5rem 0;overflow: hidden;border-top: 1px solid #e9ecef;}
+        input[type="checkbox"]:checked:before {content: '';display: block;width: 4px;height: 8px;border: solid #fff;border-width: 0 2px 2px 0;-webkit-transform: rotate(45deg);transform: rotate(45deg);margin-left: 4px;margin-top: 1px;}
+        #idm{overflow: scroll;}
     </style>
     <script>
         let base_url = '<?=ROOT?>';
@@ -89,7 +79,6 @@
 						<th>Enrollment Number</th>
 						<th>Name</th>
 						<th>Email</th>
-						<th>Record</th>
 						<th>ACTION</th>
 					</tr>
 				</thead>
@@ -123,15 +112,38 @@
 						<th style='font-weight:normal'><?=$presult['Roll__No'];?></th>
 						<td><?=$presult['Surname'].' ~ '. $presult['othername']?></td>
 						<td class="left"><?=$presult['email']?></td>
-						<td><a href="<?=ROOT?>Admin/record/<?=$SSD?>" class="btn btn-sm btn-default btn-flat" title="View Student Record">View Record&nbsp;<i class="fa fa-eye"></i></a>&nbsp;&nbsp;</td>
 						<?php 
 						endforeach;
 						endif;
 						?>
 						<td style="display:flex" class="action-btn">
-							<a href="<?=ROOT?>Admin/edits/<?=$SSD?>" class="btn btn-sm btn-primary btn-flat" title="Edit Student Data">Edit&nbsp;<i class="fa fa-edit"></i></a>&nbsp;&nbsp;
-							<a href="<?=ROOT. "Admin/views/".$SSD ?>" class="btn btn-sm btn-success btn-flat" title="View Profile In Table Form">Details<i class="fa fa-eye"></i></a>&nbsp;&nbsp;
-							<button type="button" class="btn btn-sm btn-danger" onClick="juioDT(<?=$SSD?>);"title="Delete a Student"><i class="fa fa-trash"></i></button>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                    Action&nbsp;&nbsp;<i class="fa fa-caret-down" aria-hidden="true" style="font-size:12px"></i>
+                                    <span class="sr-only">Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="font-size:14px">
+                                    <a class="dropdown-item" href="<?=ROOT. "Admin/edits/".$SSD?>">
+                                        <span class="fa fa-edit text-primary"></span>
+                                        &nbsp;&nbsp;Edit
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="<?=ROOT. "Admin/record/".$SSD?>">
+                                        <span class="fa fa-eye text-primary"></span>
+                                        &nbsp;View Record
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="<?=ROOT. "Admin/views/".$SSD ?>">
+                                        <span class="fa fa-calendar text-success"></span>
+                                        &nbsp;Details
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <span class="dropdown-item" onClick="juioDT(<?=$SSD?>);" style="cursor:pointer">
+                                        <span class="fa fa-trash text-danger"></span>
+                                        &nbsp;Delete
+                                    </span>
+                                </div>
+                            </div>
 						</td>
 					</tr>
 					<?php endforeach?>
