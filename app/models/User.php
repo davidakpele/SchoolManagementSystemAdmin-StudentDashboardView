@@ -138,17 +138,6 @@ Class User {
 		}
 	}
 
-
-	public function fetchCourses(){
-		$this->DB->query("SELECT * FROM courses");
-		$stmt = $this->DB->resultSet();
-		if (!empty($stmt)){
-			return $stmt;
-		}else {
-			return false;
-		}
-	}
-	
 	public function fetchClass(){
 		$this->DB->query("SELECT * FROM class");
 		$stmt = $this->DB->resultSet();

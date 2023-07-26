@@ -354,4 +354,43 @@ Class ApisController extends Controller {
         }
         
 	}
+
+
+     public function get_course_data(){
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: *");
+        header("Access-Control-Allow-Headers: *");
+        header("Content-Type: application/json");
+        header("Access-Control-Max-Age: 3600");
+        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        
+        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
+            dnd('Connection Failed');
+        }else{
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
+            
+            $getData=$phpObject->{'DataId'};
+
+            $newJsonString = json_encode($phpObject);
+
+            $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+            if(!empty($id) && (is_numeric($id))){
+                $request_courses_couse= $this->model->get_course_data($id);
+                if ($request_courses_couse) {
+                    $response['status'] = 200; 
+                    $response['result'] = $request_courses_couse;
+                }else {
+                    $response['status'] = 'Data not found.';
+                }
+                
+            }else { 
+                header('location:' . ROOT . 'DeniedAccess');
+            }
+            ob_end_clean();
+            echo json_encode($response); 
+        }
+    }
 }

@@ -13,12 +13,16 @@ class Admin extends Controller {
     private $_chat_module;
     private $_settings_model;
     private $_backup_model;
+    private $_getting_data_display;
+    private $_adding_data;
     public function __construct() {
         $this->userModel = $this->loadModel('User');
         $this->_tbl_model = $this->loadModel('TablesModel');
         $this->_chat_module = $this->loadModel('ChartModel');
         $this->_settings_model = $this->loadModel('SettingsModel');
         $this->_backup_model = $this->loadModel('BackupDBModel');
+        $this->_getting_data_display = $this->loadModel('Getting_Datas');
+        $this->_adding_data = $this->loadModel('Adding_data');
     }
 
 
@@ -2293,7 +2297,7 @@ public function AddNewStudents(){
             $this->view('Error404', $data);
            dnd('');
         }else{
-            $courseSQL = $this->userModel->fetchCourses();
+            $get_all_courses = $this->_getting_data_display->get_all_courses();
             $Dept = $this->userModel->AdminSQLfetchDepartment();
             $class = $this->userModel->fetchClass();
             $semester = $this->userModel->fetchsemeter();
@@ -2301,7 +2305,7 @@ public function AddNewStudents(){
             [
                 'settings'=>$this->_AppSettings(),
                 'page_title'=>'Course',
-                'cr'=>$courseSQL,
+                'cr'=>$get_all_courses,
                 'dep'=>$Dept,
                 'class'=>$class,
                 'smt'=>$semester
@@ -2453,6 +2457,25 @@ public function AddNewStudents(){
         }
         ob_end_clean();
         echo json_encode($response);
+    }
+
+    public function courses_subjects(){
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $getAll_subjects=$this->_getting_data_display->get_all_courses_subjects();
+            $get_all_courses = $this->_getting_data_display->get_all_courses();
+            $data = 
+            [
+                'settings'=>$this->_AppSettings(),
+                'page_title'=>'Courses Subjects',
+                'subject_data'=>$getAll_subjects,
+                'courses_data'=>$get_all_courses,
+            ];
+            $this->view('Admin/courses_subjects', $data);
+        }
     }
     public function isCore($url){
         if(!isLoggedInAdmin()){
@@ -3227,4 +3250,44 @@ public function AddNewStudents(){
         }
     }
   }
+
+
+   public function addSubject(){
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
+            header("Access-Control-Allow-Origin: *");
+            header("Content-Type: application/json; charset=UTF-8");
+            header("Access-Control-Allow-Methods: POST");
+            header("Access-Control-Max-Age: 3600");
+            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            //You can either use this or json_decode function
+            $phpObject = json_decode($jsonString);
+            $course =  $phpObject->{'course'};
+            $courseid =  $phpObject->{'courseid'};
+            $coursecode =  $phpObject->{'course_code'};
+            $subject =  $phpObject->{'subject'};
+          
+            if ($course == "") {
+                $response['message']="The  field is required.";
+                $response['status1'] = false;
+            }
+            if ($subject == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+            }
+            elseif (!empty($course) && !empty($subject)){
+
+                if ($this->_adding_data->addcourse($courseid,$subject,$course, $coursecode)) {
+                    $response['message']= "New subject successfully added.!";
+                    $response['status'] = true;
+                }else {
+                    $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                    $response['status1'] = false;
+                }     
+            }
+        ob_end_clean();
+        echo json_encode($response);
+    }
 }

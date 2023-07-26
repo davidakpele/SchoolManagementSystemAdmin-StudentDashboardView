@@ -87,7 +87,7 @@
                               <h6>Course Unit | <span class="pull-right btn btn-secondary btn-sm"><?=($ue['CourseUnit']) ? $ue['CourseUnit'] : '' ;?></span></h6>
                           </div>
                           <div class="px-2 mt-3">
-                            <a href="../ReadMore?Search=<?=($ue['CourseID']) ? $ue['CourseID'] : '' ;?>&search=1"><button class="btn btn-outline-primary px-3">Read More</button> </a>
+                            <a href="../Course/<?=($ue['CourseID']) ? $ue['CourseID'] : '' ;?>"><button class="btn btn-outline-primary px-3">Read More</button> </a>
                           </div>
                         </div>
                       </div>
@@ -235,7 +235,7 @@
           <div class="card-text content mt-2">
           <?php  foreach ($data['online'] as $rvalue):?>
             <div class="user">
-              <a href="../AuthUser?Search=<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" title="<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" style="display:flex">
+              <a href="<?=ROOT?>Student/Dashboard/AuthUser?Search=<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" title="<?=($rvalue['student__Id']) ? $rvalue['student__Id'] : '' ;?>" style="display:flex">
                 <img src="<?=ASSETS?>img/f2" class="userpicture defaultuserpic" width="20" height="20" alt="<?=$rvalue['Surname'].' '.$rvalue['othername']; $rvalue['student__Id']?>">
                 <span style="margin-left:5px;"><?=$rvalue['Surname'].' '.$rvalue['othername']?><span class="active__online__std" style="margin-top:5px"></span></span>
               </a> 

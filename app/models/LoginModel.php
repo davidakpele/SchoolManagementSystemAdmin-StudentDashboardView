@@ -330,15 +330,5 @@
                 return false;
             }
         }
-        public function getSearchCourse($id){
-            $this->Router->query("SELECT * FROM courses WHERE CourseID=:id");
-            $this->Router->bind(':id', $id);
-            $stmt = $this->Router->single();
-             if(!empty($stmt)){
-                return $stmt;
-            }else {
-                return false;
-            }
-        }
     }
     

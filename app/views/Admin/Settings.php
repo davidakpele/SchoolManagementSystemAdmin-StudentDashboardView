@@ -10,26 +10,11 @@
 <link href="<?=ASSETS?>plugins/summernote/summernote.css" rel="stylesheet">
 <script src="<?=ASSETS?>plugins/summernote/summernote.min.js"></script>
 <style>
-    #flexgrid{
-        display:flex;
+    #flexgrid{display:flex;}
+    @media only screen and (max-width: 600px) {
+        #flexgrid {display:grid;justify-items: center;}
     }
-     @media only screen and (max-width: 600px) {
-        #flexgrid {
-            display:grid;
-            justify-items: center;
-        }
-    }
-    .__logo{
-        max-width: 100%;
-        max-height: auto;
-        position: relative;
-        vertical-align: middle;
-        left: 50%;
-        transform: translate(-50%);
-        height: 200px;
-        width: 200px;
-        object-fit:cover;
-    }
+    .__logo{max-width: 100%;max-height: auto;position: relative;vertical-align: middle;left: 50%;transform: translate(-50%);height: 200px;width: 200px;object-fit:cover;}
 </style>
 </head>
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -62,7 +47,7 @@
 				</ol>
 			</section>
 						<!-- Main content -->
-			<section class="content container-fluid">
+			<section class="content container" style="max-width:1200px">
                 <div class="box">
                     <div class="box-header with-border">
                        <h3 class="box-title"><?=((isset($_GET['action']) && $_GET['action']==="tb")? 'Display All Database Tables we are connected': 'Default Menu')?></h3>

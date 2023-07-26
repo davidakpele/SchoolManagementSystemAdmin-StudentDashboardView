@@ -20726,6 +20726,14 @@ CREATE TABLE IF NOT EXISTS Courses(
     CourseStatus VARCHAR(100) COLLATE utf8mb4_unicode_ci NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `courses_subjects` (
+    `id` INT(10) NOT NULL AUTO_INCREMENT , 
+    `course_id` INT(10) NOT NULL , 
+    `course_code` VARCHAR(200) NOT NULL , 
+    `subject_name` TEXT NOT NULL , 
+    PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB;
+
 INSERT INTO Courses(DepartmentID, ClassID, SemesterID, CourseCode, CourseTitle, CourseUnit, CourseStatus)
 VALUES
 -- 100 LEVEL
@@ -21146,14 +21154,14 @@ CREATE TABLE IF NOT EXISTS`attendance_record` (
 --
 -- Table structure for table `settings`
 --
-CREATE TABLE IF NOT EXISTS `midtechserver`.`settings` (
+CREATE TABLE IF NOT EXISTS `settings` (
     `id` INT(11) NOT NULL AUTO_INCREMENT , 
     `logo` TEXT NOT NULL , 
     `schoolname` VARCHAR(255)  NOT NULL, 
     `backgroundcolor` VARCHAR(100) NOT NULL , 
     PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `midtechserver`.`monitor_user_activities` (
+CREATE TABLE IF NOT EXISTS `monitor_user_activities` (
     `sn` INT NOT NULL AUTO_INCREMENT , 
     `userid` VARCHAR(255) NOT NULL , 
     `status` INT(10) NOT NULL , 

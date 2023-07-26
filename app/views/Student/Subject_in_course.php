@@ -1,4 +1,7 @@
 <?php $this->view("include/Sinclude/header",$data); ?>
+<style>
+  #iks{overflow: scroll;}
+</style>
   <!-- main content start -->
 <div class="main-content" style="background: #e9ecef;">
 
@@ -24,95 +27,50 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3>Courses I am taking</h3><br/>
-                    <table class="table table-hover js-basic-example dataTable table-striped table_custom border-style spacing5" id="myTable">
-                      <thead>
-                        <tr>
-                          <th>Course name</th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th>Grade</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td><a href="<?=ROOT?>Student/Mode?=grade&id=2125&user=12781">Course name Grade Entrepreneurship and Innovation (GST204_22)</a></td>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th>21.00</th>
-                        </tr>
-                        <tr>
-                          <td><a href="javascript:void(0)">Fundamentals of Peace Studies and C (GST202_22)</a></td>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>30.00</th>
-                        </tr>
-                        <tr>
-                          <td><a href="javascript:void(0)">Fundamentals of Data Structure (CIT216_22)</a></td>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th>21.00</th>
-                        </tr>
-                        <tr>
-                            <td><a href="javascript:void(0)">Computer Hardware (CIT210_22)</a></td>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>30.00</th>
-                        </tr>
-                        <tr>
-                          <td><a href="javascript:void(0)">Discrete Structure (CIT206_22)</a></td>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>29.00</th>
-                        </tr>
-                        <tr>
-                            <td><a href="javascript:void(0)">Mathematical Method I (MTH281_22)</a></td>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>22.00</th>
-                        </tr>
-                        <tr>
-                          <td><a href="javascript:void(0)">Computer Laboratory I (CIT292_22)</a></td>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th></th>
-                          <th>19.00</th>
-                        </tr>
+                    <div class="pull-left">
+                      <h3>All the subjects in <?=((!empty($data['coursename']))?$data['coursename']: '');?></h3><br/>
+                    </div>
+                    <div class="pull-right">
+                      <a href="<?=ROOT?>Student/Dashboard/Default" class="btn btn-secondary btn-sm">Go Back</a>
+                    </div>
+                    <div id="">
+                      <div id="is">
+                      <table id="myTable" class="table table-hover js-basic-example dataTable table-striped table_custom border-style spacing5" >
+                        <thead>
                           <tr>
-                            <td><a href="javascript:void(0)">Programming & Algorithms (CIT237_22)</a></td>
+                            <th>Subjects name</th>
                             <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>29.00</th>
+                            <th>E-books Link</th>
                           </tr>
+                        </thead>
+                        <tbody>
+                          <?php if(!empty($data['data'])):?>
+                          <?php foreach ($data['data'] as $key):?>
                           <tr>
-                            <td><a href="javascript:void(0)">Elementary Data Processing (CIT213_22)</a></td>
+                            <td>
+                              <a href="<?=ROOT?>Student/Mode?=grade&id=2125&user=12781">
+                              <?=$key['subject_name']?>
+                              </a>
+                            </td>
                             <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>29.00</th>
+                            <th><a href="javascript:void(0)" class="btn btn-primary btn-sm">Download Material</a></th>
                           </tr>
-                        </tr>
-                      </tbody>
-                    </table>
-                
+                          <?php endforeach;?>
+                          <?php else: ?>
+                            <tr>
+                            <td colspan="9"><h5 class="text-center" style="text-align:center">No Subject Found..!</h5></td>
+                          </tr>
+                          <?php endif;?>
+                        </tbody>
+                      </table>
+                          </div>
+                          </div>
                 </div>
             </div>
         </div>

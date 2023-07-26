@@ -16,10 +16,12 @@ Class PagesController extends Controller {
     private $dataModel;
     private $namespacemodel;
     private $_settings_model;
+    private $_getting_data_display;
     public function __construct() {
        @$this->userModel = @$this->loadModel('User');
        @$this->namespacemodel = @$this->loadModel('LoginModel');
        @$this->_settings_model = $this->loadModel('SettingsModel');
+       $this->_getting_data_display = $this->loadModel('Getting_Datas');
     }
 
     public function _AppSettings(){
@@ -1565,24 +1567,6 @@ public function LogoutStudent(){
             }
         }
     }
-    public function ReadMore(){
-        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
-            if (isset($_GET['Search'])) {
-                $id= strip_tags(trim(filter_var((int)($_GET['Search']), FILTER_SANITIZE_STRING)));
-                // FETCH DATA
-                $isReturn = $this->namespacemodel->getSearchCourse($id);
-                if ($isReturn) {
-                    //set  data
-                    $data = 
-                    [
-                        'page_title'=> 'Read More About Course',
-                        'returnData'=> $isReturn
-                    ];
-                }
-                $this->view("Student/__readmore", $data);
-            }
-        }
-    }
 
     public function exam($url){
         if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
@@ -1608,6 +1592,50 @@ public function LogoutStudent(){
                 ];
             
                 $this->view('Student/exam', $data);
+            }
+        }
+    }
+
+
+     public function Course(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');
+        }else {
+            $url=implode('',$_REQUEST);
+            $urlParts = explode('/', $url);
+           if (!isset($urlParts[2]) || empty($urlParts[2])){
+               echo "<script>
+                        alert('Invalid URL Request.!');
+                        window.location.replace('". ROOT ."student/Dashboard/Default');
+                    </script>";
+           }else if(is_numeric($urlParts[2])==false){
+                echo "<script>
+                    alert('Invalid Course ID Sent..!');
+                    window.location.replace('". ROOT ."Student/Dashboard/Default');
+                </script>";
+           }else{
+                // Set Controller ? 
+                $controller = (((!empty($urlParts[2])) ? $urlParts[2] : ROOT.'Student/Dashboard/Default'));
+                $controllerName = $controller;
+                $id=  strip_tags(trim((filter_var($controllerName, FILTER_SANITIZE_NUMBER_INT))));
+                $id = $id;
+                $getData = $this->_getting_data_display->get_subject_ina_course($id);
+                $get_course_name = $this->_getting_data_display->get_aSinlge_courses($id);
+                if (!empty($getData)) {
+                    $data = 
+                    [
+                        'page_title'=> 'List of Subjects in '.((!empty($get_course_name))?$get_course_name->CourseTitle: ''),
+                        'data'=> $getData,
+                        'coursename'=>((!empty($get_course_name))?$get_course_name->CourseTitle: ''),
+                    ];
+                }else {
+                    $data = 
+                    [
+                        'page_title'=> 'List of Subjects',
+                        'data'=> '',
+                        'coursename'=>((!empty($get_course_name))?$get_course_name->CourseTitle: ''),
+                    ];
+                }
+                $this->view("Student/Subject_in_course", $data);
             }
         }
     }

@@ -175,4 +175,15 @@
                 $data['draw']=2;
             }
         }
+
+        public function get_course_data($id){
+            $this->DB->query("SELECT * FROM `courses` WHERE CourseID=:id");
+            $this->DB->bind(':id', $id);
+            $return_stmt = $this->DB->Single();
+            if(!empty($return_stmt)){
+                return $return_stmt;
+            }else{
+                return false;
+            }
+        }
     }

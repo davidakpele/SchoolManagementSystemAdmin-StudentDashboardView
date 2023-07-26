@@ -1,24 +1,9 @@
 <?php include_once 'components/HeaderLinks.php';?> 	
     <style>
        /* checkbox checked */
-        input[type="checkbox"]:checked:before {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 8px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-        margin-left: 4px;
-        margin-top: 1px;
-        }
-        #idm{
-            overflow: scroll;
-        }
-        .form-group.has-error .help-block1, .help-block2{
-            color: #dd4b39;
-        }
+        input[type="checkbox"]:checked:before {content: '';display: block;width: 4px;height: 8px;border: solid #fff;border-width: 0 2px 2px 0;-webkit-transform: rotate(45deg);transform: rotate(45deg);margin-left: 4px;margin-top: 1px;}
+        #idm{overflow: scroll;}
+        .form-group.has-error .help-block1, .help-block2{color: #dd4b39;}
     </style>
     <script>
         let base_url = '<?=ROOT?>';

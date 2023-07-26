@@ -10,25 +10,25 @@
         <li class="">
             <a href="<?=ROOT?>Admin/Application">
                 <i class="fa fa-bars"></i> 
-                <span>Application</span>
+                <span>Program</span>
             </a>
         </li>
         <li class="">
             <a href="<?=ROOT?>Admin/Faculties">
                 <i class="fa fa-bars"></i>
-                <span>Faculty</span>
+                <span>Faculties</span>
             </a>
         </li>
         <li class="">
             <a href="<?=ROOT?>Admin/Department">
                 <i class="fa fa-bars"></i>
-                <span>Department</span>
+                <span>Departments</span>
             </a>
         </li>
         <li class="">
             <a href="<?=ROOT?>Admin/Professors">
                 <i class="fa fa-bars"></i>
-                <span>Lecturer</span>
+                <span>Lecturers</span>
             </a>
         </li>
         <li class="">
@@ -38,24 +38,29 @@
             </a>
         </li>
         <li class="">
-            <a href="<?php echo ROOT.'Admin/Courses'?>">
-                <i class="fa fa-bars"></i>
-                <span>Course-Table</span>
-            </a>
-        </li>
-        <li class="">
             <a href="<?php echo ROOT.'Admin/Class'?>">
                 <i class="fa fa-bars"></i>
-                <span>Class-TableS</span>
+                <span>Classes</span>
             </a>
         </li>
         <li class="">
             <a href="<?php echo ROOT.'Admin/Semester'?>">
                 <i class="fa fa-bars"></i>
-                <span>Semester-Table</span>
+                <span>Semesters</span>
             </a>
         </li>
-           
+        <li class="">
+            <a href="<?php echo ROOT.'Admin/Courses'?>">
+                <i class="fa fa-bars"></i>
+                <span>Courses</span>
+            </a>
+        </li>
+        <li class="">
+            <a href="<?php echo ROOT.'Admin/courses_subjects'?>">
+                <i class="fa fa-bars"></i>
+                <span>Subjects</span>
+            </a>
+        </li> 
         <li class="treeview ">
             <a href="#"><i class="fa fa-book"></i> <span>Manage Exam</span>
                 <span class="pull-right-container">

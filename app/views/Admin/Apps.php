@@ -1,24 +1,9 @@
 <?php include_once 'components/HeaderLinks.php';?> 	
     <style>
        /* checkbox checked */
-        input[type="checkbox"]:checked:before {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 8px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-        margin-left: 4px;
-        margin-top: 1px;
-        }
-        #idm{
-            overflow: scroll;
-        }
-        .form-group.has-error .help-block{
-            color: #dd4b39;
-        }
+        input[type="checkbox"]:checked:before {content: '';display: block;width: 4px;height: 8px;border: solid #fff;border-width: 0 2px 2px 0;-webkit-transform: rotate(45deg);transform: rotate(45deg);margin-left: 4px;margin-top: 1px;}
+        #idm{overflow: scroll;}
+        .form-group.has-error .help-block{color: #dd4b39;}
     </style>
     <script>
         let base_url = '<?=ROOT?>';
@@ -52,116 +37,118 @@
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper">
 			<section class="content-header">
-				<h1>Administrative <small>Application  Data</small></h1>
+				<h1>Administrative <small>Program  Data</small></h1>
 				<ol class="breadcrumb">
 					<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 					<li class="active">Administrative</li>
-					<li class="active">Application  Data</li>
+					<li class="active">Program  Data</li>
 				</ol>
 			</section>
 						<!-- Main content -->
-			<section class="content container-fluid">
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">Master Administration Data</h3>
-        <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-        </div>
-	</div>
-    <div class="box-body">
-		<div class="mt-2 mb-4">
-            <a data-toggle="modal" href="#matkulId" style="text-decoration:none"><button type="button" class="btn btn-sm bg-blue btn-flat"><i class="fa fa-plus"></i> 
-                Add New Application </button></a>
-			<div class="pull-right insiderBox" id="iz" style="display:none">
-				<button id="delete__Btn" title="Delete This Professor" class="btn btn-sm btn-danger btn-flat" type="button"><i class="fa fa-trash"></i> Delete</button>
-                <button disabled="disabled" class="btn btn-sm" style="background-color: #000000; border-radius:25px"><span class="pull-left" id="deletebadge" style="color: #fff;">Selected</span></button>
-            </div>
-		</div>
-          <form action="" method="post" id="idm">
-			<table class="w-100 table js-basic-example dataTable table-striped table-bordered table-hover" id="myTable" >
-				<thead>
-                <tr>
-                    <th>S/N</th>
-                    <th>Status</th>
-                    <th>Category Name</th>
-                    <th>Parent</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-				<tbody>
-					<?php $i = 0?>
-					<?php
-						if ($data['apps'])
-						foreach ($data['apps'] as $presult): ?>
-						<?php 
-                        $id = $presult['Category__ID'];
-                        if ($presult > 0) $i ++;?>
-						<tr>
-							<td><?=$i?></td>
-                            <td>
-                                <a href="<?=ROOT."Admin/data?action=change_status&status=".(($presult['Status'] == 0)?'1' : '0')?>&id=<?=$presult['Category__ID'];?>" class="btn btn-<?=(($presult['Status'] ==1)?'default':'danger')?> btn-xs" title="Grant Professor Access To Account">
-                                    <i class="fa fa-<?=(($presult['Status'] ==1)?'minus':'plus')?>"></i>&nbsp<?=(($presult['Status'] == 1)? 'Available Now': 'Make Available')?>
-                                </a>
-                            </td>
-                            <td><?=$presult['Category__name']?> </td>
-                            <td><?=$presult['Parent']?></td>
-                           
-                            <td>
-                                <div class="flex" style="display:flex">
-                                    <div class="text-center">
-                                        <a class="btn btn-xs btn-primary" onclick="editCat(<?=$id?>);" data-id="<?php echo $presult['Category__ID'];?>" href="javascript:void(0)">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>&nbsp;
-                                        <button type="button" class="btn btn-xs btn-danger" onclick="hapus(<?=$id?>)">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
+			<section class="content container">
+                <div class="box" style="max-width:1200px">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Master Administration Data</h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="mt-2 mb-4">
+                            <a data-toggle="modal" href="#matkulId" style="text-decoration:none">
+                                <button type="button" class="btn btn-sm bg-blue btn-flat">
+                                    <i class="fa fa-plus"></i> Add New Program 
+                                </button>
+                            </a>
+                            <div class="pull-right insiderBox" id="iz" style="display:none">
+                                <button id="delete__Btn" title="Delete This Professor" class="btn btn-sm btn-danger btn-flat" type="button"><i class="fa fa-trash"></i> Delete</button>
+                                <button disabled="disabled" class="btn btn-sm" style="background-color: #000000; border-radius:25px"><span class="pull-left" id="deletebadge" style="color: #fff;">Selected</span></button>
+                            </div>
+                        </div>
+                        <form action="" method="post" id="idm">
+                            <table class="w-100 table js-basic-example dataTable table-striped table-bordered table-hover" id="myTable" >
+                                <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Status</th>
+                                    <th>Category Name</th>
+                                    <th>Parent</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                                <tbody>
+                                    <?php $i = 0?>
+                                    <?php
+                                        if ($data['apps'])
+                                        foreach ($data['apps'] as $presult): ?>
+                                        <?php 
+                                        $id = $presult['Category__ID'];
+                                        if ($presult > 0) $i ++;?>
+                                        <tr>
+                                            <td><?=$i?></td>
+                                            <td>
+                                                <a href="<?=ROOT."Admin/data?action=change_status&status=".(($presult['Status'] == 0)?'1' : '0')?>&id=<?=$presult['Category__ID'];?>" class="btn btn-<?=(($presult['Status'] ==1)?'default':'danger')?> btn-xs" title="Grant Professor Access To Account">
+                                                    <i class="fa fa-<?=(($presult['Status'] ==1)?'minus':'plus')?>"></i>&nbsp<?=(($presult['Status'] == 1)? 'Available Now': 'Make Available')?>
+                                                </a>
+                                            </td>
+                                            <td><?=$presult['Category__name']?> </td>
+                                            <td><?=$presult['Parent']?></td>
+                                        
+                                            <td>
+                                                <div class="flex" style="display:flex">
+                                                    <div class="text-center">
+                                                        <a class="btn btn-xs btn-primary" onclick="editCat(<?=$id?>);" data-id="<?php echo $presult['Category__ID'];?>" href="javascript:void(0)">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>&nbsp;
+                                                        <button type="button" class="btn btn-xs btn-danger" onclick="hapus(<?=$id?>)">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach?>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="modal fade" id="matkulId">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span></button>
+                                        <h4 class="modal-title text-center">Add New Data</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="javascript:void(e)" method="post" >
+                                            <div class="form-group invalid">
+                                                <label for="appname">Program Name: </label>
+                                                <input type="text" name="appname" id="appname" class="form-control">
+                                                <small class="help-block"></small>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" onclick="submit();">Add</button>
                                     </div>
                                 </div>
-                            </td>
-                        </tr>
-					<?php endforeach?>
-				</tbody>
-			</table>
-		</form>
-	</div>
-</div>
-</section>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="modal fade" id="matkulId">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span></button>
-                            <h4 class="modal-title text-center">Add New Data</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form action="javascript:void(e)" method="post" >
-                                <div class="form-group invalid">
-                                    <label for="appname">Application Name: </label>
-                                    <input type="text" name="appname" id="appname" class="form-control">
-                                    <small class="help-block"></small>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" onclick="submit();">Add</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<!-- /.content -->
-</div>
-            
-<?php include_once 'components/Footer.php'; ?>
+        <!-- /.content -->
+        </div>
+    <?php include_once 'components/Footer.php'; ?>
 <!-- Custom JS -->
 <script type="text/javascript" src="<?=ASSETS?>js/professor.js"></script>
 <script>
