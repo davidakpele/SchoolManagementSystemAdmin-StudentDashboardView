@@ -31,32 +31,29 @@ Class PagesController extends Controller {
         }
     }
     public function RenderDep(){
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = strip_tags(trim(filter_var($getData, FILTER_SANITIZE_NUMBER_INT)));
-        if (!empty($id) && (is_numeric($id) && filter_var((int)$id, FILTER_VALIDATE_INT) !== false && is_int($id) || ctype_digit($id) && strval(intval($id)) === strval($id) && ltrim($id, 0))){
-            $crf= $this->userModel->selectDeps($id);
-            if ($crf) {
-                $response['Status'] = '2001'; 
-                $response['result'] = $crf;
-            }else {
-                $response['Status'] = 'Invalid Data requested.';
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
+            $getData=$phpObject->{'id'};
+            $newJsonString = json_encode($phpObject);
+            $id = strip_tags(trim(filter_var($getData, FILTER_SANITIZE_NUMBER_INT)));
+            if (!empty($id) && (is_numeric($id) && filter_var((int)$id, FILTER_VALIDATE_INT) !== false && is_int($id) || ctype_digit($id) && strval(intval($id)) === strval($id) && ltrim($id, 0))){
+                $crf= $this->userModel->selectDeps($id);
+                if ($crf) {
+                    $response['Status'] = '2001'; 
+                    $response['result'] = $crf;
+                }else {
+                    $response['Status'] = 'Invalid Data requested.';
+                }
+                
+            }else { 
+                header('location:' . ROOT . 'DeniedAccess');
             }
-            
-        }else { 
-			header('location:' . ROOT . 'DeniedAccess');
+            ob_end_clean();
+            echo json_encode($response); 
         }
-        ob_end_clean();
-        echo json_encode($response); 
     }
     
 
@@ -85,27 +82,24 @@ Class PagesController extends Controller {
     }
 
     public function InitiateOnlinePaymentController(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $i = json_decode($jsonString);
-        $ReferenceNumber=$i->{'ReferenceNumber'};
-        $newJsonString = json_encode($i);
-        $refid = strip_tags(trim(filter_var($ReferenceNumber, FILTER_SANITIZE_STRING)));
-        $fetch = @$this->userModel->sqlfetchstdreference($refid);
-        if ($fetch) {
-            $response['status'] =  '200';
-            $response['message']= 'Reference Number Found.';
-        }else {
-            $response['message']= 'Your reference number is not valid..';
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $i = json_decode($jsonString);
+            $ReferenceNumber=$i->{'ReferenceNumber'};
+            $newJsonString = json_encode($i);
+            $refid = strip_tags(trim(filter_var($ReferenceNumber, FILTER_SANITIZE_STRING)));
+            $fetch = @$this->userModel->sqlfetchstdreference($refid);
+            if ($fetch) {
+                $response['status'] =  '200';
+                $response['message']= 'Reference Number Found.';
+            }else {
+                $response['message']= 'Your reference number is not valid..';
+            }
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     // ======================================================
     // ADMIN Login Page Controller
@@ -122,53 +116,50 @@ Class PagesController extends Controller {
     }
 
     public function Auth(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $Incomingdata = json_decode($jsonString);
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $Incomingdata = json_decode($jsonString);
 
-        $Postpassword=$Incomingdata->{'password'};
-        $rememberme = $Incomingdata->{'RememberMe'};
-
-        $SetnewJsonString = json_encode($Incomingdata);
-        if (!filter_var(strip_tags(trim($Incomingdata->{'email'})), FILTER_VALIDATE_EMAIL)) {
-            $response['status'] =  '401';
-            $response['message']= 'Invalid Email Address.!';
-        }else{
-            $Postemail=$Incomingdata->{'email'};
-            $data=
-            [
-                'email'=> strip_tags(trim(filter_var($Postemail, FILTER_SANITIZE_STRING))),
-                'password'=> strip_tags(trim(filter_var($Postpassword, FILTER_SANITIZE_STRING))),
-            ];
-            $loggedInUser = @$this->userModel->login($data);
-            if ($loggedInUser) {
-                if(!empty($rememberme)){
-                    setcookie("_adminEmail",$data['email'],time()+ 3600);
-                    setcookie("_adminPassword",$data['password'],time()+ 3600); 
-                    $response['rememberme'] = true;                      
-               }else{
-                    $response['rememberme'] = true;
-                }
-                if($this->createUserSession($loggedInUser) =="501"){
-                    $response['status'] =  '501';
-                    $response['message']= 'This account has been logged-in somewhere else at the moment..!';
+            $Postpassword=$Incomingdata->{'password'};
+            $rememberme = $Incomingdata->{'RememberMe'};
+    
+            $SetnewJsonString = json_encode($Incomingdata);
+            if (!filter_var(strip_tags(trim($Incomingdata->{'email'})), FILTER_VALIDATE_EMAIL)) {
+                $response['status'] =  '401';
+                $response['message']= 'Invalid Email Address.!';
+            }else{
+                $Postemail=$Incomingdata->{'email'};
+                $data=
+                [
+                    'email'=> strip_tags(trim(filter_var($Postemail, FILTER_SANITIZE_STRING))),
+                    'password'=> strip_tags(trim(filter_var($Postpassword, FILTER_SANITIZE_STRING))),
+                ];
+                $loggedInUser = @$this->userModel->login($data);
+                if ($loggedInUser) {
+                    if(!empty($rememberme)){
+                        setcookie("_adminEmail",$data['email'],time()+ 3600);
+                        setcookie("_adminPassword",$data['password'],time()+ 3600); 
+                        $response['rememberme'] = true;                      
                 }else{
-                    $response['status'] =  '200OK';
+                        $response['rememberme'] = true;
+                    }
+                    if($this->createUserSession($loggedInUser) =="501"){
+                        $response['status'] =  '501';
+                        $response['message']= 'This account has been logged-in somewhere else at the moment..!';
+                    }else{
+                        $response['status'] =  '200OK';
+                    }
+                }else {
+                    $response['status'] =  '402';
+                    $response['message']= 'Invalid Username or Password.';
                 }
-            }else {
-                $response['status'] =  '402';
-                $response['message']= 'Invalid Username or Password.';
             }
+            
+            ob_end_clean();
+            echo json_encode($response);
         }
-        
-        ob_end_clean();
-        echo json_encode($response);
     }
     // =======================================================
     //Creating Management Login method and validation
@@ -194,189 +185,180 @@ Class PagesController extends Controller {
     }
     // Login All Valid MANAGEMENT 
    public function LoginManagement(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
 
-        $ManagementLoginCode = $phpObject->{'ManagementLoginAccesscode'};
-        $ManagementLogPass = $phpObject->{'ManagementLoginPassword'};
-        $rememberme = $phpObject->{'RememberMe'};
-        $ValString = json_encode($phpObject);
+            $ManagementLoginCode = $phpObject->{'ManagementLoginAccesscode'};
+            $ManagementLogPass = $phpObject->{'ManagementLoginPassword'};
+            $rememberme = $phpObject->{'RememberMe'};
+            $ValString = json_encode($phpObject);
 
-        $Accesscode = strip_tags(trim(filter_var($ManagementLoginCode, FILTER_SANITIZE_STRING)));
-        $password = strip_tags(trim(filter_var($ManagementLogPass, FILTER_SANITIZE_STRING)));
-        /**
-         * -------------------------------------------------------------------
-         * There are Steps to Verify Staff(s) BEFORE Login can proccess Successfully.
-         * ------------------------------------------------------------------- 
-         * 1. check if the accesscode which serve as username exist on any of the database table
-         * 1(a) if the User(Staff) Have a typo error from the accesscode, then throw error  'Invalid Data Provided. Please Try Again Later'
-         * 2. check if password is correct, if it not correct throw error 'Sorry..! Wrong Password'
-         * 3. check if user is assign to ay department which we need to create the URL PATH of his/her dashboard
-         * 3(a)after checking is Accesscode and password matches any User/staffd data on our database table, then check if Amin has Appointed he/she to a department, if not throw error 'Sorry..!Account Confirm. You've not been Appointed Yet.'
-         * 4(Confirm Login) .if admin happens to appoint the staff to any department THEN Redirect to Dashboard.
-         *
-         */
-        $processManagementLogin =$this->userModel->LoginAccountant($Accesscode);  
-        if($processManagementLogin == true){
-            $nin = $processManagementLogin->NIN;
-            // Fetch ur Role access Role here
-            $iv = $this->userModel->mimi($nin);
-            if($iv){/**@property-read mixed $name*/
-                $code = $processManagementLogin->Accesscode;
-                $ie= $this->userModel->MimiPassword($code, $password);
-                if($ie){
-                    //Now check if access is granted
-                    if($processManagementLogin->featured != 1){ /**@property-read mixed $name*/
-                        $response['message']='Sorry..! You Account Has Been Disabled.';
-                    }elseif ($processManagementLogin->featured == 1) {
-                        $fname= $processManagementLogin->Surname;
-                        $lname= $processManagementLogin->Othername;
-                        $Profemail= $processManagementLogin->Email;
-                        $fullname= $fname.' '.$lname;
-                        $activeuserid = $iv->ID;
-                        $activeusernin = $iv->NIN;
-                        $activeuserRole= $iv->Role;
-                        $activeuserAccesscode= $processManagementLogin->Accesscode;
-                        $activeuserphoto = $processManagementLogin->Profile__Picture;
-                        if(!empty($rememberme)){
-                            $login1 = $this->ManagementLecturalSession($Profemail, $fullname, $activeusernin, $activeuserid, $activeuserRole,  $activeuserAccesscode, $activeuserphoto);
-                            if ($login1) {
-                                setcookie ("accesscode",$Accesscode,time()+ 3600);
-                                setcookie ("password",$password,time()+ 3600);
-                                $_SESSION['cookiecode'] = $_COOKIE['accesscode'];
-                                $_SESSION['cookiepass'] = $_COOKIE['password'];
-                                $response['status'] = true;
-                                $response['rememberme'] = true;
-                            }else{
-                                $response['rememberme'] = false;
-                            }
-                        }else {
-                            $login1 = $this->ManagementLecturalSession($Profemail, $fullname, $activeusernin, $activeuserid, $activeuserRole,  $activeuserAccesscode, $activeuserphoto);
-                            if ($login1) {
-                                $response['status'] = true;
+            $Accesscode = strip_tags(trim(filter_var($ManagementLoginCode, FILTER_SANITIZE_STRING)));
+            $password = strip_tags(trim(filter_var($ManagementLogPass, FILTER_SANITIZE_STRING)));
+            /**
+             * -------------------------------------------------------------------
+             * There are Steps to Verify Staff(s) BEFORE Login can proccess Successfully.
+             * ------------------------------------------------------------------- 
+             * 1. check if the accesscode which serve as username exist on any of the database table
+             * 1(a) if the User(Staff) Have a typo error from the accesscode, then throw error  'Invalid Data Provided. Please Try Again Later'
+             * 2. check if password is correct, if it not correct throw error 'Sorry..! Wrong Password'
+             * 3. check if user is assign to ay department which we need to create the URL PATH of his/her dashboard
+             * 3(a)after checking is Accesscode and password matches any User/staffd data on our database table, then check if Amin has Appointed he/she to a department, if not throw error 'Sorry..!Account Confirm. You've not been Appointed Yet.'
+             * 4(Confirm Login) .if admin happens to appoint the staff to any department THEN Redirect to Dashboard.
+             *
+             */
+            $processManagementLogin =$this->userModel->LoginAccountant($Accesscode);  
+            if($processManagementLogin == true){
+                $nin = $processManagementLogin->NIN;
+                // Fetch ur Role access Role here
+                $iv = $this->userModel->mimi($nin);
+                if($iv){/**@property-read mixed $name*/
+                    $code = $processManagementLogin->Accesscode;
+                    $ie= $this->userModel->MimiPassword($code, $password);
+                    if($ie){
+                        //Now check if access is granted
+                        if($processManagementLogin->featured != 1){ /**@property-read mixed $name*/
+                            $response['message']='Sorry..! You Account Has Been Disabled.';
+                        }elseif ($processManagementLogin->featured == 1) {
+                            $fname= $processManagementLogin->Surname;
+                            $lname= $processManagementLogin->Othername;
+                            $Profemail= $processManagementLogin->Email;
+                            $fullname= $fname.' '.$lname;
+                            $activeuserid = $iv->ID;
+                            $activeusernin = $iv->NIN;
+                            $activeuserRole= $iv->Role;
+                            $activeuserAccesscode= $processManagementLogin->Accesscode;
+                            $activeuserphoto = $processManagementLogin->Profile__Picture;
+                            if(!empty($rememberme)){
+                                $login1 = $this->ManagementLecturalSession($Profemail, $fullname, $activeusernin, $activeuserid, $activeuserRole,  $activeuserAccesscode, $activeuserphoto);
+                                if ($login1) {
+                                    setcookie ("accesscode",$Accesscode,time()+ 3600);
+                                    setcookie ("password",$password,time()+ 3600);
+                                    $_SESSION['cookiecode'] = $_COOKIE['accesscode'];
+                                    $_SESSION['cookiepass'] = $_COOKIE['password'];
+                                    $response['status'] = true;
+                                    $response['rememberme'] = true;
+                                }else{
+                                    $response['rememberme'] = false;
+                                }
+                            }else {
+                                $login1 = $this->ManagementLecturalSession($Profemail, $fullname, $activeusernin, $activeuserid, $activeuserRole,  $activeuserAccesscode, $activeuserphoto);
+                                if ($login1) {
+                                    $response['status'] = true;
+                                }
                             }
                         }
+                    }else { /**@property-read mixed $name */
+                        $response['message']= "Sorry..! Wrong Password";
                     }
                 }else { /**@property-read mixed $name */
-                    $response['message']= "Sorry..! Wrong Password";
+                    $response['message']= "Access Code Confirmed.! But You've not been Appointed Yet.";
                 }
-            }else { /**@property-read mixed $name */
-                $response['message']= "Access Code Confirmed.! But You've not been Appointed Yet.";
+            }else {
+                    $response['message'] = "Invalid Data Provided. Please Try Again Later";
             }
-        }else {
-                $response['message'] = "Invalid Data Provided. Please Try Again Later";
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     
      public function DCC(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $DashboardID = $phpObject->{'ID'};
-        $ValString = json_encode($phpObject);
-        $data = ['ID'=>trim(filter_var(strip_tags($DashboardID, FILTER_SANITIZE_STRING)))];
-        
-        if (!empty($data['ID'])) {
-            $baseID= $data['ID'];
-            if($this->SessionDashboard($baseID)){
-                $response['status'] = true;
-            }else {
-                $response['message'] = 'Something went wrong';
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
+            $DashboardID = $phpObject->{'ID'};
+            $ValString = json_encode($phpObject);
+            $data = ['ID'=>trim(filter_var(strip_tags($DashboardID, FILTER_SANITIZE_STRING)))];
+            
+            if (!empty($data['ID'])) {
+                $baseID= $data['ID'];
+                if($this->SessionDashboard($baseID)){
+                    $response['status'] = true;
+                }else {
+                    $response['message'] = 'Something went wrong';
+                }
             }
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
     public function ZoomAPIs(){
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        
-        $ZoopTopic=$phpObject->{'Call Topic'};
-        $SetCaledar=$phpObject->{'Call CalendarSet'};
-        $TimeSet=$phpObject->{'Call Time'};
-        $HourLastSet=$phpObject->{'Call Hour'};
-        $HostLink =$phpObject->{'APILink'};
-        $MinuteLastSet=$phpObject->{'Call Minute'};
-        $TimeZone=$phpObject->{'Time Zone'};
-        $MeetingID=$phpObject->{'Call ID TYPE'};
-        $Password=$phpObject->{'Password'};
+        if(validata_api_request_header()){
+            ob_start();
+            $jsonString = file_get_contents("php://input");
+            $response = array();
+            $phpObject = json_decode($jsonString);
+            
+            $ZoopTopic=$phpObject->{'Call Topic'};
+            $SetCaledar=$phpObject->{'Call CalendarSet'};
+            $TimeSet=$phpObject->{'Call Time'};
+            $HourLastSet=$phpObject->{'Call Hour'};
+            $HostLink =$phpObject->{'APILink'};
+            $MinuteLastSet=$phpObject->{'Call Minute'};
+            $TimeZone=$phpObject->{'Time Zone'};
+            $MeetingID=$phpObject->{'Call ID TYPE'};
+            $Password=$phpObject->{'Password'};
 
-        $newJsonString = json_encode($phpObject);
+            $newJsonString = json_encode($phpObject);
 
-        $ZTopic = strip_tags(trim(filter_var($ZoopTopic, FILTER_SANITIZE_STRING)));
-        $ZCaledar = strip_tags(trim(filter_var($SetCaledar, FILTER_SANITIZE_STRING)));
-        $Ztime = strip_tags(trim(filter_var($TimeSet, FILTER_SANITIZE_STRING)));
-        $ZHour = strip_tags(trim(filter_var($HourLastSet, FILTER_SANITIZE_STRING)));
-        $Zminute = strip_tags(trim(filter_var($MinuteLastSet, FILTER_SANITIZE_STRING)));
-        $ZtimeZone = strip_tags(trim(filter_var($TimeZone, FILTER_SANITIZE_STRING)));
-        $ZID = strip_tags(trim(filter_var($MeetingID, FILTER_SANITIZE_STRING)));
-        $Zpassword = strip_tags(trim(filter_var($Password, FILTER_SANITIZE_STRING)));
-        $Timeframe = $ZCaledar.' '.$Ztime .' '.$ZtimeZone;
-        $duration = $ZHour .' '.$Zminute;
-        $HosterId= $_SESSION['ProfessorID'];
-        $newJsonString = json_encode($phpObject);
+            $ZTopic = strip_tags(trim(filter_var($ZoopTopic, FILTER_SANITIZE_STRING)));
+            $ZCaledar = strip_tags(trim(filter_var($SetCaledar, FILTER_SANITIZE_STRING)));
+            $Ztime = strip_tags(trim(filter_var($TimeSet, FILTER_SANITIZE_STRING)));
+            $ZHour = strip_tags(trim(filter_var($HourLastSet, FILTER_SANITIZE_STRING)));
+            $Zminute = strip_tags(trim(filter_var($MinuteLastSet, FILTER_SANITIZE_STRING)));
+            $ZtimeZone = strip_tags(trim(filter_var($TimeZone, FILTER_SANITIZE_STRING)));
+            $ZID = strip_tags(trim(filter_var($MeetingID, FILTER_SANITIZE_STRING)));
+            $Zpassword = strip_tags(trim(filter_var($Password, FILTER_SANITIZE_STRING)));
+            $Timeframe = $ZCaledar.' '.$Ztime .' '.$ZtimeZone;
+            $duration = $ZHour .' '.$Zminute;
+            $HosterId= $_SESSION['ProfessorID'];
+            $newJsonString = json_encode($phpObject);
 
-        //Zoomn Manipulation
-        @$zoom_meeting = new zoom();
-        @$dataAPi = array();
-        @$dataAPi['topic'] = 'Mercy College University Student Class - zoom meeting';
-        @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
-        @$dataAPi['duration'] =30;
-        @$dataAPi['type'] =2;
-        @$dataAPi['password'] = '';
-         try{
-            @$response = @$zoom_meeting->createMeeting(@$dataAPi);
-            @$data = 
-            [
-                'page_title'=>'Lecturar Dashboard',
-                'ZoomLink'=>$response->join_url,
-                'ZoomId'=>$response->id,
-                'Manualpassword'=>$response->password,
-                'h323_password'=>$response->h323_password,
-                'encrypted_password'=>$response->encrypted_password,
-            ];
-            }catch(Exception $ex){
-                die($ex);
+            //Zoomn Manipulation
+            @$zoom_meeting = new zoom();
+            @$dataAPi = array();
+            @$dataAPi['topic'] = 'Mercy College University Student Class - zoom meeting';
+            @$dataAPi['start_date'] = date("Y-m-d h:i:s", strtotime('today'));
+            @$dataAPi['duration'] =30;
+            @$dataAPi['type'] =2;
+            @$dataAPi['password'] = '';
+            try{
+                @$response = @$zoom_meeting->createMeeting(@$dataAPi);
+                @$data = 
+                [
+                    'page_title'=>'Lecturar Dashboard',
+                    'ZoomLink'=>$response->join_url,
+                    'ZoomId'=>$response->id,
+                    'Manualpassword'=>$response->password,
+                    'h323_password'=>$response->h323_password,
+                    'encrypted_password'=>$response->encrypted_password,
+                ];
+                }catch(Exception $ex){
+                    die($ex);
+                }
+            $InsertZoomData = $this->namespacemodel->scheduleZoomMeeting($HosterId, $HostLink, $ZTopic, $Timeframe, $duration, $ZID, $Zpassword);
+            if($InsertZoomData == true) {
+                $fetch = $this->namespacemodel->fetchZoomdata();
+                $response['status']= '200OK';
+                $response['Successmessage'] = "The Conference Meeting Has Successfully Be Scheduled.. Kindly
+                                                Click The Button Down Below The Copy The Zoom Link 
+                                                And Access Code So Others Can Join.
+                                                <br/>
+                                                <input type='text' id='copyTarget' 
+                                                class='form-control' 
+                                                value='Conference Meeting Has Successfully Be Scheduled' style='opacity:0.00000000000001; overflow: hidden;position: absolute;clip: rect(0 0 0 0);'> ";
+            }else {
+                $response['message']= 'Sorry.. The Network is weak at the moment to schedule this meeting.. Please Try Again later';
             }
-        $InsertZoomData = $this->namespacemodel->scheduleZoomMeeting($HosterId, $HostLink, $ZTopic, $Timeframe, $duration, $ZID, $Zpassword);
-        if($InsertZoomData == true) {
-            $fetch = $this->namespacemodel->fetchZoomdata();
-            $response['status']= '200OK';
-            $response['Successmessage'] = "The Conference Meeting Has Successfully Be Scheduled.. Kindly
-                                             Click The Button Down Below The Copy The Zoom Link 
-                                             And Access Code So Others Can Join.
-                                             <br/>
-                                             <input type='text' id='copyTarget' 
-                                             class='form-control' 
-                                             value='Conference Meeting Has Successfully Be Scheduled' style='opacity:0.00000000000001; overflow: hidden;position: absolute;clip: rect(0 0 0 0);'> ";
-        }else {
-            $response['message']= 'Sorry.. The Network is weak at the moment to schedule this meeting.. Please Try Again later';
+            //ob_end_clean();
+            echo json_encode($response);
         }
-        //ob_end_clean();
-        echo json_encode($response);
     }
     // ==========================================
     //Student Login method
@@ -437,37 +419,26 @@ Class PagesController extends Controller {
 // Register Method for New Fresher
 // ==================================================
 public function isExistStudentEmail(){
-    header("Access-Control-Allow-Origin: *"); 
-    header("Content-Type: application/json; charset=UTF-8");
-    header("Access-Control-Allow-Methods: POST");
-    header("Access-Control-Max-Age: 3600");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    ob_start();
-    $jsonString = file_get_contents("php://input");
-    $response = array();
-    $phpObject = json_decode($jsonString);
-    $Stm = $phpObject->{'Email'};
-    $newJsonString = json_encode($phpObject);
-    $checksql = $this->userModel->isExistsEmail($Stm);
-    if($checksql) {
-        $response['status'] = 303;
-        $response['message']= 'Sorry..! Email Already Been Used By Another Student.';
-    }
-    ob_end_clean();
-    echo json_encode($response);
-}
-public function isRegister(){
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: *");
-    header("Access-Control-Allow-Headers: *");
-    header("Content-Type: application/json");
-    header("Access-Control-Max-Age: 3600");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    
-    if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-        dnd('Failed');
-    }else {
+   if(validata_api_request_header()){
         ob_start();
+        $jsonString = file_get_contents("php://input");
+        $response = array();
+        $phpObject = json_decode($jsonString);
+        $Stm = $phpObject->{'Email'};
+        $newJsonString = json_encode($phpObject);
+        $checksql = $this->userModel->isExistsEmail($Stm);
+        if($checksql) {
+            $response['status'] = 303;
+            $response['message']= 'Sorry..! Email Already Been Used By Another Student.';
+        }
+        ob_end_clean();
+        echo json_encode($response);
+    }
+}
+
+public function isRegister(){
+    if(validata_api_request_header()){
+        ob_start();;
         $jsonString = file_get_contents("php://input");
         $response = array();
         $phpObject = json_decode($jsonString);
@@ -558,16 +529,7 @@ public function isRegister(){
 }
 
 public function ProcessNewStudentOnline(){
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: *");
-    header("Access-Control-Allow-Headers: *");
-    header("Content-Type: application/json");
-    header("Access-Control-Max-Age: 3600");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    
-    if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-        dnd('Failed');
-    }else {
+    if(validata_api_request_header()){
         ob_start();
         $jsonString = file_get_contents("php://input");
         $response = array();
@@ -869,11 +831,17 @@ public function ProcessNewStudentOnline(){
                     $msg = '';
                 }
             }
+            $ft = $this->userModel->Viewstd($id);
+            if ($ft) {
+                    $email= $ft->email;
+                    $img= $ft->image; 
+            }
             $data =
             [
                 'page_title'=>'Welcome to Exam Portal',
                 'exam'=>$validateExams,
                 'eid'=>((!empty($eid))?$eid:''),
+                'photo'=>$img
             ];
 
             $this->view('Student/AuthExam', $data);
@@ -1637,6 +1605,43 @@ public function LogoutStudent(){
                 }
                 $this->view("Student/Subject_in_course", $data);
             }
+        }
+    }
+
+
+    public function attendance_record(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $getData = $this->_getting_data_display->view_single_student_attendance_table($id);
+            $ft = $this->userModel->Viewstd($id);
+            if ($ft) {
+                    $email= $ft->email;
+                    $img= $ft->image; 
+            }
+            $data=
+            [
+                'page_title'=>'View Attendance Record',
+                'data'=>$getData,
+                'photo'=>$img,
+            ];
+            $this->view("Student/Attendance", $data);
+        }
+    }
+
+    public function performance_record(){
+        if(!isLoggedInStudent()){header('location:' . ROOT . 'Student/Login/');}else {
+            $id= $_SESSION['student__Id'];
+            $ft = $this->userModel->Viewstd($id);
+            if ($ft) {
+                    $email= $ft->email;
+                    $img= $ft->image; 
+            }
+            $data=
+            [
+                'page_title'=>'View Performance Record',
+                'photo'=>$img,
+            ];
+            $this->view("Student/Performance", $data);
         }
     }
 }

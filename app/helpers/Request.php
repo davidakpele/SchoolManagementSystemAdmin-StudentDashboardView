@@ -79,9 +79,18 @@ function dnd($data){
     die();
 }
 
-function print_data($data){
-    echo  "<pre>";
-    print_r($data);
-    echo  "<pre>";
+function validata_api_request_header(){
+    header("Access-Control-Allow-Methods: *");
+    header("Access-Control-Allow-Headers: *");
+    header("Content-Type: application/json");
+    header("Access-Control-Max-Age: 3600");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    
+    if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
+        echo json_encode('Connection Failed.!');
+        return false;
+    }else{
+        return true;
+    }
 }
 

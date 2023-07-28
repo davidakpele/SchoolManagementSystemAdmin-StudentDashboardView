@@ -85,7 +85,9 @@
  function pretty_date($date){
     return date("M d, Y, h:i A", strtotime($date));
 }
-
+function print_date_on_j($date){
+    return date("D, M, Y", strtotime($date));
+}
 function pretty_html_special_characters($text){
     $text = htmlspecialchars($text);
     $text = preg_replace("/=/", "=\"\"", $text);

@@ -57,7 +57,7 @@
                             <button type="button" class="btn btn-sm bg-blue btn-flat"><i class="fa fa-plus"></i> 
                                 Add New Subject </button></a>
                             <div class="pull-right insiderBox" id="iz" style="display:none">
-                                <button id="delete__Btn" title="Delete This Professor" class="btn btn-sm btn-danger btn-flat" type="button"><i class="fa fa-trash"></i> Delete</button>
+                                <button id="delete__Btn" title="Delete " class="btn btn-sm btn-danger btn-flat" type="button"><i class="fa fa-trash"></i> Delete</button>
                                 <button disabled="disabled" class="btn btn-sm" style="background-color: #000000; border-radius:25px"><span class="pull-left" id="deletebadge" style="color: #fff;">Selected</span></button>
                             </div>
                         </div>
@@ -66,6 +66,7 @@
                                 <thead>
                                 <tr>
                                     <th>S/N</th>
+                                    <th><input type="checkbox" id="chk_all" value=""/></th>
                                     <th>Course code</th>
                                     <th>Subject</th>
                                     <th class="text-center">Action</th>
@@ -74,19 +75,19 @@
                                 <tbody>
                                     <?php $i = 0?>
                                     <?php
-                                        if ($data['subject_data'])
-                                        foreach ($data['subject_data'] as $presult): ?>
-                                        <?php 
+                                        if (!empty($data['subject_data'])):
+                                            foreach ($data['subject_data'] as $presult): 
                                         $id = $presult['id'];
                                         if ($presult > 0) $i ++;?>
                                         <tr>
                                             <td><?=$i?></td>
+                                            <th><input type="checkbox" id="dataX" class="checkboxid" name="checkuser[]" value="<?=$id?>"/></th>
                                             <td><?=$presult['CourseCode']?></td>
                                             <td><?=$presult['subject_name']?></td>
                                         <td>
                                             <div class="flex" style="display:flex">
                                                 <div class="text-center">
-                                                    <a class="btn btn-xs btn-primary" href="<?=ROOT?>Admin/editDep/<?php echo $id;?>">
+                                                    <a class="btn btn-xs btn-primary" href="<?=ROOT?>Admin/edit_subject/<?php echo $id;?>">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>&nbsp;
                                                     <button type="button" class="btn btn-xs btn-danger" onclick="hapus(<?=$id?>)">
@@ -97,6 +98,8 @@
                                         </td>
                                     </tr>
                                     <?php endforeach?>
+                                    
+                                    <?php endif;?>
                                 </tbody>
                             </table>
                         </form>

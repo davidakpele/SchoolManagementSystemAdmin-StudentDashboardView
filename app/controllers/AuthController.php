@@ -15,15 +15,7 @@
 
         
         public function StudentLogin(){
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Content-Type: application/json");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-                dnd('Connection Failed.!');
-            }else{
+            if(validata_api_request_header()){
                 ob_start();
                 $jsonString = file_get_contents("php://input");
                 $response = array();
@@ -50,17 +42,9 @@
             ob_end_clean();
             echo json_encode($response);
         }
+
         public function RetrieveMatricNumber(){
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Content-Type: application/json");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            
-            if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-                dnd('Failed');
-            }else {
+           if(validata_api_request_header()){
                 ob_start();
                 $jsonString = file_get_contents("php://input");
                 $response = array();
@@ -117,16 +101,7 @@
             echo json_encode($response);
         }
         public function biup(){
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Content-Type: application/json");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            
-            if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-                dnd('Connection Failed..!');
-            }else {
+            if(validata_api_request_header()){
                 ob_start();
                 $jsonString = file_get_contents("php://input");
                 $response = array();

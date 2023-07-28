@@ -15,6 +15,8 @@ class Admin extends Controller {
     private $_backup_model;
     private $_getting_data_display;
     private $_adding_data;
+    private $_editing_data;
+    private $_deleting_data;
     public function __construct() {
         $this->userModel = $this->loadModel('User');
         $this->_tbl_model = $this->loadModel('TablesModel');
@@ -23,6 +25,8 @@ class Admin extends Controller {
         $this->_backup_model = $this->loadModel('BackupDBModel');
         $this->_getting_data_display = $this->loadModel('Getting_Datas');
         $this->_adding_data = $this->loadModel('Adding_data');
+        $this->_editing_data = $this->loadModel('Edit_data');
+        $this->_deleting_data = $this->loadModel('Delete_data');
     }
 
 
@@ -153,75 +157,76 @@ class Admin extends Controller {
         echo json_encode($response);
     }
 
-public function AddNewStudents(){
-    if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-     extract($_POST);
-    $response = array();
-    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        if (isset($_FILES['file']['name']) != '' && isset($_POST['id']) 
-        && isset($_POST['AppType']) && isset($_POST['Department']) && isset($_POST['Program'])
-        && isset($_POST['EntryLevel']) && isset($_POST['Session']) && isset($_POST['surname'])
-        && isset($_POST['lastname']) && isset($_POST['EnrollmentNumber']) && isset($_POST['Email']) && isset($_POST['Mobile'])
-        && isset($_POST['DOB']) && isset($_POST['Gender']) && isset($_POST['Rel']) && isset($_POST['NIN'])){
-        // validate file
-        $photo = $_FILES['file'];
-        $name = $photo['name'];
-        $response['status'] = 200;
-        $response['message'] = 'Yes';
-        $nameArray = explode('.', $name);
-        $fileName = $nameArray[0];
-        $fileExt = $nameArray[1];
-        $mime = explode('/', $photo['type']);
-        $mimeType = $mime[0];
-        $mimeExt = $mime[1];
-        $tmpLoc = $photo['tmp_name'];   
-        $fileSize = $photo['size']; 
-        // $allowed = array('jpg', 'jpeg', 'png');
-        $uploadName = md5(microtime()).'.'.$fileExt;
-        $uploadPath = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
-        $dbpath     = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
-        $folder = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
-        //die($_POST['id']);
-        if ($fileSize > 90000000000000) {
-            $response['status'] = 300;
-            $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
-        }elseif ($fileSize < 90000000000000 ) {
-            if(!file_exists($folder)){
-                mkdir($folder,077,true);
-                
+    public function AddNewStudents(){
+        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
+        extract($_POST);
+        $response = array();
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            if (isset($_FILES['file']['name']) != '' && isset($_POST['id']) 
+            && isset($_POST['AppType']) && isset($_POST['Department']) && isset($_POST['Program'])
+            && isset($_POST['EntryLevel']) && isset($_POST['Session']) && isset($_POST['surname'])
+            && isset($_POST['lastname']) && isset($_POST['EnrollmentNumber']) && isset($_POST['Email']) && isset($_POST['Mobile'])
+            && isset($_POST['DOB']) && isset($_POST['Gender']) && isset($_POST['Rel']) && isset($_POST['NIN'])){
+            // validate file
+            $photo = $_FILES['file'];
+            $name = $photo['name'];
+            $response['status'] = 200;
+            $response['message'] = 'Yes';
+            $nameArray = explode('.', $name);
+            $fileName = $nameArray[0];
+            $fileExt = $nameArray[1];
+            $mime = explode('/', $photo['type']);
+            $mimeType = $mime[0];
+            $mimeExt = $mime[1];
+            $tmpLoc = $photo['tmp_name'];   
+            $fileSize = $photo['size']; 
+            // $allowed = array('jpg', 'jpeg', 'png');
+            $uploadName = md5(microtime()).'.'.$fileExt;
+            $uploadPath = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName; 
+            $dbpath     = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING)).'/'.$uploadName;
+            $folder = ROOT.'/StudentMedia/'.trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
+            //die($_POST['id']);
+            if ($fileSize > 90000000000000) {
+                $response['status'] = 300;
+                $response['errormsg'] = '<b>ERROR:</b>Your file was larger than 50kb in file size.';
+            }elseif ($fileSize < 90000000000000 ) {
+                if(!file_exists($folder)){
+                    mkdir($folder,077,true);
+                    
+                }
+                $Sender = 
+                [
+                    'Profile__Picture'=>$uploadPath,
+                    'App'=>trim(filter_var($_POST['AppType'], FILTER_SANITIZE_STRING)),
+                    'Dep'=>trim(filter_var($_POST['Department'], FILTER_SANITIZE_STRING)),
+                    'Prog'=>trim(filter_var($_POST['Program'], FILTER_SANITIZE_STRING)),
+                    'Entry'=>trim(filter_var($_POST['EntryLevel'], FILTER_SANITIZE_STRING)),
+                    'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
+                    'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),  
+                    'EnrollmentNumber'=>trim(filter_var($_POST['EnrollmentNumber'], FILTER_SANITIZE_STRING)),
+                    'password'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
+                    'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
+                    'Tel'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
+                    'DBO'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
+                    'featured'=>'1',
+                    'Session'=>trim(filter_var($_POST['Session'], FILTER_SANITIZE_STRING)),
+                    'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
+                    'Relationship'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
+                    'Nin'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
+                    'NewID'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
+                ];
+                $Sender['password'] = password_hash($Sender['password'], PASSWORD_ARGON2ID);
+                move_uploaded_file($tmpLoc,$dbpath);
+            if($this->userModel->processor($Sender)){
+                    $response['status'] = 200;
+                    $response['message'] = 'Successfully Added New Student..!';
+                } 
             }
-            $Sender = 
-            [
-                'Profile__Picture'=>$uploadPath,
-                'App'=>trim(filter_var($_POST['AppType'], FILTER_SANITIZE_STRING)),
-                'Dep'=>trim(filter_var($_POST['Department'], FILTER_SANITIZE_STRING)),
-                'Prog'=>trim(filter_var($_POST['Program'], FILTER_SANITIZE_STRING)),
-                'Entry'=>trim(filter_var($_POST['EntryLevel'], FILTER_SANITIZE_STRING)),
-                'Surname'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
-                'Othername'=>trim(filter_var($_POST['lastname'], FILTER_SANITIZE_STRING)),  
-                'EnrollmentNumber'=>trim(filter_var($_POST['EnrollmentNumber'], FILTER_SANITIZE_STRING)),
-                'password'=>trim(filter_var($_POST['surname'], FILTER_SANITIZE_STRING)),
-                'Email'=>trim(filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)),
-                'Tel'=>trim(filter_var($_POST['Mobile'], FILTER_SANITIZE_STRING)),
-                'DBO'=>trim(filter_var($_POST['DOB'], FILTER_SANITIZE_STRING)),
-                'featured'=>'1',
-                'Session'=>trim(filter_var($_POST['Session'], FILTER_SANITIZE_STRING)),
-                'Gender'=>trim(filter_var($_POST['Gender'], FILTER_SANITIZE_STRING)),
-                'Relationship'=>trim(filter_var($_POST['Rel'], FILTER_SANITIZE_STRING)),
-                'Nin'=>trim(filter_var($_POST['NIN'], FILTER_SANITIZE_STRING)),
-                'NewID'=>trim(filter_var((int)$_POST['id'], FILTER_SANITIZE_STRING))
-            ];
-            $Sender['password'] = password_hash($Sender['password'], PASSWORD_ARGON2ID);
-            move_uploaded_file($tmpLoc,$dbpath);
-           if($this->userModel->processor($Sender)){
-                $response['status'] = 200;
-                $response['message'] = 'Successfully Added New Student..!';
-            } 
         }
+        echo json_encode($response);
     }
-    echo json_encode($response);
-}
-// Admin all profile methodjhgouihpigfiyfougy98
+
+    // Admin all profile methodjhgouihpigfiyfougy98
     public function Professors(){
         if(AuthCheck() == false){
             $data= ['page_title' => 'Access Denied'];
@@ -361,11 +366,7 @@ public function AddNewStudents(){
         // Set Controller 
         $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Professors';
         $controllerName = $controller;
-
         // Set Action
-        // array_shift($urlParts);
-        // $action = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/index';
-        // $actionName = $action;
         $row =$this->userModel->findUserByApp($controllerName);
         if ($row) {
             //  Fetching values from database
@@ -394,7 +395,7 @@ public function AddNewStudents(){
                     'Saved_image'=>$Saved_image,
                 ];
         }else {
-                header('location:' . ROOT. 'Admin/Professors');
+            header('location:' . ROOT. 'Admin/Professors');
         }
         if (isset($_POST['isEdit'])) {
             die('Yes');
@@ -414,10 +415,12 @@ public function AddNewStudents(){
 			
             
 		}else {
-            # code...
+            
         }
         
     }
+
+
     public function isSaveEdit(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         $response = array();
@@ -511,29 +514,33 @@ public function AddNewStudents(){
     }
     echo json_encode($response);
     }
+
+
     // Checking if professor email exist 
     public function isProfessorEmailExist(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $isCheckEmail = $phpObject->{'Email'};
-      
-        $newJsonString = json_encode($phpObject);
-        $isFetchEmailexist = $this->userModel->findProfessorByEmail($isCheckEmail);
-        if($isFetchEmailexist) {
-            $response['status'] = 200;
-            $response['message']= '<b>ERROR:</b> Email Is Already Taken By Another User.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $isCheckEmail = $phpObject->{'Email'};
+            
+                $newJsonString = json_encode($phpObject);
+                $isFetchEmailexist = $this->userModel->findProfessorByEmail($isCheckEmail);
+                if($isFetchEmailexist) {
+                    $response['status'] = 200;
+                    $response['message']= '<b>ERROR:</b> Email Is Already Taken By Another User.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
+
     }
+
     // View professor profile 
     public function ProfessorsProfile($SSD){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -586,6 +593,7 @@ public function AddNewStudents(){
             die('Something went Wrong...!');
         }
     } 
+
     public function import(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         $data =
@@ -621,63 +629,62 @@ public function AddNewStudents(){
             $this->view('Admin/ManageUser', $data);
         }
     }
+
     public function dassa(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        else{
-            header("Access-Control-Allow-Origin: *"); 
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            $phpObject = json_decode($jsonString);
-            
-            $id =  $phpObject->{'id'};
-            $old =  $phpObject->{'old'}; 
-            $new =  $phpObject->{'new'}; 
-            $confirmpassword =  $phpObject->{'confirmpassword'}; 
-            if ($id == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }
-            if ($old == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            if ($new == "") {
-               $response['message']="The  field is required.";
-               $response['status3'] = false;
-            }
-            if ($confirmpassword == "") {
-               $response['message']="The  field is required.";
-               $response['status4'] = false;
-            }elseif (!empty($id) && !empty($old) && !empty($new) && !empty($confirmpassword)) {
-                if ($new !== $confirmpassword){
-                    $response['message']="New Password does not match with Comfirm Password..! Please Check";
-                    $response['status4'] = false;
-                }else {
-                    // Hash the new password
-                     $new = password_hash($new, PASSWORD_ARGON2ID);
-                    // now check if old password match 
-                    $data = [
-                        'id'=>$id,
-                        'old'=>$old,
-                        'new'=>$new
-                    ];
-                    if ($this->userModel->isChangePassword($data)) {
-                        $response['message']= "Password Successfully Changed..!";
-                        $response['status'] = true;
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                
+                $id =  $phpObject->{'id'};
+                $old =  $phpObject->{'old'}; 
+                $new =  $phpObject->{'new'}; 
+                $confirmpassword =  $phpObject->{'confirmpassword'}; 
+                if ($id == "") {
+                $response['message']="The  field is required.";
+                $response['status1'] = false;
+                }
+                if ($old == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+                }
+                if ($new == "") {
+                $response['message']="The  field is required.";
+                $response['status3'] = false;
+                }
+                if ($confirmpassword == "") {
+                $response['message']="The  field is required.";
+                $response['status4'] = false;
+                }elseif (!empty($id) && !empty($old) && !empty($new) && !empty($confirmpassword)) {
+                    if ($new !== $confirmpassword){
+                        $response['message']="New Password does not match with Comfirm Password..! Please Check";
+                        $response['status4'] = false;
                     }else {
-                       $response['message']="Sorry.. Old password Does not match our Data.";
-                        $response['status2'] = false;
+                        // Hash the new password
+                        $new = password_hash($new, PASSWORD_ARGON2ID);
+                        // now check if old password match 
+                        $data = [
+                            'id'=>$id,
+                            'old'=>$old,
+                            'new'=>$new
+                        ];
+                        if ($this->userModel->isChangePassword($data)) {
+                            $response['message']= "Password Successfully Changed..!";
+                            $response['status'] = true;
+                        }else {
+                        $response['message']="Sorry.. Old password Does not match our Data.";
+                            $response['status2'] = false;
+                        }
                     }
                 }
+                ob_end_clean();
+                echo json_encode($response);
             }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
     public function edituser($url){
@@ -728,200 +735,200 @@ public function AddNewStudents(){
     }
 
     public function editusermethod(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-       ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-
-        $data['status'] = false;
-        
-        $id =  $phpObject->{'id'};
-        $username = $phpObject->{'username'};
-        $fname = $phpObject->{'fname'};
-        $lname = $phpObject->{'lname'};
-        $email = $phpObject->{'email'};
-
-        $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
-        $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
-        $fname = trim(filter_var($fname, FILTER_SANITIZE_STRING));
-        $lname = trim(filter_var($lname, FILTER_SANITIZE_STRING));
-        $email = trim(filter_var($email, FILTER_SANITIZE_STRING));
-        $param = 
-        [
-            'settings'=>$this->_AppSettings(),
-            'id'=>$id,
-            'username'=>$username,
-            'fname'=>$fname,
-            'lname'=>$lname,
-            'email'=>$email
-            
-        ];
-        $update = $this->userModel->SQLupdateUser($param);
-		$response['status'] = $update ? true : false;
-        if ($response['status'] ==true) {
-            $response['mesg']= 'User information has been successfully updated';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-           $response['error']='Sorry.. Unable to update user.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+
+                $data['status'] = false;
+                
+                $id =  $phpObject->{'id'};
+                $username = $phpObject->{'username'};
+                $fname = $phpObject->{'fname'};
+                $lname = $phpObject->{'lname'};
+                $email = $phpObject->{'email'};
+
+                $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
+                $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
+                $fname = trim(filter_var($fname, FILTER_SANITIZE_STRING));
+                $lname = trim(filter_var($lname, FILTER_SANITIZE_STRING));
+                $email = trim(filter_var($email, FILTER_SANITIZE_STRING));
+                $param = 
+                [
+                    'settings'=>$this->_AppSettings(),
+                    'id'=>$id,
+                    'username'=>$username,
+                    'fname'=>$fname,
+                    'lname'=>$lname,
+                    'email'=>$email
+                    
+                ];
+                $update = $this->userModel->SQLupdateUser($param);
+                $response['status'] = $update ? true : false;
+                if ($response['status'] ==true) {
+                    $response['mesg']= 'User information has been successfully updated';
+                }else {
+                $response['error']='Sorry.. Unable to update user.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function edituserlevel(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-       header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-       ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-
-        $data['status'] = false;
-        
-        $id =  $phpObject->{'id'};
-        $role = $phpObject->{'role'};
-        $username = $phpObject->{'username'};
-
-        $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
-        $role = trim(filter_var((int)$role, FILTER_SANITIZE_STRING));
-        $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
-      
-        $param = 
-        [
-            'id'=>$id,
-            'role'=>$role,
-            'username'=>$username,
-            'settings'=>$this->_AppSettings(),
-        ];
-        $update = $this->userModel->SQLupdateUserLevel($param);
-		$response['status'] = $update ? true : false;
-        if ($response['status'] ==true) {
-            $response['mesg']= 'User level has been successfully updated';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-           $response['error']='Sorry.. Unable to update user.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+
+                $data['status'] = false;
+                
+                $id =  $phpObject->{'id'};
+                $role = $phpObject->{'role'};
+                $username = $phpObject->{'username'};
+
+                $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
+                $role = trim(filter_var((int)$role, FILTER_SANITIZE_STRING));
+                $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
+            
+                $param = 
+                [
+                    'id'=>$id,
+                    'role'=>$role,
+                    'username'=>$username,
+                    'settings'=>$this->_AppSettings(),
+                ];
+                $update = $this->userModel->SQLupdateUserLevel($param);
+                $response['status'] = $update ? true : false;
+                if ($response['status'] ==true) {
+                    $response['mesg']= 'User level has been successfully updated';
+                }else {
+                $response['error']='Sorry.. Unable to update user.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function edituserstatus(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-       header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-       ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-
-        $data['status'] = false;
-        
-        $id =  $phpObject->{'id'};
-        $username = $phpObject->{'username'};
-        $fname = $phpObject->{'fname'};
-        $lname = $phpObject->{'lname'};
-        $email = $phpObject->{'email'};
-
-        $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
-        $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
-        $fname = trim(filter_var($fname, FILTER_SANITIZE_STRING));
-        $lname = trim(filter_var($lname, FILTER_SANITIZE_STRING));
-        $email = trim(filter_var($email, FILTER_SANITIZE_STRING));
-        $param = 
-        [
-            'id'=>$id,
-            'username'=>$username,
-            'fname'=>$fname,
-            'lname'=>$lname,
-            'email'=>$email
-        ];
-        $update = $this->userModel->SQLupdateUser($param);
-		$response['status'] = $update ? true : false;
-        if ($response['status'] ==true) {
-            $response['mesg']= 'User information has been successfully updated';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-           $response['error']='Sorry.. Unable to update user.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+
+                $data['status'] = false;
+                
+                $id =  $phpObject->{'id'};
+                $username = $phpObject->{'username'};
+                $fname = $phpObject->{'fname'};
+                $lname = $phpObject->{'lname'};
+                $email = $phpObject->{'email'};
+
+                $id = trim(filter_var((int)$id, FILTER_SANITIZE_STRING));
+                $username = trim(filter_var($username, FILTER_SANITIZE_STRING));
+                $fname = trim(filter_var($fname, FILTER_SANITIZE_STRING));
+                $lname = trim(filter_var($lname, FILTER_SANITIZE_STRING));
+                $email = trim(filter_var($email, FILTER_SANITIZE_STRING));
+                $param = 
+                [
+                    'id'=>$id,
+                    'username'=>$username,
+                    'fname'=>$fname,
+                    'lname'=>$lname,
+                    'email'=>$email
+                ];
+                $update = $this->userModel->SQLupdateUser($param);
+                $response['status'] = $update ? true : false;
+                if ($response['status'] ==true) {
+                    $response['mesg']= 'User information has been successfully updated';
+                }else {
+                $response['error']='Sorry.. Unable to update user.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
     public function MailToProfessor(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
 
-        $email = $phpObject->{'Email'};
-        $RecipientName = $phpObject->{'RecipientName'};
-        $SenderMail = $phpObject->{'SenderMail'};
-        $SenderName = $phpObject->{'SenderName'};
-        $message = $phpObject->{'message'};
-        $subject = $phpObject->{'subject'};
-        $EmailID = $phpObject->{'EmailID'};
-        $SenderID = $phpObject->{'SenderID'};
-        $targetid = $phpObject->{'targetid'};
-        $newJsonString = json_encode($phpObject);
-        $data = 
-        [
-            'settings'=>$this->_AppSettings(),
-            'EmailID'=> strip_tags(trim(filter_var($EmailID, FILTER_SANITIZE_EMAIL))),
-            'SenderID'=> strip_tags(trim(filter_var($SenderID, FILTER_SANITIZE_STRING))),
-            'targetid'=> strip_tags(trim(filter_var($targetid, FILTER_SANITIZE_STRING))),
-            'SenderName'=> strip_tags(trim(filter_var($SenderName, FILTER_SANITIZE_STRING))),
-            'SenderMail'=> strip_tags(trim(filter_var($SenderMail, FILTER_SANITIZE_EMAIL))),
-            'Email'=> strip_tags(trim(filter_var($email, FILTER_SANITIZE_EMAIL))),
-            'RecipientName'=> trim(filter_var($RecipientName, FILTER_SANITIZE_STRING)),
-            'Subject'=> trim(filter_var($subject, FILTER_SANITIZE_STRING)),
-            'message'=> trim(filter_var($message, FILTER_SANITIZE_STRING)),
-            'parent'=> '1',
-        ]; 
-        if(!empty($data['EmailID']) && !empty($data['SenderID']) && !empty($data['targetid']) && !empty($data['SenderName']) && !empty($data['SenderMail']) && !empty($data['Email']) && !empty($data['RecipientName']) && !empty($data['Subject']) && !empty($data['message']))
-        {
-            $header = "From:".$data['SenderName']. ' to '.$data['RecipientName']."\r\n".
-            "------------------------------------------------------------\n";
-            $header .= "MIME-Version: 1.0\r\n";
-            $header .= "Content-type: text/html\r\n";
+                $email = $phpObject->{'Email'};
+                $RecipientName = $phpObject->{'RecipientName'};
+                $SenderMail = $phpObject->{'SenderMail'};
+                $SenderName = $phpObject->{'SenderName'};
+                $message = $phpObject->{'message'};
+                $subject = $phpObject->{'subject'};
+                $EmailID = $phpObject->{'EmailID'};
+                $SenderID = $phpObject->{'SenderID'};
+                $targetid = $phpObject->{'targetid'};
+                $newJsonString = json_encode($phpObject);
+                $data = 
+                [
+                    'settings'=>$this->_AppSettings(),
+                    'EmailID'=> strip_tags(trim(filter_var($EmailID, FILTER_SANITIZE_EMAIL))),
+                    'SenderID'=> strip_tags(trim(filter_var($SenderID, FILTER_SANITIZE_STRING))),
+                    'targetid'=> strip_tags(trim(filter_var($targetid, FILTER_SANITIZE_STRING))),
+                    'SenderName'=> strip_tags(trim(filter_var($SenderName, FILTER_SANITIZE_STRING))),
+                    'SenderMail'=> strip_tags(trim(filter_var($SenderMail, FILTER_SANITIZE_EMAIL))),
+                    'Email'=> strip_tags(trim(filter_var($email, FILTER_SANITIZE_EMAIL))),
+                    'RecipientName'=> trim(filter_var($RecipientName, FILTER_SANITIZE_STRING)),
+                    'Subject'=> trim(filter_var($subject, FILTER_SANITIZE_STRING)),
+                    'message'=> trim(filter_var($message, FILTER_SANITIZE_STRING)),
+                    'parent'=> '1',
+                ]; 
+                if(!empty($data['EmailID']) && !empty($data['SenderID']) && !empty($data['targetid']) && !empty($data['SenderName']) && !empty($data['SenderMail']) && !empty($data['Email']) && !empty($data['RecipientName']) && !empty($data['Subject']) && !empty($data['message']))
+                {
+                    $header = "From:".$data['SenderName']. ' to '.$data['RecipientName']."\r\n".
+                    "------------------------------------------------------------\n";
+                    $header .= "MIME-Version: 1.0\r\n";
+                    $header .= "Content-type: text/html\r\n";
 
-            $to =  $data['Email'];
-            $name = $data['SenderName'];
-            $subject= 'Subject: '.$data['Subject']."\n".
-            "------------------------- MESSAGE -------------------------\n\n".
-            // Set the body of the email you're sending
-            $message = 'Message: '.$data['message']."\n".
-            "\n\n------------------------------------------------------------\n";
-        //   First store your data in your database just for future references
-            $isUserModel= $this->userModel->SQLSendProfEmail($data);
-            if($isUserModel == true){
-                // we are sending the mail structure not just txt but the email structure
-                $response['status']= 200;
-                $response['message']= 'Email Has Successfully Sent';
-                // if you want this function work completely to Live Email.. UNCOMMENT THIS BELOW
-                // $retval = mail ($to,$subject,$message,$header);
-                // if( $retval == true ) {
-                    
-                // }else {
-                //     echo "Message could not be sent...";
-                // }
-            } 
+                    $to =  $data['Email'];
+                    $name = $data['SenderName'];
+                    $subject= 'Subject: '.$data['Subject']."\n".
+                    "------------------------- MESSAGE -------------------------\n\n".
+                    // Set the body of the email you're sending
+                    $message = 'Message: '.$data['message']."\n".
+                    "\n\n------------------------------------------------------------\n";
+                //   First store your data in your database just for future references
+                    $isUserModel= $this->userModel->SQLSendProfEmail($data);
+                    if($isUserModel == true){
+                        // we are sending the mail structure not just txt but the email structure
+                        $response['status']= 200;
+                        $response['message']= 'Email Has Successfully Sent';
+                        // if you want this function work completely to Live Email.. UNCOMMENT THIS BELOW
+                        // $retval = mail ($to,$subject,$message,$header);
+                        // if( $retval == true ) {
+                            
+                        // }else {
+                        //     echo "Message could not be sent...";
+                        // }
+                    } 
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     //Admin Delete method for lectural
     public function delete($Lectural___ID){
@@ -999,50 +1006,50 @@ public function AddNewStudents(){
     // Edit student by amdin
     
     public function isEditStudent(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *"); 
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            $phpObject = json_decode($jsonString);
-        
-            $id = $phpObject->{'id'};
-            $Enrlid = $phpObject->{'Enrlid'};
-            $Surname = $phpObject->{'Surname'};
-            $Othername = $phpObject->{'Othername'};
-            $email = $phpObject->{'email'};
-            $mobile = $phpObject->{'mobile'};
-            $DOB = $phpObject->{'DOB'};
-            $gender = $phpObject->{'gender'};
-            $rel = $phpObject->{'rel'};
-            $newJsonString = json_encode($phpObject);
-            // validate file  
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    $phpObject = json_decode($jsonString);
+                
+                    $id = $phpObject->{'id'};
+                    $Enrlid = $phpObject->{'Enrlid'};
+                    $Surname = $phpObject->{'Surname'};
+                    $Othername = $phpObject->{'Othername'};
+                    $email = $phpObject->{'email'};
+                    $mobile = $phpObject->{'mobile'};
+                    $DOB = $phpObject->{'DOB'};
+                    $gender = $phpObject->{'gender'};
+                    $rel = $phpObject->{'rel'};
+                    $newJsonString = json_encode($phpObject);
+                    // validate file  
 
-            $data = 
-            [
-                'settings'=>$this->_AppSettings(),
-                'id'=>strip_tags(trim(filter_var((int)$id, FILTER_VALIDATE_INT))),
-                'Enrlid'=>strip_tags(trim(filter_var($Enrlid, FILTER_SANITIZE_STRING))),
-                'Surname'=>strip_tags(trim(filter_var($Surname, FILTER_SANITIZE_STRING))),
-                'Othername'=>strip_tags(trim(filter_var($Othername, FILTER_SANITIZE_STRING))),
-                'email'=>strip_tags(trim(filter_var($email, FILTER_SANITIZE_STRING))),
-                'mobile'=>strip_tags(trim(filter_var($mobile, FILTER_SANITIZE_STRING))),
-                'DOB'=>strip_tags(trim(filter_var($DOB, FILTER_SANITIZE_STRING))),
-                'gender'=>strip_tags(trim(filter_var($gender, FILTER_SANITIZE_STRING))),
-                'rel'=>strip_tags(trim(filter_var($rel, FILTER_SANITIZE_STRING))),
-            ];
-            if ($this->userModel->isStudentUpdate($data)){
-                $response['status']= 200;
-                $response['message']= "Data Successfully Updated.!";
-            } else {
-                $response['message']="Sorry..! Could Not Update This Student.";
+                    $data = 
+                    [
+                        'settings'=>$this->_AppSettings(),
+                        'id'=>strip_tags(trim(filter_var((int)$id, FILTER_VALIDATE_INT))),
+                        'Enrlid'=>strip_tags(trim(filter_var($Enrlid, FILTER_SANITIZE_STRING))),
+                        'Surname'=>strip_tags(trim(filter_var($Surname, FILTER_SANITIZE_STRING))),
+                        'Othername'=>strip_tags(trim(filter_var($Othername, FILTER_SANITIZE_STRING))),
+                        'email'=>strip_tags(trim(filter_var($email, FILTER_SANITIZE_STRING))),
+                        'mobile'=>strip_tags(trim(filter_var($mobile, FILTER_SANITIZE_STRING))),
+                        'DOB'=>strip_tags(trim(filter_var($DOB, FILTER_SANITIZE_STRING))),
+                        'gender'=>strip_tags(trim(filter_var($gender, FILTER_SANITIZE_STRING))),
+                        'rel'=>strip_tags(trim(filter_var($rel, FILTER_SANITIZE_STRING))),
+                    ];
+                    if ($this->userModel->isStudentUpdate($data)){
+                        $response['status']= 200;
+                        $response['message']= "Data Successfully Updated.!";
+                    } else {
+                        $response['message']="Sorry..! Could Not Update This Student.";
+                    }
+                ob_end_clean();
+                echo json_encode($response);
             }
-        ob_end_clean();
-        echo json_encode($response);
+        }
     }
     
   public function edits($url){
@@ -1087,51 +1094,51 @@ public function AddNewStudents(){
 
 
     public function AdminUpdatePassword(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        // retreive Post data
-        $Sendid=$phpObject->{'AdminId'};
-        $OldPass=$phpObject->{'AdminOldPassword'};
-        $NewPasswordRequestPost=$phpObject->{'NewPassword'};
-        $newJsonString = json_encode($phpObject);
-        // wrap everything in array data 
-        $Wrapper = 
-        [
-            'id'=>strip_tags(trim(filter_var($Sendid, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
-            'OldPass'=>strip_tags(trim(filter_var($OldPass, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
-            'SetNewPassword'=>strip_tags(trim(filter_var($NewPasswordRequestPost, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
-        ];
-        // Hash the new password
-        $validID = $Wrapper['id'];
-        $Verifyoldpassword = $Wrapper['OldPass'];
-        $encrytPassword = password_hash($Wrapper['SetNewPassword'], PASSWORD_ARGON2ID);
-        
-        $SendToSqlModel = $this->userModel->UpdatePassword($validID);
-        if($SendToSqlModel== true){
-            $DatabaseDefaultPasswordNow = $SendToSqlModel->password;
-            if(password_verify($Verifyoldpassword, $DatabaseDefaultPasswordNow)){
-                //Return json message to the GUI
-                $UpdateTable = $this->userModel->finalAdminUpdate($validID, $encrytPassword);
-                if($UpdateTable  == true){
-                    $response['status']=200;
-                $response['Successmessage']= 'Your Password Has Successfully Updated.';
-                }
-            }else {
-                $response['message']= 'The Old Password Doesnt Match. Please Try again.';
-            }
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            $response['message']= 'Sorry..! User Doesnt EXIST On Our Record.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                // retreive Post data
+                $Sendid=$phpObject->{'AdminId'};
+                $OldPass=$phpObject->{'AdminOldPassword'};
+                $NewPasswordRequestPost=$phpObject->{'NewPassword'};
+                $newJsonString = json_encode($phpObject);
+                // wrap everything in array data 
+                $Wrapper = 
+                [
+                    'id'=>strip_tags(trim(filter_var($Sendid, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
+                    'OldPass'=>strip_tags(trim(filter_var($OldPass, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
+                    'SetNewPassword'=>strip_tags(trim(filter_var($NewPasswordRequestPost, FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_HIGH | FILTER_FLAG_STRIP_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_SANITIZE_ENCODED | FILTER_FLAG_STRIP_BACKTICK))),
+                ];
+                // Hash the new password
+                $validID = $Wrapper['id'];
+                $Verifyoldpassword = $Wrapper['OldPass'];
+                $encrytPassword = password_hash($Wrapper['SetNewPassword'], PASSWORD_ARGON2ID);
+                
+                $SendToSqlModel = $this->userModel->UpdatePassword($validID);
+                if($SendToSqlModel== true){
+                    $DatabaseDefaultPasswordNow = $SendToSqlModel->password;
+                    if(password_verify($Verifyoldpassword, $DatabaseDefaultPasswordNow)){
+                        //Return json message to the GUI
+                        $UpdateTable = $this->userModel->finalAdminUpdate($validID, $encrytPassword);
+                        if($UpdateTable  == true){
+                            $response['status']=200;
+                        $response['Successmessage']= 'Your Password Has Successfully Updated.';
+                        }
+                    }else {
+                        $response['message']= 'The Old Password Doesnt Match. Please Try again.';
+                    }
+                }else {
+                    $response['message']= 'Sorry..! User Doesnt EXIST On Our Record.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     
     public function ResetPassword(){
@@ -1142,137 +1149,137 @@ public function AddNewStudents(){
   
 // Dismissed Professor From Management Role
     public function DisMissedManagementRole(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getid=$phpObject->{'ID'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getid;
-        //Return json message to the GUI
-        if($this->userModel->SQLDismissedManagementRole($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getid=$phpObject->{'ID'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getid;
+                //Return json message to the GUI
+                if($this->userModel->SQLDismissedManagementRole($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
  // Delete Professors By Admin
     public function deleteProfessor(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->deleteUserProfessor($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->deleteUserProfessor($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function deleteApp(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->App($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'id'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->App($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
      public function deleteFact(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->Fact($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'id'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->Fact($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
      public function deleteDep(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->Dep($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'id'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->Dep($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function deleteCourse(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->Course($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'id'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->Course($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function adds(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -1292,85 +1299,87 @@ public function AddNewStudents(){
         ];
         $this->view('Admin/Addstudent', $data);
     }
+
     public function deletestudents(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->SQLdeletestudent($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            $response['status'] = 'error';
-            $response['message']= 'Sorry..! Something Happen At The Database Process.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->SQLdeletestudent($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }else {
+                    $response['status'] = 'error';
+                    $response['message']= 'Sorry..! Something Happen At The Database Process.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
+
     // Delete student by Admin
       public function isDeleteStudent(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->isSQLdeleteStudentADMIN($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->userModel->isSQLdeleteStudentADMIN($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
     // Delete Accountant By Admin
     public function deleteAccountant(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-        if($id ==true){
-            //Return json message to the GUI
-            if($this->userModel->deleteUserAccountant($id)){
-                $response['status'] = 'success';
-                $response['message']= 'Successfully deleted.';
-            }else {
-                $response['status'] = 'error';
-                $response['message']= 'Sorry..! Something Happen At The Database Process.';
-            }
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            $response['status'] = 'error';
-            $response['message']= 'Invalid Data Sent. ';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+                if($id ==true){
+                    //Return json message to the GUI
+                    if($this->userModel->deleteUserAccountant($id)){
+                        $response['status'] = 'success';
+                        $response['message']= 'Successfully deleted.';
+                    }else {
+                        $response['status'] = 'error';
+                        $response['message']= 'Sorry..! Something Happen At The Database Process.';
+                    }
+                }else {
+                    $response['status'] = 'error';
+                    $response['message']= 'Invalid Data Sent. ';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     // Declearing AppointmentModal toggle
     public function AppointmentModal(){
@@ -1506,71 +1515,71 @@ public function AddNewStudents(){
         }
     }
     public function ProfAppointment(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-       ob_start();
-        $jsonString = file_get_contents("php://input");
-        $arr_data = explode("=",$jsonString);
-        $response = array();
-        $i = json_decode($jsonString);
-
-        $id=$i->{'ID'};
-        $nin=$i->{'Nin'};
-        $app= $i->{'Application'};
-        $Designation=$i->{'DesignationID'};
-        $Department=$i->{'DepartmentID'};
-        $Faculty=$i->{'FacultyID'}; 
-        $newJsonString = json_encode($i);
-
-        $appid = strip_tags(trim(filter_var($app, FILTER_SANITIZE_STRING)));
-        $ValidID = strip_tags(trim(filter_var($id, FILTER_SANITIZE_STRING)));
-        $Validfty = strip_tags(trim(filter_var($Faculty, FILTER_SANITIZE_STRING)));
-        $ValidDsg = strip_tags(trim(filter_var($Designation, FILTER_SANITIZE_STRING)));
-
-        $data = 
-            [
-                'nin'=>$nin,
-                'user'=>$ValidID,
-                'Role'=>'3',
-                'TheFaculty'=>$Validfty,
-                'appid'=>$appid,
-                'TheDepartment'=>$Department,
-                'TheDesignation'=>$ValidDsg,
-            ];
-        
-        $sid = $data['user'];
-        $nin = $data['nin'];
-        $appid = $data['appid'];
-        $fty = $data['TheFaculty'];
-        $Dty = $data['TheDepartment'];
-        $Dsg = $data['TheDesignation'];
-        $role = strip_tags(trim(filter_var((int)$data['Role'], FILTER_SANITIZE_STRING)));
-        $pt = $this->userModel->validatechecking($sid);
-        if($pt == true){
-            // update statement
-            $instructor= implode(',', $Dty);
-            $insertData1 = $this->userModel->isUpdate($sid, $nin, $appid, $fty, $role, $instructor, $Dsg);
-            if($insertData1){
-                $response['status'] =  '200OK';
-            }else {
-                $response['message']= 'Sorry..! Something went wrong on the process.';
-            }
+      if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            // Insert New
-            $instructor= implode(',', $Dty);
-            $insertData2 = $this->userModel->AppointProfessor($sid, $nin,  $role, $appid, $fty,$instructor, $Dsg);
-            if($insertData2){
-                $response['status'] =  '200OK';
-            }else {
-                $response['message']= 'Sorry..! Something went wrong on the process.';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $arr_data = explode("=",$jsonString);
+                $response = array();
+                $i = json_decode($jsonString);
+
+                $id=$i->{'ID'};
+                $nin=$i->{'Nin'};
+                $app= $i->{'Application'};
+                $Designation=$i->{'DesignationID'};
+                $Department=$i->{'DepartmentID'};
+                $Faculty=$i->{'FacultyID'}; 
+                $newJsonString = json_encode($i);
+
+                $appid = strip_tags(trim(filter_var($app, FILTER_SANITIZE_STRING)));
+                $ValidID = strip_tags(trim(filter_var($id, FILTER_SANITIZE_STRING)));
+                $Validfty = strip_tags(trim(filter_var($Faculty, FILTER_SANITIZE_STRING)));
+                $ValidDsg = strip_tags(trim(filter_var($Designation, FILTER_SANITIZE_STRING)));
+
+                $data = 
+                    [
+                        'nin'=>$nin,
+                        'user'=>$ValidID,
+                        'Role'=>'3',
+                        'TheFaculty'=>$Validfty,
+                        'appid'=>$appid,
+                        'TheDepartment'=>$Department,
+                        'TheDesignation'=>$ValidDsg,
+                    ];
+                
+                $sid = $data['user'];
+                $nin = $data['nin'];
+                $appid = $data['appid'];
+                $fty = $data['TheFaculty'];
+                $Dty = $data['TheDepartment'];
+                $Dsg = $data['TheDesignation'];
+                $role = strip_tags(trim(filter_var((int)$data['Role'], FILTER_SANITIZE_STRING)));
+                $pt = $this->userModel->validatechecking($sid);
+                if($pt == true){
+                    // update statement
+                    $instructor= implode(',', $Dty);
+                    $insertData1 = $this->userModel->isUpdate($sid, $nin, $appid, $fty, $role, $instructor, $Dsg);
+                    if($insertData1){
+                        $response['status'] =  '200OK';
+                    }else {
+                        $response['message']= 'Sorry..! Something went wrong on the process.';
+                    }
+                }else {
+                    // Insert New
+                    $instructor= implode(',', $Dty);
+                    $insertData2 = $this->userModel->AppointProfessor($sid, $nin,  $role, $appid, $fty,$instructor, $Dsg);
+                    if($insertData2){
+                        $response['status'] =  '200OK';
+                    }else {
+                        $response['message']= 'Sorry..! Something went wrong on the process.';
+                    }
+                }
+                ob_end_clean();
+                echo json_encode($response);
             }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
     public function isEditApplication(){
@@ -1588,7 +1597,8 @@ public function AddNewStudents(){
             
         } 
     }
-// Handles Edit Faculty PAGE
+
+    // Handles Edit Faculty PAGE
      public function ise($url){
        if(!isLoggedInAdmin()){
             header('location:' . ROOT . 'Administration/Default');
@@ -1616,7 +1626,8 @@ public function AddNewStudents(){
             }
          }
     }
-// Handles Edit Department Page
+
+    // Handles Edit Department Page
     public function editDep($url){
         if(!isLoggedInAdmin()){
             header('location:' . ROOT . 'Administration/Default');
@@ -1642,8 +1653,8 @@ public function AddNewStudents(){
             }
          }
     }
-
-// Handles Edit Course PAGE
+    
+    // Handles Edit Course PAGE
      public function isEditDepartment(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
         $id = trim(filter_var($_POST['id'], FILTER_SANITIZE_STRING));
@@ -1659,6 +1670,7 @@ public function AddNewStudents(){
             
         } 
     }
+
      // Declearing AppointmentModal toggle
     public function ProfessorAppointment(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -1694,140 +1706,139 @@ public function AddNewStudents(){
                     $fetchdata = $this->userModel->ReadOnly($existDepartmentId);
                 }
             }
-        $runcheck = $this->userModel->loadingProfData($id);
-        $DC = $this->userModel->SelectSpecial__ID();
-        if($runcheck == true){
-            $nin = $runcheck->NIN;
-           	$i = $runcheck->Professor__id;
-            $sname=$runcheck->Surname;
-            $mname = $runcheck->Middle__name;
-            $Oname=$runcheck->Othername;
-            $e= $runcheck->Email;
-            $xname = $sname .' '.$mname.' '. $Oname;
-        }
-        $data= 
-        [
-            'settings'=>$this->_AppSettings(),
-            'id'=>$i,
-            'n'=>$nin,
-            'catname'=>$cn,
-            'Department'=>((!empty($fetchdata)?$fetchdata: '')),
-            'catid'=>((!empty($cnid)?$cnid: '')),
-            'ftyname'=>((!empty($n)?$n: '')),
-            'ftyid'=>((!empty($nid)?$nid: '')),
-            'designation'=>((!empty($designation)?$designation: '')),
-            'checkingexistence'=>$checkIFappointed,
-            'User_idError'=>'',
-            'sname'=>$xname,
-            'e'=>$e,
-            'DisplayCateogries'=>$DC
-        ];
+            $runcheck = $this->userModel->loadingProfData($id);
+            $DC = $this->userModel->SelectSpecial__ID();
+            if($runcheck == true){
+                $nin = $runcheck->NIN;
+                $i = $runcheck->Professor__id;
+                $sname=$runcheck->Surname;
+                $mname = $runcheck->Middle__name;
+                $Oname=$runcheck->Othername;
+                $e= $runcheck->Email;
+                $xname = $sname .' '.$mname.' '. $Oname;
+            }
+            $data= 
+            [
+                'settings'=>$this->_AppSettings(),
+                'id'=>$i,
+                'n'=>$nin,
+                'catname'=>$cn,
+                'Department'=>((!empty($fetchdata)?$fetchdata: '')),
+                'catid'=>((!empty($cnid)?$cnid: '')),
+                'ftyname'=>((!empty($n)?$n: '')),
+                'ftyid'=>((!empty($nid)?$nid: '')),
+                'designation'=>((!empty($designation)?$designation: '')),
+                'checkingexistence'=>$checkIFappointed,
+                'User_idError'=>'',
+                'sname'=>$xname,
+                'e'=>$e,
+                'DisplayCateogries'=>$DC
+            ];
         
         $this->view('Admin/modal/ProfessorAppointment', $data);
     }
-    public function color(){
-        $this->view('Admin/modal/ColorSettings');
-    }
+
+  
     public function UpdateAppointment(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $decodeValue = json_decode($jsonString);
-
-        $id=$decodeValue->{'ID'};
-        $nin=$decodeValue->{'Nin'};
-        $appNo = $decodeValue->{'Application'};
-        $Designation=$decodeValue->{'DesignationID'};
-        $Department=$decodeValue->{'DepartmentID'};
-        $Faculty=$decodeValue->{'FacultyID'}; 
-        $newJsonString = json_encode($decodeValue);
-
-        $appid = strip_tags(trim(filter_var($appNo, FILTER_SANITIZE_STRING)));
-        $ValidID = strip_tags(trim(filter_var($id, FILTER_SANITIZE_STRING)));
-        $Validfty = strip_tags(trim(filter_var($Faculty, FILTER_SANITIZE_STRING)));
-        $ValidDsg = strip_tags(trim(filter_var($Designation, FILTER_SANITIZE_STRING)));
-        $role = '3';
-        // update statement
-        $implodeDepartment= implode(',', $Department);
-        $insertData1 = $this->userModel->isUpdate($id, $nin, $appid, $Faculty, $role, $implodeDepartment, $Designation);
-        if($insertData1 == true){
-            $response['status'] = '200';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            $response['status'] = 'error';
-            $response['message']= 'Invalid Data Sent. ';
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-    public function CollectionAPIs(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
+            if(validata_api_request_header()){
+                ob_start();
         
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'DataId'};
-        $newJsonString = json_encode($phpObject);
-        $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-        if($id == true){
-            //Return json message to the GUI
-            if($this->userModel->clearob($id)){
-                $response['status'] = 'success';
-                $response['message']= 'Successfully deleted.';
-            }else {
-                $response['status'] = 'error';
-            $response['message']= 'Sorry..! Something Happen At The Database Process.';
-            }
-        }else {
-            $response['status'] = 'error';
-            $response['message']= 'Invalid Data Sent. ';
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-    public function deleteCategory(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $getData=$phpObject->{'BaseId'};
-            $newJsonString = json_encode($phpObject);
-            $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-            if($id == true){
-                //Return json message to the GUI
-                if($this->userModel->clearob($id)){
-                    $response['status'] = 'success';
-                    $response['message']= 'Successfully deleted.';
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $decodeValue = json_decode($jsonString);
+
+                $id=$decodeValue->{'ID'};
+                $nin=$decodeValue->{'Nin'};
+                $appNo = $decodeValue->{'Application'};
+                $Designation=$decodeValue->{'DesignationID'};
+                $Department=$decodeValue->{'DepartmentID'};
+                $Faculty=$decodeValue->{'FacultyID'}; 
+                $newJsonString = json_encode($decodeValue);
+
+                $appid = strip_tags(trim(filter_var($appNo, FILTER_SANITIZE_STRING)));
+                $ValidID = strip_tags(trim(filter_var($id, FILTER_SANITIZE_STRING)));
+                $Validfty = strip_tags(trim(filter_var($Faculty, FILTER_SANITIZE_STRING)));
+                $ValidDsg = strip_tags(trim(filter_var($Designation, FILTER_SANITIZE_STRING)));
+                $role = '3';
+                // update statement
+                $implodeDepartment= implode(',', $Department);
+                $insertData1 = $this->userModel->isUpdate($id, $nin, $appid, $Faculty, $role, $implodeDepartment, $Designation);
+                if($insertData1 == true){
+                    $response['status'] = '200';
                 }else {
                     $response['status'] = 'error';
-                $response['message']= 'Sorry..! Something Happen At The Database Process.';
+                    $response['message']= 'Invalid Data Sent. ';
                 }
-            }else {
-                $response['status'] = 'error';
-                $response['message']= 'Invalid Data Sent. ';
+                ob_end_clean();
+                echo json_encode($response);
             }
-            ob_end_clean();
-            echo json_encode($response);
         }
+    }
+    public function CollectionAPIs(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+        
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+                if($id == true){
+                    //Return json message to the GUI
+                    if($this->userModel->clearob($id)){
+                        $response['status'] = 'success';
+                        $response['message']= 'Successfully deleted.';
+                    }else {
+                        $response['status'] = 'error';
+                    $response['message']= 'Sorry..! Something Happen At The Database Process.';
+                    }
+                }else {
+                    $response['status'] = 'error';
+                    $response['message']= 'Invalid Data Sent. ';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
+        }
+    }
+    public function deleteCategory(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'BaseId'};
+                $newJsonString = json_encode($phpObject);
+                $id = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+                if($id == true){
+                    //Return json message to the GUI
+                    if($this->userModel->clearob($id)){
+                        $response['status'] = 'success';
+                        $response['message']= 'Successfully deleted.';
+                    }else {
+                        $response['status'] = 'error';
+                    $response['message']= 'Sorry..! Something Happen At The Database Process.';
+                    }
+                }else {
+                    $response['status'] = 'error';
+                    $response['message']= 'Invalid Data Sent. ';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
+        }
+    }
 
     public function Library(){
         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
@@ -1865,83 +1876,84 @@ public function AddNewStudents(){
     }
 
     public function miosuer(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $id =  $phpObject->{'id'};
-            $username = $phpObject->{'username'};
-            $assign =  $phpObject->{'assign'}; 
-            $Surname =  $phpObject->{'Surname'}; 
-            $Othername =  $phpObject->{'Othername'};
-            $email =  $phpObject->{'email'}; 
-            $mobile =  $phpObject->{'mobile'}; 
-            $DOB =  $phpObject->{'DOB'};
-            $gender =  $phpObject->{'gender'};
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+                    $id =  $phpObject->{'id'};
+                    $username = $phpObject->{'username'};
+                    $assign =  $phpObject->{'assign'}; 
+                    $Surname =  $phpObject->{'Surname'}; 
+                    $Othername =  $phpObject->{'Othername'};
+                    $email =  $phpObject->{'email'}; 
+                    $mobile =  $phpObject->{'mobile'}; 
+                    $DOB =  $phpObject->{'DOB'};
+                    $gender =  $phpObject->{'gender'};
 
-            if ($Surname == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
+                    if ($Surname == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                    }
+                    if ($Othername == "") {
+                    $response['message']="The  field is required.";
+                    $response['status2'] = false;
+                    }
+                    if ($email == "") {
+                    $response['message']="The  field is required.";
+                    $response['status3'] = false;
+                    }
+                    if ($mobile == "") {
+                    $response['message']="The  field is required.";
+                    $response['status4'] = false;
+                    }
+                    if ($DOB == "") {
+                    $response['message']="The  field is required.";
+                    $response['status5'] = false;
+                    }
+                    if ($gender == "") {
+                    $response['message']="The  field is required.";
+                    $response['status6'] = false;
+                    }
+                    if ($assign == "") {
+                    $response['message']="The  field is required.";
+                    $response['status7'] = false;
+                    }
+                    elseif (!empty($Surname) && !empty($Othername) && !empty($email) && !empty($mobile) && !empty($DOB) && !empty($gender)) {
+                    // Hash the new password
+                    $pass = '123';
+                    $hashpassword = password_hash($pass, PASSWORD_ARGON2ID);
+                    // now check if old password match 
+                    $data = [
+                        'id'=>$id,
+                        'username'=>$username,
+                        'assign'=>$assign,
+                        'Surname'=>$Surname,
+                        'Othername'=>$Othername,
+                        'email'=>$email,
+                        'mobile'=>$mobile,
+                        'DOB'=>$DOB,
+                        'gender'=>$gender,
+                        'password'=>$hashpassword
+                    ];
+                    if ($this->userModel->AddnewUser($data)) {
+                        $response['message']= "User Has Successfully Added.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+            ob_end_clean();
+            echo json_encode($response);
             }
-            if ($Othername == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            if ($email == "") {
-               $response['message']="The  field is required.";
-               $response['status3'] = false;
-            }
-            if ($mobile == "") {
-               $response['message']="The  field is required.";
-               $response['status4'] = false;
-            }
-            if ($DOB == "") {
-               $response['message']="The  field is required.";
-               $response['status5'] = false;
-            }
-            if ($gender == "") {
-               $response['message']="The  field is required.";
-               $response['status6'] = false;
-            }
-            if ($assign == "") {
-               $response['message']="The  field is required.";
-               $response['status7'] = false;
-            }
-            elseif (!empty($Surname) && !empty($Othername) && !empty($email) && !empty($mobile) && !empty($DOB) && !empty($gender)) {
-            // Hash the new password
-            $pass = '123';
-            $hashpassword = password_hash($pass, PASSWORD_ARGON2ID);
-            // now check if old password match 
-            $data = [
-                'id'=>$id,
-                'username'=>$username,
-                'assign'=>$assign,
-                'Surname'=>$Surname,
-                'Othername'=>$Othername,
-                'email'=>$email,
-                'mobile'=>$mobile,
-                'DOB'=>$DOB,
-                'gender'=>$gender,
-                'password'=>$hashpassword
-            ];
-            if ($this->userModel->AddnewUser($data)) {
-                $response['message']= "User Has Successfully Added.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
         }
-    ob_end_clean();
-    echo json_encode($response);
     }
+
     public function Application(){
          if(AuthCheck() == false){
             $data= ['page_title' => 'Access Denied'];
@@ -1958,223 +1970,225 @@ public function AddNewStudents(){
             $this->view('Admin/Apps', $data);
         }
     }
+
     public function addApp(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $Appname =  $phpObject->{'Appname'};
-            if ($Appname == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }elseif (!empty($Appname)) {
-            $data = 
-            [
-                'Appname'=>$Appname,
-            ];
-            if ($this->userModel->AddApplModel($data)) {
-                $response['message']= "User Has Successfully Added.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
+         if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+                    $Appname =  $phpObject->{'Appname'};
+                    if ($Appname == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                    }elseif (!empty($Appname)) {
+                    $data = 
+                    [
+                        'Appname'=>$Appname,
+                    ];
+                    if ($this->userModel->AddApplModel($data)) {
+                        $response['message']= "User Has Successfully Added.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function addFact(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $Factname =  $phpObject->{'Factname'};
-            $catid =$phpObject->{'catid'};
-            $catid = array_filter($catid);
-            if (empty($catid)) {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
+         if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $Factname =  $phpObject->{'Factname'};
+                $catid =$phpObject->{'catid'};
+                $catid = array_filter($catid);
+                if (empty($catid)) {
+                $response['message']="The  field is required.";
+                $response['status1'] = false;
+                }
+                if ($Factname == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+                }elseif (!empty($Factname) && !empty($catid)) {
+                    $data = ['vim'=>$catid];
+                    $vim = $data['vim'];
+                    $Appid = implode(',', $vim);
+                    if ($this->userModel->AddFactModel($Factname, $Appid)) {
+                        $response['message']= "New Faculty Has Been Successfully Added.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+            ob_end_clean();
+            echo json_encode($response);
             }
-            if ($Factname == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }elseif (!empty($Factname) && !empty($catid)) {
-                $data = ['vim'=>$catid];
-                $vim = $data['vim'];
-                $Appid = implode(',', $vim);
-                if ($this->userModel->AddFactModel($Factname, $Appid)) {
-                    $response['message']= "New Faculty Has Been Successfully Added.!";
-                    $response['status'] = true;
-                }else {
-                    $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                    $response['status1'] = false;
-                }     
-            }
-        ob_end_clean();
-        echo json_encode($response);
+        }
     }
 
     public function addDep(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $ftyname =  $phpObject->{'FtyName'};
-            $Depname =  $phpObject->{'Depname'};
-          
-            if ($ftyname == "") {
-                $response['message']="The  field is required.";
-                $response['status1'] = false;
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+                    $ftyname =  $phpObject->{'FtyName'};
+                    $Depname =  $phpObject->{'Depname'};
+                
+                    if ($ftyname == "") {
+                        $response['message']="The  field is required.";
+                        $response['status1'] = false;
+                    }
+                    if ($Depname == "") {
+                        $response['message']="The  field is required.";
+                        $response['status2'] = false;
+                    }
+                    elseif (!empty($ftyname) && !empty($Depname)){
+                        $data = 
+                        [
+                            'FtyName'=>$ftyname,
+                            'Depname'=>$Depname,
+                        ];
+                        if ($this->userModel->AddDepModel($data)) {
+                            $response['message']= "New Department Successfully Added.!";
+                            $response['status'] = true;
+                        }else {
+                            $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                            $response['status1'] = false;
+                        }     
+                    }
+                ob_end_clean();
+                echo json_encode($response);
             }
-            if ($Depname == "") {
-                $response['message']="The  field is required.";
-                $response['status2'] = false;
-            }
-            elseif (!empty($ftyname) && !empty($Depname)){
-                $data = 
-                [
-                    'FtyName'=>$ftyname,
-                    'Depname'=>$Depname,
-                ];
-                if ($this->userModel->AddDepModel($data)) {
-                    $response['message']= "New Department Successfully Added.!";
+        }
+    }
+
+    public function IsEditApp(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $Appname =  $phpObject->{'Appname'};
+                $id =  $phpObject->{'id'};
+                if ($Appname == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                }
+                elseif (!empty($Appname)) {
+                    $data = ['Appname'=>$Appname, 'id'=>$id];
+                if ($this->userModel->isEditApp($data)) {
+                    $response['message']= "Successfully Updated.!";
                     $response['status'] = true;
                 }else {
                     $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
                     $response['status1'] = false;
                 }     
             }
-        ob_end_clean();
-        echo json_encode($response);
-    }
-
-    public function IsEditApp(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $Appname =  $phpObject->{'Appname'};
-            $id =  $phpObject->{'id'};
-            if ($Appname == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }elseif (!empty($Appname)) {
-            $data = ['Appname'=>$Appname, 'id'=>$id];
-            if ($this->userModel->isEditApp($data)) {
-                $response['message']= "Successfully Updated.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
+            ob_end_clean();
+            echo json_encode($response);
         }
-    ob_end_clean();
-    echo json_encode($response);
+        }
     }
 
     public function IsEditFact(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $Depname =  $phpObject->{'Depname'};
-            $App =  $phpObject->{'App'};
-            $id =  $phpObject->{'id'};
-            if ($App == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }
-            if ($Depname == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            
-            elseif (!empty($Depname) && !empty($App) ) {
-            $App= implode(',', $App);
-            $data = ['App'=>$App, 'Depname'=>$Depname, 'id'=>$id];
-            if ($this->userModel->isEditFact($data)) {
-                $response['message']= "Successfully Updated.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $Depname =  $phpObject->{'Depname'};
+                $App =  $phpObject->{'App'};
+                $id =  $phpObject->{'id'};
+                if ($App == "") {
+                $response['message']="The  field is required.";
                 $response['status1'] = false;
-            }     
+                }
+                if ($Depname == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+                }
+                
+                elseif (!empty($Depname) && !empty($App) ) {
+                    $App= implode(',', $App);
+                    $data = ['App'=>$App, 'Depname'=>$Depname, 'id'=>$id];
+                if ($this->userModel->isEditFact($data)) {
+                    $response['message']= "Successfully Updated.!";
+                    $response['status'] = true;
+                }else {
+                    $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                    $response['status1'] = false;
+                }     
+            }
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
+    }
     }
 
      public function IsEditDep(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $Depname =  $phpObject->{'Depname'};
-            $id =  $phpObject->{'id'};
-            $faculty =  $phpObject->{'faculty'};
-            if (empty(array_filter($faculty))) {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }
-            if ($Depname == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            elseif (!empty($faculty) && !empty($Depname)) {
-            $faculty = $faculty[0];
-            $data = ['Depname'=>$Depname, 'id'=>$id, 'Fid'=>$faculty];
-            if ($this->userModel->IsEditDep($data)) {
-                $response['message'] = "Successfully Updated.!";
-                $response['status']  = true;
-            }else {
-                $response['message'] = "Sorry.. Something Went Wrong On The Data Processing..!";
+         if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $Depname =  $phpObject->{'Depname'};
+                $id =  $phpObject->{'id'};
+                $faculty =  $phpObject->{'faculty'};
+                if (empty(array_filter($faculty))) {
+                $response['message']="The  field is required.";
                 $response['status1'] = false;
-            }     
+                }
+                if ($Depname == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+                }
+                elseif (!empty($faculty) && !empty($Depname)) {
+                $faculty = $faculty[0];
+                $data = ['Depname'=>$Depname, 'id'=>$id, 'Fid'=>$faculty];
+                if ($this->userModel->IsEditDep($data)) {
+                    $response['message'] = "Successfully Updated.!";
+                    $response['status']  = true;
+                }else {
+                    $response['message'] = "Sorry.. Something Went Wrong On The Data Processing..!";
+                    $response['status1'] = false;
+                }     
+            }
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
+    }
     }
     
  
@@ -2219,13 +2233,11 @@ public function AddNewStudents(){
 
 
     public function mioprer(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
                 $jsonString = file_get_contents("php://input");
                 $response = array();
                 //You can either use this or json_decode function
@@ -2240,55 +2252,57 @@ public function AddNewStudents(){
                 $tel =  $phpObject->{'tel'}; 
                 $address =  $phpObject->{'address'}; 
 
-            if ($fname == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }
-            if ($lname == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            if ($email == "") {
-               $response['message']="The  field is required.";
-               $response['status3'] = false;
-            }
-            if ($gender == "") {
-               $response['message']="The  field is required.";
-               $response['status4'] = false;
-            }
-            if ($DOB == "") {
-               $response['message']="The  field is required.";
-               $response['status5'] = false;
-            }
-            if ($tel == "") {
-               $response['message']="The  field is required.";
-               $response['status6'] = false;
-            }           
-            if ($address == "") {
-               $response['message']="The  field is required.";
-               $response['status7'] = false;
-            }
-            elseif (!empty($fname) && !empty($lname) && !empty($email) && !empty($gender) && !empty($DOB) && !empty($tel) && !empty($address)) {
-            $data = [
-                'id'=>$id,
-                'fname'=>$fname,
-                'lname'=>$lname,
-                'email'=>$email,
-                'gender'=>$gender,
-                'DOB'=>$DOB,
-                'mobile'=>$tel,
-                'address'=>$address
-            ];
-            if ($this->userModel->UpdateparentModel($data)) {
-                $response['message']= "Successfully Update.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                if ($fname == "") {
+                $response['message']="The  field is required.";
                 $response['status1'] = false;
-            }     
+                }
+                if ($lname == "") {
+                $response['message']="The  field is required.";
+                $response['status2'] = false;
+                }
+                if ($email == "") {
+                $response['message']="The  field is required.";
+                $response['status3'] = false;
+                }
+                if ($gender == "") {
+                $response['message']="The  field is required.";
+                $response['status4'] = false;
+                }
+                if ($DOB == "") {
+                $response['message']="The  field is required.";
+                $response['status5'] = false;
+                }
+                if ($tel == "") {
+                $response['message']="The  field is required.";
+                $response['status6'] = false;
+                }           
+                if ($address == "") {
+                $response['message']="The  field is required.";
+                $response['status7'] = false;
+                }
+                elseif (!empty($fname) && !empty($lname) && !empty($email) && !empty($gender) && !empty($DOB) && !empty($tel) && !empty($address)) {
+                $data = [
+                    'id'=>$id,
+                    'fname'=>$fname,
+                    'lname'=>$lname,
+                    'email'=>$email,
+                    'gender'=>$gender,
+                    'DOB'=>$DOB,
+                    'mobile'=>$tel,
+                    'address'=>$address
+                ];
+                if ($this->userModel->UpdateparentModel($data)) {
+                    $response['message']= "Successfully Update.!";
+                    $response['status'] = true;
+                }else {
+                    $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                    $response['status1'] = false;
+                }     
+            }
+            ob_end_clean();
+            echo json_encode($response);
         }
-        ob_end_clean();
-        echo json_encode($response);
+}
     }
 
     public function Courses(){
@@ -2315,148 +2329,152 @@ public function AddNewStudents(){
     }
 
     public function addcourse(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-
-            $departmemtid =  $phpObject->{'departmemtid'};
-            $classid = $phpObject->{'classid'};
-            $semester =  $phpObject->{'semester'}; 
-            $courscode =  $phpObject->{'courscode'}; 
-            $coursname =  $phpObject->{'coursname'};
-            $CoursesUnit =  $phpObject->{'CoursesUnit'};
-            $CourseStatus =  $phpObject->{'CourseStatus'}; 
-
-            if ($departmemtid == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
-            }
-            if ($classid == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            if ($semester == "") {
-               $response['message']="The  field is required.";
-               $response['status3'] = false;
-            }
-            if ($courscode == "") {
-               $response['message']="The  field is required.";
-               $response['status4'] = false;
-            }
-            if ($coursname == "") {
-               $response['message']="The  field is required.";
-               $response['status5'] = false;
-            }
-            if ($CoursesUnit == "") {
-               $response['message']="The  field is required.";
-               $response['status6'] = false;
-            }           
-            if ($CourseStatus == "") {
-               $response['message']="The  field is required.";
-               $response['status7'] = false;
-            }
-            elseif (!empty($departmemtid) && !empty($classid) && !empty($semester) && !empty($courscode)  && !empty($coursname) && !empty($CoursesUnit) && !empty($CourseStatus)) {
-            $data = [
-                'settings'=>$this->_AppSettings(),
-                'departmemtid'=>$departmemtid,
-                'classid'=>$classid,
-                'semester'=>$semester,
-                'courscode'=>$courscode,
-                'coursname'=>$coursname,
-                'CoursesUnit'=>$CoursesUnit,
-                'CourseStatus'=>$CourseStatus
-            ];
-            if ($this->userModel->AddCourseModel($data)) {
-                $response['message']= "Successfully Added.!";
-                $response['status'] = true;
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            if(!isLoggedInAdmin()){
+                header('location:' . ROOT . 'Administration/Default');
             }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
+                if(validata_api_request_header()){
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+
+                    $departmemtid =  $phpObject->{'departmemtid'};
+                    $classid = $phpObject->{'classid'};
+                    $semester =  $phpObject->{'semester'}; 
+                    $courscode =  $phpObject->{'courscode'}; 
+                    $coursname =  $phpObject->{'coursname'};
+                    $CoursesUnit =  $phpObject->{'CoursesUnit'};
+                    $CourseStatus =  $phpObject->{'CourseStatus'}; 
+
+                    if ($departmemtid == "") {
+                        $response['message']="The  field is required.";
+                        $response['status1'] = false;
+                    }
+                    if ($classid == "") {
+                        $response['message']="The  field is required.";
+                        $response['status2'] = false;
+                    }
+                    if ($semester == "") {
+                        $response['message']="The  field is required.";
+                        $response['status3'] = false;
+                    }
+                    if ($courscode == "") {
+                        $response['message']="The  field is required.";
+                        $response['status4'] = false;
+                    }
+                    if ($coursname == "") {
+                        $response['message']="The  field is required.";
+                        $response['status5'] = false;
+                    }
+                    if ($CoursesUnit == "") {
+                        $response['message']="The  field is required.";
+                        $response['status6'] = false;
+                    }           
+                    if ($CourseStatus == "") {
+                        $response['message']="The  field is required.";
+                        $response['status7'] = false;
+                    }
+                    elseif (!empty($departmemtid) && !empty($classid) && !empty($semester) && !empty($courscode)  && !empty($coursname) && !empty($CoursesUnit) && !empty($CourseStatus)) {
+                        $data = [
+                            'settings'=>$this->_AppSettings(),
+                            'departmemtid'=>$departmemtid,
+                            'classid'=>$classid,
+                            'semester'=>$semester,
+                            'courscode'=>$courscode,
+                            'coursname'=>$coursname,
+                            'CoursesUnit'=>$CoursesUnit,
+                            'CourseStatus'=>$CourseStatus
+                        ];
+                        if ($this->userModel->AddCourseModel($data)) {
+                            $response['message']= "Successfully Added.!";
+                            $response['status'] = true;
+                        }else {
+                            $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                            $response['status1'] = false;
+                        }     
+                    }
+                    ob_end_clean();
+                    echo json_encode($response);
+                }
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
 
      public function isEditCourse(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
 
-            $id =  $phpObject->{'id'};
-            $departmemtid =  $phpObject->{'departmemtid'};
-            $classid = $phpObject->{'classid'};
-            $semester =  $phpObject->{'semester'}; 
-            $courscode =  $phpObject->{'courscode'}; 
-            $coursname =  $phpObject->{'coursname'};
-            $CoursesUnit =  $phpObject->{'CoursesUnit'};
-            $CourseStatus =  $phpObject->{'CourseStatus'}; 
+                $id =  $phpObject->{'id'};
+                $departmemtid =  $phpObject->{'departmemtid'};
+                $classid = $phpObject->{'classid'};
+                $semester =  $phpObject->{'semester'}; 
+                $courscode =  $phpObject->{'courscode'}; 
+                $coursname =  $phpObject->{'coursname'};
+                $CoursesUnit =  $phpObject->{'CoursesUnit'};
+                $CourseStatus =  $phpObject->{'CourseStatus'}; 
 
-            if ($departmemtid == "") {
-               $response['message']="The  field is required.";
-               $response['status1'] = false;
+                if ($departmemtid == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                }
+                if ($classid == "") {
+                    $response['message']="The  field is required.";
+                    $response['status2'] = false;
+                }
+                if ($semester == "") {
+                    $response['message']="The  field is required.";
+                    $response['status3'] = false;
+                }
+                if ($courscode == "") {
+                    $response['message']="The  field is required.";
+                    $response['status4'] = false;
+                }
+                if ($coursname == "") {
+                    $response['message']="The  field is required.";
+                    $response['status5'] = false;
+                }
+                if ($CoursesUnit == "") {
+                    $response['message']="The  field is required.";
+                    $response['status6'] = false;
+                }           
+                if ($CourseStatus == "") {
+                    $response['message']="The  field is required.";
+                    $response['status7'] = false;
+                }
+                elseif (!empty($departmemtid) && !empty($classid) && !empty($semester) && !empty($courscode)  && !empty($coursname) && !empty($CoursesUnit) && !empty($CourseStatus)) {
+                    $data = [
+                        'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
+                        'departmemtid'=>trim(filter_var((int)$departmemtid, FILTER_SANITIZE_NUMBER_INT)),
+                        'classid'=>trim(filter_var((int)$classid, FILTER_SANITIZE_NUMBER_INT)),
+                        'semester'=>trim(filter_var((int)$semester, FILTER_SANITIZE_NUMBER_INT)),
+                        'courscode'=>trim(filter_var($courscode, FILTER_SANITIZE_STRING)),
+                        'coursname'=>trim(filter_var($coursname, FILTER_SANITIZE_STRING)),
+                        'CoursesUnit'=>trim(filter_var($CoursesUnit, FILTER_SANITIZE_STRING)),
+                        'CourseStatus'=>trim(filter_var($CourseStatus, FILTER_SANITIZE_STRING)),
+                    ];
+                    if ($this->userModel->EditCourseModel($data)) {
+                        $response['message']= "Successfully Updated.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+                ob_end_clean();
+                echo json_encode($response);
             }
-            if ($classid == "") {
-               $response['message']="The  field is required.";
-               $response['status2'] = false;
-            }
-            if ($semester == "") {
-               $response['message']="The  field is required.";
-               $response['status3'] = false;
-            }
-            if ($courscode == "") {
-               $response['message']="The  field is required.";
-               $response['status4'] = false;
-            }
-            if ($coursname == "") {
-               $response['message']="The  field is required.";
-               $response['status5'] = false;
-            }
-            if ($CoursesUnit == "") {
-               $response['message']="The  field is required.";
-               $response['status6'] = false;
-            }           
-            if ($CourseStatus == "") {
-               $response['message']="The  field is required.";
-               $response['status7'] = false;
-            }
-            elseif (!empty($departmemtid) && !empty($classid) && !empty($semester) && !empty($courscode)  && !empty($coursname) && !empty($CoursesUnit) && !empty($CourseStatus)) {
-            $data = [
-                'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
-                'departmemtid'=>trim(filter_var((int)$departmemtid, FILTER_SANITIZE_NUMBER_INT)),
-                'classid'=>trim(filter_var((int)$classid, FILTER_SANITIZE_NUMBER_INT)),
-                'semester'=>trim(filter_var((int)$semester, FILTER_SANITIZE_NUMBER_INT)),
-                'courscode'=>trim(filter_var($courscode, FILTER_SANITIZE_STRING)),
-                'coursname'=>trim(filter_var($coursname, FILTER_SANITIZE_STRING)),
-                'CoursesUnit'=>trim(filter_var($CoursesUnit, FILTER_SANITIZE_STRING)),
-                'CourseStatus'=>trim(filter_var($CourseStatus, FILTER_SANITIZE_STRING)),
-            ];
-            if ($this->userModel->EditCourseModel($data)) {
-                $response['message']= "Successfully Updated.!";
-                $response['status'] = true;
-            }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
-        }
-        ob_end_clean();
-        echo json_encode($response);
+        }        
     }
 
     public function courses_subjects(){
@@ -2471,7 +2489,7 @@ public function AddNewStudents(){
             [
                 'settings'=>$this->_AppSettings(),
                 'page_title'=>'Courses Subjects',
-                'subject_data'=>$getAll_subjects,
+                'subject_data'=>((!empty($getAll_subjects))?$getAll_subjects:''),
                 'courses_data'=>$get_all_courses,
             ];
             $this->view('Admin/courses_subjects', $data);
@@ -2571,94 +2589,108 @@ public function AddNewStudents(){
         }
     }
     public function addClass(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        //You can either use this or json_decode function
-        $phpObject = json_decode($jsonString);
-        $Classname =  $phpObject->{'Classname'};
-        if ($Classname == "") {
-            $response['message']="The  field is required.";
-            $response['status1'] = false;
-        }elseif (!empty($Classname) ) {
-            $data = 
-            [
-                'Classname'=>trim(filter_var($Classname, FILTER_SANITIZE_STRING)),
-            ];
-           if ($this->userModel->AddClassModel($data)) {
-                $response['message']= "Successfully Added..!";
-                $response['status'] = true;
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            if(!isLoggedInAdmin()){
+                header('location:' . ROOT . 'Administration/Default');
             }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
+                if(validata_api_request_header()){
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+                    $Classname =  $phpObject->{'Classname'};
+                    if ($Classname == "") {
+                        $response['message']="The  field is required.";
+                        $response['status1'] = false;
+                    }elseif (!empty($Classname) ) {
+                        $data = 
+                        [
+                            'Classname'=>trim(filter_var($Classname, FILTER_SANITIZE_STRING)),
+                        ];
+                    if ($this->userModel->AddClassModel($data)) {
+                            $response['message']= "Successfully Added..!";
+                            $response['status'] = true;
+                        }else {
+                            $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                            $response['status1'] = false;
+                        }     
+                    }
+                    ob_end_clean();
+                    echo json_encode($response);
+                }
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
     public function saveEditClass(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        //You can either use this or json_decode function
-        $phpObject = json_decode($jsonString);
-
-        $id =  $phpObject->{'id'};
-        $Classname =  $phpObject->{'Classname'};
-        if ($Classname == "") {
-            $response['message']="The  field is required.";
-            $response['status1'] = false;
-        }elseif (!empty($Classname) ) {
-            $data = 
-            [
-                'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
-                'Classname'=>trim(filter_var($Classname, FILTER_SANITIZE_STRING)),
-            ];
-           if ($this->userModel->UpdateClassModel($data)) {
-                $response['message']= "Successfully Updated.!";
-                $response['status'] = true;
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            if(!isLoggedInAdmin()){
+                header('location:' . ROOT . 'Administration/Default');
             }else {
-                $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
-                $response['status1'] = false;
-            }     
+                if(validata_api_request_header()){
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    //You can either use this or json_decode function
+                    $phpObject = json_decode($jsonString);
+
+                    $id =  $phpObject->{'id'};
+                    $Classname =  $phpObject->{'Classname'};
+                    if ($Classname == "") {
+                        $response['message']="The  field is required.";
+                        $response['status1'] = false;
+                    }elseif (!empty($Classname) ) {
+                        $data = 
+                        [
+                            'id'=>trim(filter_var((int)$id, FILTER_SANITIZE_NUMBER_INT)),
+                            'Classname'=>trim(filter_var($Classname, FILTER_SANITIZE_STRING)),
+                        ];
+                    if ($this->userModel->UpdateClassModel($data)) {
+                            $response['message']= "Successfully Updated.!";
+                            $response['status'] = true;
+                        }else {
+                            $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                            $response['status1'] = false;
+                        }     
+                    }
+                    ob_end_clean();
+                    echo json_encode($response);
+                }
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
+
     public function DeleteClass(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $id = $getData;
-        //Return json message to the GUI
-        if($this->userModel->DeleteClass($id)){
-            $response['status'] = 200;
-            $response['message']= 'Successfully deleted.';
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else{
+            if(!isLoggedInAdmin()){
+                header('location:' . ROOT . 'Administration/Default');
+            }else {
+                if(validata_api_request_header()){
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    $phpObject = json_decode($jsonString);
+                    $getData=$phpObject->{'id'};
+                    $newJsonString = json_encode($phpObject);
+                    $id = $getData;
+                    //Return json message to the GUI
+                    if($this->userModel->DeleteClass($id)){
+                        $response['status'] = 200;
+                        $response['message']= 'Successfully deleted.';
+                    }
+                    ob_end_clean();
+                    echo json_encode($response);
+                }
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
+
     public function Semester(){
          if(AuthCheck() == false){
             $data= ['page_title' => 'Access Denied','settings'=>$this->_AppSettings(),];
@@ -2699,133 +2731,55 @@ public function AddNewStudents(){
         ob_end_clean();
         echo json_encode($response);
     }
+
     public function RenderSemesterAdd(){
-         if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $getData=$phpObject->{'id'};
-        $newJsonString = json_encode($phpObject);
-        $___ApplicationType = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
-        if(!empty($___ApplicationType) && (is_numeric($___ApplicationType))){
-            $id = $___ApplicationType;
-            $crf= $this->userModel->SQLSemester($id);
-            if ($crf) {
-                $response['Status'] = '200'; 
-                $response['result'] = $crf;
-            }else {
-                $response['Status'] = 'Invalid Data requested.';
-            }
-            
-         }else { 
-			header('location:' . ROOT . 'DeniedAccess');
-        }
-        ob_end_clean();
-        echo json_encode($response); 
-    }
-    public function AddSemester(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-        header("Access-Control-Allow-Origin: *"); 
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-
-        $ClassVal = $phpObject->{'ClassVal'};
-        $Classname1 = $phpObject->{'Classname1'};
-        $Classname2 = $phpObject->{'Classname2'};
-        $CombinedData = $phpObject->{'CombinedData'};
-
-        $newJsonString = json_encode($phpObject);
-        
-        if ($ClassVal == "") {
-            $response['message']="The  field is required.";
-            $response['status1'] = false;
-        }
-        if ($Classname1 == "") {
-            $response['message']="The  field is required.";
-            $response['status2'] = false;
-        }
-        if ($Classname2 == "") {
-            $response['message']="The  field is required.";
-            $response['status3'] = false;
-        }
-        if ($CombinedData == "") {
-            $response['message']="The  field is required.";
-            $response['status4'] = false;
-        }elseif (!empty($CombinedData) && !empty($ClassVal)) {
-            if ($Classname2 =='FIRST SEMESTER') {
-                $parent = 1;
-            }elseif ($Classname2 =='SECOND SEMESTER') {
-                $parent = 2;
-            }
-            $data = 
-            [
-                'classid'=>$ClassVal,
-                'title'=>$CombinedData,
-                'parent'=>$parent
-            ];
-            $countRow=$this->userModel->checksemester($ClassVal);
-            if ($countRow ==2 || $countRow > 2) {
-                $response['status'] = false;
-                $response['message']= 'This Class Can Not Have More Than 2 Semester..!';
-            }else {
-                if($this->userModel->createnewsemester($data)) {
-                    $response['status'] = true;
-                    $response['message']= 'A New Semester Has Successfully Added.!';
-                }
-            }
-        }
-        ob_end_clean();
-        echo json_encode($response);
-    }
- 
-    public function resetDATA(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Failed');
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            $phpObject = json_decode($jsonString);
-            $action = $_GET['action'];
-
-            if ($action== 'get_classes') {
-                $getClassSqlModel = $this->userModel->ClassModel();
-                if ($getClassSqlModel) {
-                    $response['data']= $getClassSqlModel;
-                }else {
-                    $response['data']='No Data Found';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'id'};
+                $newJsonString = json_encode($phpObject);
+                $___ApplicationType = strip_tags(trim(filter_var((int)$getData, FILTER_SANITIZE_STRING)));
+                if(!empty($___ApplicationType) && (is_numeric($___ApplicationType))){
+                    $id = $___ApplicationType;
+                    $crf= $this->userModel->SQLSemester($id);
+                    if ($crf) {
+                        $response['Status'] = '200'; 
+                        $response['result'] = $crf;
+                    }else {
+                        $response['Status'] = 'Invalid Data requested.';
+                    }
+                    
+                }else { 
+                    header('location:' . ROOT . 'DeniedAccess');
                 }
+                ob_end_clean();
+                echo json_encode($response); 
             }
-            if ($action == 'isSaveEdit') {
+        }
+    }
 
-                $id = $phpObject->{'id'};
-                $Parent = $phpObject->{'Parent'};
+    public function AddSemester(){
+       if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+
                 $ClassVal = $phpObject->{'ClassVal'};
                 $Classname1 = $phpObject->{'Classname1'};
                 $Classname2 = $phpObject->{'Classname2'};
                 $CombinedData = $phpObject->{'CombinedData'};
 
                 $newJsonString = json_encode($phpObject);
-
+                
                 if ($ClassVal == "") {
                     $response['message']="The  field is required.";
                     $response['status1'] = false;
@@ -2843,14 +2797,12 @@ public function AddNewStudents(){
                     $response['status4'] = false;
                 }elseif (!empty($CombinedData) && !empty($ClassVal)) {
                     if ($Classname2 =='FIRST SEMESTER') {
-                        $dparent = 1;
+                        $parent = 1;
                     }elseif ($Classname2 =='SECOND SEMESTER') {
-                        $dparent = 2;
+                        $parent = 2;
                     }
                     $data = 
                     [
-                        'id'=>(int)$id,
-                        'Parent'=>$dparent,
                         'classid'=>$ClassVal,
                         'title'=>$CombinedData,
                         'parent'=>$parent
@@ -2860,39 +2812,116 @@ public function AddNewStudents(){
                         $response['status'] = false;
                         $response['message']= 'This Class Can Not Have More Than 2 Semester..!';
                     }else {
-                        if($this->userModel->EditSemester($data)) {
+                        if($this->userModel->createnewsemester($data)) {
                             $response['status'] = true;
                             $response['message']= 'A New Semester Has Successfully Added.!';
                         }
                     }
                 }
+                ob_end_clean();
+                echo json_encode($response);
             }
-            ob_end_clean();
-            echo json_encode($response);
+        }
+    }
+ 
+    public function resetDATA(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $action = $_GET['action'];
+
+                if ($action== 'get_classes') {
+                    $getClassSqlModel = $this->userModel->ClassModel();
+                    if ($getClassSqlModel) {
+                        $response['data']= $getClassSqlModel;
+                    }else {
+                        $response['data']='No Data Found';
+                    }
+                }
+                if ($action == 'isSaveEdit') {
+
+                    $id = $phpObject->{'id'};
+                    $Parent = $phpObject->{'Parent'};
+                    $ClassVal = $phpObject->{'ClassVal'};
+                    $Classname1 = $phpObject->{'Classname1'};
+                    $Classname2 = $phpObject->{'Classname2'};
+                    $CombinedData = $phpObject->{'CombinedData'};
+
+                    $newJsonString = json_encode($phpObject);
+
+                    if ($ClassVal == "") {
+                        $response['message']="The  field is required.";
+                        $response['status1'] = false;
+                    }
+                    if ($Classname1 == "") {
+                        $response['message']="The  field is required.";
+                        $response['status2'] = false;
+                    }
+                    if ($Classname2 == "") {
+                        $response['message']="The  field is required.";
+                        $response['status3'] = false;
+                    }
+                    if ($CombinedData == "") {
+                        $response['message']="The  field is required.";
+                        $response['status4'] = false;
+                    }elseif (!empty($CombinedData) && !empty($ClassVal)) {
+                        if ($Classname2 =='FIRST SEMESTER') {
+                            $dparent = 1;
+                        }elseif ($Classname2 =='SECOND SEMESTER') {
+                            $dparent = 2;
+                        }
+                        $data = 
+                        [
+                            'id'=>(int)$id,
+                            'Parent'=>$dparent,
+                            'classid'=>$ClassVal,
+                            'title'=>$CombinedData,
+                            'parent'=>$parent
+                        ];
+                        $countRow=$this->userModel->checksemester($ClassVal);
+                        if ($countRow ==2 || $countRow > 2) {
+                            $response['status'] = false;
+                            $response['message']= 'This Class Can Not Have More Than 2 Semester..!';
+                        }else {
+                            if($this->userModel->EditSemester($data)) {
+                                $response['status'] = true;
+                                $response['message']= 'A New Semester Has Successfully Added.!';
+                            }
+                        }
+                    }
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
     }
     public function isSemes($url){
         if(!isLoggedInAdmin()){
-        header('location:' . ROOT . 'Administration/Default');
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-        $urlParts = explode('/', $url); 
-        // Set Controller 
-        $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Semester';
-        $controllerName = $controller;
-        
-        $id= trim(filter_var((int)$controllerName, FILTER_SANITIZE_NUMBER_INT));
-        $editId = $id;
-        $semesterSql= $this->userModel->GetSemesterData($id);
-        $id = $semesterSql->ClassID;
-        $class = $this->userModel->getClassData($id);
-        $data = 
-        [
-            'settings'=>$this->_AppSettings(),
-            'class'=>$class,
-            'id'=>$editId,
-            'semesterdata'=>$semesterSql,
-        ];
-        $this->view('Admin/edit/editSemester', $data);
+            $urlParts = explode('/', $url); 
+            // Set Controller 
+            $controller = !empty($urlParts[0])? $urlParts[0] : ROOT.'Admin/Semester';
+            $controllerName = $controller;
+            
+            $id= trim(filter_var((int)$controllerName, FILTER_SANITIZE_NUMBER_INT));
+            $editId = $id;
+            $semesterSql= $this->userModel->GetSemesterData($id);
+            $id = $semesterSql->ClassID;
+            $class = $this->userModel->getClassData($id);
+            $data = 
+            [
+                'settings'=>$this->_AppSettings(),
+                'class'=>$class,
+                'id'=>$editId,
+                'semesterdata'=>$semesterSql,
+            ];
+            $this->view('Admin/edit/editSemester', $data);
         }
     }
 
@@ -2956,7 +2985,6 @@ public function AddNewStudents(){
                     'cls'=>$get_student_class,
                     'id'=>$id,
                 ];
-                
                 $this->view('Admin/student_record', $data);
             }
            
@@ -3000,38 +3028,34 @@ public function AddNewStudents(){
                     }
             }
             if ($action =='get_record') {
-                header("Access-Control-Allow-Origin: *");
-                header("Access-Control-Allow-Methods: *");
-                header("Access-Control-Allow-Headers: *");
-                header("Content-Type: application/json");
-                header("Access-Control-Max-Age: 3600");
-                header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-                
-                if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-                    dnd('Connection Failed.!');
-                }else{
-                    ob_start();
-                    $jsonString = file_get_contents("php://input");
-                    $response = array();
-                    $phpObject = json_decode($jsonString);
-                    $depid=$phpObject->{'department'};
-                    $Classid=$phpObject->{'class'};
-                    $semsterid=$phpObject->{'semester'};
-                    $newJsonString = json_encode($phpObject);
-                    $get_student_course = $this->userModel->get_student_record($depid, $Classid, $semsterid);
-                    if ($get_student_course) {
-                        $response['status']=200;
-                        $response['data']=$get_student_course;
-                    }else {
-                        $response['status']=400;
-                        $response['message']='Sorry..! Student Has\'t Performan Any Task Yet.';
+              if(!isLoggedInAdmin()){
+                    header('location:' . ROOT . 'Administration/Default');
+                }else {
+                    if(validata_api_request_header()){
+                        ob_start();
+                        $jsonString = file_get_contents("php://input");
+                        $response = array();
+                        $phpObject = json_decode($jsonString);
+                        $depid=$phpObject->{'department'};
+                        $Classid=$phpObject->{'class'};
+                        $semsterid=$phpObject->{'semester'};
+                        $newJsonString = json_encode($phpObject);
+                        $get_student_course = $this->userModel->get_student_record($depid, $Classid, $semsterid);
+                        if ($get_student_course) {
+                            $response['status']=200;
+                            $response['data']=$get_student_course;
+                        }else {
+                            $response['status']=400;
+                            $response['message']='Sorry..! Student Has\'t Performan Any Task Yet.';
+                        }
                     }
+                    ob_end_clean();
+                    echo json_encode($response);
                 }
-                ob_end_clean();
-                echo json_encode($response);
             }
         }
     }
+
     public function settings(){
         if(AuthCheck() == false){
             $data= ['page_title' => 'Access Denied'];
@@ -3092,6 +3116,7 @@ public function AddNewStudents(){
             $this->view('Admin/Analysis/data', $data);
         }
     }
+
     public function _indexchart(){
         if(AuthCheck() == false){
             $data= ['settings'=>$this->_AppSettings(), 'page_title' => 'Access Denied'];
@@ -3115,34 +3140,29 @@ public function AddNewStudents(){
             $this->view('Error404', $data);
            dnd('');
         }else{
-            header("Access-Control-Allow-Origin: *");
-            header("Access-Control-Allow-Methods: *");
-            header("Access-Control-Allow-Headers: *");
-            header("Content-Type: application/json");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            
-            if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-                dnd('Connection Failed.!');
-            }else{
-                ob_start();
-                $jsonString = file_get_contents("php://input");
-                $response = array();
-                $phpObject = json_decode($jsonString);
-                $message=$phpObject->{'msg'};
+           if(!isLoggedInAdmin()){
+                header('location:' . ROOT . 'Administration/Default');
+            }else {
+                if(validata_api_request_header()){
+                    ob_start();
+                    $jsonString = file_get_contents("php://input");
+                    $response = array();
+                    $phpObject = json_decode($jsonString);
+                    $message=$phpObject->{'msg'};
 
-                $newJsonString = json_encode($phpObject);
-            
-                if (!empty($message)) {
-                    $response['status']=200;
-                    $response['message']='Your Complains has been sent to MidTech company successfully..!';
-                }else {
-                    $response['status']=400;
-                    $response['message']='Sorry..! Message could not be send..!';
+                    $newJsonString = json_encode($phpObject);
+                
+                    if (!empty($message)) {
+                        $response['status']=200;
+                        $response['message']='Your Complains has been sent to MidTech company successfully..!';
+                    }else {
+                        $response['status']=400;
+                        $response['message']='Sorry..! Message could not be send..!';
+                    }
                 }
+                ob_end_clean();
+                echo json_encode($response);
             }
-            ob_end_clean();
-            echo json_encode($response);
         }
     }
 
@@ -3209,35 +3229,32 @@ public function AddNewStudents(){
 
 
   public function ischange_school_name(){
-    header("Access-Control-Allow-Methods: *");
-    header("Access-Control-Allow-Headers: *");
-    header("Content-Type: application/json");
-    header("Access-Control-Max-Age: 3600");
-    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    
-    if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-        dnd('Connection Failed.!');
-    }else{
-        ob_start();
-        $jsonString = file_get_contents("php://input");
-        $response = array();
-        $phpObject = json_decode($jsonString);
-        $schoolname=$phpObject->{'_name'};
-
-        $newJsonString = json_encode($phpObject);
-
-        if ($this->_settings_model->__saveTitleChanges($schoolname)) {
-            $response['status']=200;
-            $response['message']='School name has been successfully changed.!';
+    if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
         }else {
-            $response['status']=400;
-            $response['message']='Sorry..! Couldn\'t proccess changes.!';
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $schoolname=$phpObject->{'_name'};
+
+                $newJsonString = json_encode($phpObject);
+
+                if ($this->_settings_model->__saveTitleChanges($schoolname)) {
+                    $response['status']=200;
+                    $response['message']='School name has been successfully changed.!';
+                }else {
+                    $response['status']=400;
+                    $response['message']='Sorry..! Couldn\'t proccess changes.!';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
         }
-        ob_end_clean();
-        echo json_encode($response);
     }
-}
-  public function _backup_db(){
+    
+    public function _backup_db(){
     if(AuthCheck() == false){
         $data= ['settings'=>$this->_AppSettings(),'page_title' => 'Access Denied'];
         $this->view('Error404', $data);
@@ -3253,41 +3270,152 @@ public function AddNewStudents(){
 
 
    public function addSubject(){
-        if(!isLoggedInAdmin()){header('location:' . ROOT . 'Administration/Default');}
-            header("Access-Control-Allow-Origin: *");
-            header("Content-Type: application/json; charset=UTF-8");
-            header("Access-Control-Allow-Methods: POST");
-            header("Access-Control-Max-Age: 3600");
-            header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-            ob_start();
-            $jsonString = file_get_contents("php://input");
-            $response = array();
-            //You can either use this or json_decode function
-            $phpObject = json_decode($jsonString);
-            $course =  $phpObject->{'course'};
-            $courseid =  $phpObject->{'courseid'};
-            $coursecode =  $phpObject->{'course_code'};
-            $subject =  $phpObject->{'subject'};
-          
-            if ($course == "") {
-                $response['message']="The  field is required.";
-                $response['status1'] = false;
-            }
-            if ($subject == "") {
-                $response['message']="The  field is required.";
-                $response['status2'] = false;
-            }
-            elseif (!empty($course) && !empty($subject)){
-
-                if ($this->_adding_data->addcourse($courseid,$subject,$course, $coursecode)) {
-                    $response['message']= "New subject successfully added.!";
-                    $response['status'] = true;
-                }else {
-                    $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            if(validata_api_request_header()){
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $course =  $phpObject->{'course'};
+                $courseid =  $phpObject->{'courseid'};
+                $coursecode =  $phpObject->{'course_code'};
+                $subject =  $phpObject->{'subject'};
+            
+                if ($course == "") {
+                    $response['message']="The  field is required.";
                     $response['status1'] = false;
-                }     
+                }
+                if ($subject == "") {
+                    $response['message']="The  field is required.";
+                    $response['status2'] = false;
+                }
+                elseif (!empty($course) && !empty($subject)){
+                    
+                    if ($this->_adding_data->addcourse($courseid,$subject,$course, $coursecode)) {
+                        $response['message']= "New subject successfully added.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+                ob_end_clean();
+                echo json_encode($response);
             }
-        ob_end_clean();
-        echo json_encode($response);
+        }
+    }
+
+    
+    public function edit_subject(){
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            $url=implode('',$_REQUEST);
+            $urlParts = explode('/', $url);
+            if (!isset($urlParts[2]) || empty($urlParts[2])){
+                echo "<script>
+                            alert('Invalid URL Request.!');
+                            window.location.replace('". ROOT ."Admin/courses_subjects');
+                        </script>";
+            }else if(is_numeric($urlParts[2])==false){
+                    echo "<script>
+                        alert('Invalid Subject ID Sent..!');
+                        window.location.replace('". ROOT ."Admin/courses_subjects');
+                    </script>";
+            }else{
+                // Set Controller ? 
+                $controller = (((!empty($urlParts[2])) ? $urlParts[2] : ROOT.'Admin/courses_subjects'));
+                $controllerName = $controller;
+                $id=  strip_tags(trim((filter_var($controllerName, FILTER_SANITIZE_NUMBER_INT))));
+
+                $isget_department = $this->_getting_data_display->get_edit_subject($id);
+                //dnd($isget_department);
+                if ($isget_department) {
+                    $data = 
+                    [
+                        'settings'=>$this->_AppSettings(),
+                        'page_title'=>'Edit Subject',
+                        'Dep'=>$isget_department,
+                    ];
+                    $this->view('Admin/edit/edit_course_subject', $data);
+                }else{
+                    echo "<script>
+                        alert('The department does not exist anymore..!');
+                        window.location.replace('". ROOT ."Admin/courses_subjects');
+                    </script>";
+                }
+            }
+         }
+    }
+
+    
+   public function save_edit_subject(){
+        if(AuthCheck() == false){
+            $data= ['page_title' => 'Access Denied'];
+            $this->view('Error404', $data);
+           dnd('');
+        }else{
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                //You can either use this or json_decode function
+                $phpObject = json_decode($jsonString);
+                $edit_id =  $phpObject->{'id'};
+                $course =  $phpObject->{'course'};
+                $courseid =  $phpObject->{'courseid'};
+                $coursecode =  $phpObject->{'course_code'};
+                $subject =  $phpObject->{'subject'};
+            
+                if ($course == "") {
+                    $response['message']="The  field is required.";
+                    $response['status1'] = false;
+                }
+                if ($subject == "") {
+                    $response['message']="The  field is required.";
+                    $response['status2'] = false;
+                }
+                elseif (!empty($course) && !empty($subject)){
+                    if ($this->_editing_data->edit_course($edit_id, $courseid,$subject,$course, $coursecode)) {
+                        $response['message']= "Subject successfully updated.!";
+                        $response['status'] = true;
+                    }else {
+                        $response['message']="Sorry.. Something Went Wrong On The Data Processing..!";
+                        $response['status1'] = false;
+                    }     
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
+        }
+    }
+
+     public function delete_subject(){
+        if(!isLoggedInAdmin()){
+            header('location:' . ROOT . 'Administration/Default');
+        }else {
+            if(validata_api_request_header()){
+                ob_start();
+                $jsonString = file_get_contents("php://input");
+                $response = array();
+                $phpObject = json_decode($jsonString);
+                $getData=$phpObject->{'DataId'};
+                $newJsonString = json_encode($phpObject);
+                $id = $getData;
+                //Return json message to the GUI
+                if($this->_deleting_data->delete_subject($id)){
+                    $response['status'] = 200;
+                    $response['message']= 'Successfully deleted.';
+                }
+                ob_end_clean();
+                echo json_encode($response);
+            }
+        }
     }
 }

@@ -9,20 +9,14 @@ Class ApisController extends Controller {
      * FROM: MidTech Private Limited
      * @package category 
      */ 
+
+     
     private $model;
     public function __construct() {
        @$this->model = @$this->loadModel('Apis');
     }
     public function RenderCategory(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed.!');
-        }else{
+        if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
@@ -61,17 +55,8 @@ Class ApisController extends Controller {
         } 
     }
     public function RenderRequirementData(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed.!');
-        }else{
-            ob_start();
+        if(validata_api_request_header()){
+                ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
             $phpObject = json_decode($jsonString);
@@ -97,16 +82,8 @@ Class ApisController extends Controller {
         } 
     }
     public function fetchDepartment(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed.!');
-        }else{
-            ob_start();
+        if(validata_api_request_header()){
+                ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
             $phpObject = json_decode($jsonString);
@@ -130,16 +107,7 @@ Class ApisController extends Controller {
         } 
     }
     public function RenderProgrammeList(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+       if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response= array();
@@ -166,16 +134,7 @@ Class ApisController extends Controller {
         }
     }
     public function RenderDepartmentList(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+       if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response= array();
@@ -200,16 +159,7 @@ Class ApisController extends Controller {
         }
     }
     public function RenderFaculty(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+        if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
@@ -235,17 +185,8 @@ Class ApisController extends Controller {
         }
     }
     public function RenderProgram(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
-            ob_start();
+       if(validata_api_request_header()){
+            ob_start(); 
             $jsonString = file_get_contents("php://input");
             $response = array();
             $phpObject = json_decode($jsonString);
@@ -270,16 +211,7 @@ Class ApisController extends Controller {
         }
     }
     public function RenderClass(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+        if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
@@ -305,16 +237,7 @@ Class ApisController extends Controller {
         }
     }
     public function RenderSemester(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+        if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();
@@ -357,16 +280,7 @@ Class ApisController extends Controller {
 
 
      public function get_course_data(){
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Methods: *");
-        header("Access-Control-Allow-Headers: *");
-        header("Content-Type: application/json");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-        
-        if ($_SERVER['REQUEST_METHOD']=='OPTIONS') {
-            dnd('Connection Failed');
-        }else{
+        if(validata_api_request_header()){
             ob_start();
             $jsonString = file_get_contents("php://input");
             $response = array();

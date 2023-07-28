@@ -37,28 +37,29 @@
   <div class="sidebar-menu sticky-sidebar-menu">
     <!-- logo start -->
     <div class="logo">
-      <h1><a href="<?=ROOT?>student/Dashboard/Default"><img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:35px;"/></a></h1>
+      <h1><a href="<?=ROOT?>Student/Dashboard/Default"><img src="<?=ASSETS?>img/product/1.png" class="img-responsive center" style="max-width:35px;"/></a></h1>
     </div>
     <div class="logo-icon text-center">
-      <a href="<?=ROOT?>student/Dashboard/Default" title="logo"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/logo.png" alt="logo-icon"> </a>
+      <a href="<?=ROOT?>Student/Dashboard/Default" title="logo"><img src="<?=ASSETS?>important__stylesheet__file/stdfile/fonts/logo.png" alt="logo-icon"> </a>
     </div>
     <!-- //logo end -->
     <div class="sidebar-menu-inner">
       <!-- sidebar nav start -->
       <ul class="nav nav-pills nav-stacked custom-nav">
         <li class="active" style="color:#fff; background: #008bc6;border-radius: 2px;">
-          <a href="<?=ROOT?>student/Dashboard/Default">
-          <i class="fa fa-tachometer"></i>
+          <a href="<?=ROOT?>Student/Dashboard/Default">
+          <i class="fa fa-home"></i>
           <span> Dashboard</span></a>
         </li>
-        <li><a href="<?=ROOT?>Student/Dashboard/?redirect=0"><i class="fa fa-home"></i> <span>Site Home</span></a></li>
+        <li><a href="<?=ROOT?>Student/StudentProfile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
         <li><a href="<?=ROOT?>Student/event"><i class="fa fa-table"></i> <span>Calendar</span></a></li>
-        <li><a href="<?=ROOT?>Student/AuthExamination"><i class="fa fa-file"></i> <span>Private files</span></a></li>
+        <li><a href="<?=ROOT?>Student/AuthExamination"><i class="fa fa-pencil"></i> <span>Check Avalible Exam</span></a></li>
         <li class="menu-list">
           <a href="javascript:void(0)"><i class="fa fa-graduation-cap"></i>
-            <span>Elements <i class="lnr lnr-chevron-right"></i></span></a>
+            <span>Records<i class="lnr lnr-chevron-right"></i></span></a>
           <ul class="sub-menu-list">
-            <li><a href="javascript:void(0)">Carousels</a> </li>
+            <li><a href="<?=ROOT?>Student/attendance_record">Your Attendance</a> </li>
+            <li><a href="<?=ROOT?>Student/performance_record">Your Performance</a> </li>
             <li><a href="javascript:void(0)">Default cards</a> </li>
             <li><a href="javascript:void(0)">People cards</a></li>
           </ul>
